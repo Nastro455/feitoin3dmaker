@@ -1,0 +1,925 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Feitoin3d Maker</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.js"></script>
+  <style>
+    :root {
+      --bg: #061426;
+      --card: #0b1f38;
+      --text: #ffffff;
+      --muted: #c8d6e8;
+      --line: #1b426c;
+      --accent: #1e9bff;
+      --blue: #006ee6;
+      --success: #ffffff;
+      --warning: #8ecbff;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #123a63 0%, var(--bg) 48%, #030b14 100%);
+      color: var(--text);
+      display: flex;
+      justify-content: center;
+      padding: 32px 16px;
+    }
+
+    .app { width: min(1160px, 100%); }
+
+    header { text-align: center; margin-bottom: 28px; }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 14px;
+      background: rgba(255,255,255,.06);
+    }
+
+    header h1 {
+      font-size: clamp(34px, 6vw, 66px);
+      letter-spacing: -0.07em;
+      margin: 0;
+    }
+
+    header h1 span { color: var(--accent); }
+
+    header p {
+      color: var(--muted);
+      max-width: 780px;
+      margin: 12px auto 0;
+      line-height: 1.5;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 410px 1fr;
+      gap: 18px;
+      align-items: start;
+    }
+
+    @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+
+    .card {
+      background: rgba(11, 31, 56, 0.88);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      padding: 18px;
+      box-shadow: 0 20px 70px rgba(0,0,0,.35);
+      backdrop-filter: blur(14px);
+    }
+
+    .dropzone {
+      border: 1.5px dashed #4a4a55;
+      border-radius: 18px;
+      padding: 28px 18px;
+      text-align: center;
+      cursor: pointer;
+      transition: .2s ease;
+      background: #07182b;
+      display: block;
+    }
+
+    .dropzone.dragover,
+    .dropzone:hover { border-color: var(--accent); transform: translateY(-1px); }
+
+    .dropzone strong { display: block; font-size: 18px; margin-bottom: 6px; }
+    .dropzone span { color: var(--muted); font-size: 14px; }
+    input[type="file"] { display: none; }
+
+    .field { margin-top: 18px; }
+
+    label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 8px; }
+
+    select,
+    input[type="range"] { width: 100%; }
+
+    select {
+      appearance: none;
+      background: #07182b;
+      color: var(--text);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 13px 14px;
+      font-size: 15px;
+    }
+
+    .range-row { display: flex; align-items: center; gap: 12px; }
+    .range-row output { min-width: 54px; text-align: right; color: var(--muted); font-variant-numeric: tabular-nums; }
+
+    .toggle { display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: 14px; }
+    .toggle input { accent-color: var(--accent); }
+
+    .actions { display: grid; gap: 10px; margin-top: 20px; }
+
+    button {
+      border: 0;
+      border-radius: 16px;
+      padding: 14px 16px;
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+      background: var(--accent);
+      color: white;
+      transition: .2s ease;
+    }
+
+    button:hover { transform: translateY(-1px); filter: brightness(1.06); }
+    button:disabled { cursor: not-allowed; opacity: .45; transform: none; }
+
+    .secondary { background: transparent; color: var(--text); border: 1px solid var(--line); }
+    .blue { background: var(--blue); }
+    .green { background: var(--success); color: var(--bg); }
+
+    .export-box {
+      margin-top: 14px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: #07182b;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .export-box strong { color: var(--text); }
+
+    .keypoint-panel {
+      display: none;
+      margin-top: 16px;
+      border: 1px solid var(--line);
+      background: #07182b;
+      border-radius: 18px;
+      padding: 14px;
+    }
+
+    .keypoint-panel.active { display: block; }
+
+    .keypoint-panel strong { display: block; margin-bottom: 6px; }
+    .keypoint-panel p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.45; }
+
+    .preview-wrap { display: grid; gap: 14px; }
+
+    .canvas-box {
+      background: #030b14;
+      border-radius: 20px;
+      border: 1px solid var(--line);
+      min-height: 520px;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      padding: 10px;
+      position: relative;
+    }
+
+    canvas { max-width: 100%; max-height: 76vh; border-radius: 14px; }
+    canvas.keypoint-mode { cursor: crosshair; outline: 2px solid var(--blue); }
+
+    .empty { color: var(--muted); text-align: center; padding: 30px; line-height: 1.4; }
+
+    .frames {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    @media (max-width: 680px) { .frames { grid-template-columns: repeat(2, 1fr); } }
+
+    .frame-thumb {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      overflow: hidden;
+      background: #07182b;
+    }
+
+    .frame-thumb canvas {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 0;
+    }
+
+    .frame-thumb span {
+      display: block;
+      padding: 8px;
+      color: var(--muted);
+      font-size: 12px;
+      border-top: 1px solid var(--line);
+    }
+
+    .frame-thumb .ok { color: var(--success); }
+
+    .status { min-height: 22px; color: var(--muted); font-size: 14px; line-height: 1.45; }
+
+    .download {
+      display: none;
+      text-align: center;
+      text-decoration: none;
+      border-radius: 16px;
+      padding: 14px 16px;
+      font-weight: 800;
+      color: #fff;
+      background: var(--blue);
+    }
+
+    .mini-note {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+      margin-top: 12px;
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header>
+      <div class="badge">Feito In3D • ferramenta experimental</div>
+      <h1>Feitoin3d <span>Maker</span></h1>
+      <p>Carregue uma imagem 3D em tiras lado a lado, escolha se ela tem 2, 3 ou 4 fotos, alinhe por ponto de referência e baixe o GIF pronto em Full HD vertical.</p>
+    </header>
+
+    <section class="grid">
+      <aside class="card">
+        <label class="dropzone" id="dropzone">
+          <strong>Carregar foto 3D</strong>
+          <span>PNG, JPG ou JPEG com as fotos lado a lado</span>
+          <input id="fileInput" type="file" accept="image/png,image/jpeg" />
+        </label>
+
+        <div class="field">
+          <label for="frameCount">Quantidade de fotos no arquivo</label>
+          <select id="frameCount">
+            <option value="2">2 fotos</option>
+            <option value="3" selected>3 fotos</option>
+            <option value="4">4 fotos</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="delay">Velocidade do movimento</label>
+          <div class="range-row">
+            <input id="delay" type="range" min="60" max="500" value="130" step="10" />
+            <output id="delayValue">130ms</output>
+          </div>
+        </div>
+
+        <div class="field toggle">
+          <input id="boomerang" type="checkbox" checked />
+          <span>Movimento ida e volta</span>
+        </div>
+
+        <div class="field">
+          <label for="totalDuration">Tempo total do GIF</label>
+          <select id="totalDuration">
+            <option value="auto" selected>Automático pela velocidade</option>
+            <option value="1000">1 segundo</option>
+            <option value="1500">1,5 segundo</option>
+            <option value="2000">2 segundos</option>
+            <option value="3000">3 segundos</option>
+            <option value="5000">5 segundos</option>
+            <option value="10000">10 segundos</option>
+          </select>
+        </div>
+
+        <div class="export-box">
+          <strong>Exportação:</strong> GIF vertical 1080 × 1920 px. O enquadramento usa crop automático para preencher a tela sem bordas pretas.
+        </div>
+
+        <div class="actions">
+          <button class="blue" id="keypointBtn" disabled>Gerar pontos de referência</button>
+          <button class="green" id="applyKeypointsBtn" type="button" disabled>Aplicar pontos sugeridos</button>
+          <button id="generateBtn" disabled>Exportar GIF Full HD</button>
+          <button class="secondary" id="clearKeypointsBtn" type="button" disabled>Limpar alinhamento</button>
+          <button class="secondary" id="resetBtn" type="button">Limpar tudo</button>
+          <a class="download" id="downloadLink" download="feitoin3d-maker-fullhd.gif">Baixar GIF</a>
+        </div>
+
+        <div class="keypoint-panel" id="keypointPanel">
+          <strong id="keypointTitle">Ponto de referência</strong>
+          <p id="keypointText">Clique no objeto principal. Depois disso, o site tenta encontrar automaticamente o mesmo ponto nos outros frames.</p>
+        </div>
+
+        <p class="status" id="status">Aguardando imagem.</p>
+        <p class="mini-note">Dica: escolha um ponto de alto contraste, como olho, logo, parafuso, canto da lente ou botão. O ponto fica registrado em cada miniatura abaixo.</p>
+      </aside>
+
+      <section class="preview-wrap">
+        <div class="card canvas-box" id="previewBox">
+          <div class="empty" id="emptyState">O preview vertical animado vai aparecer aqui.</div>
+          <canvas id="previewCanvas"></canvas>
+        </div>
+
+        <div class="card">
+          <label>Frames originais com pontos registrados</label>
+          <div class="frames" id="framesList"></div>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script>
+    const EXPORT_WIDTH = 1080;
+    const EXPORT_HEIGHT = 1920;
+    const EXPORT_ASPECT = EXPORT_WIDTH / EXPORT_HEIGHT;
+
+    const fileInput = document.querySelector('#fileInput');
+    const dropzone = document.querySelector('#dropzone');
+    const frameCountSelect = document.querySelector('#frameCount');
+    const delayInput = document.querySelector('#delay');
+    const delayValue = document.querySelector('#delayValue');
+    const boomerangInput = document.querySelector('#boomerang');
+    const totalDurationSelect = document.querySelector('#totalDuration');
+    const generateBtn = document.querySelector('#generateBtn');
+    const keypointBtn = document.querySelector('#keypointBtn');
+    const applyKeypointsBtn = document.querySelector('#applyKeypointsBtn');
+    const clearKeypointsBtn = document.querySelector('#clearKeypointsBtn');
+    const resetBtn = document.querySelector('#resetBtn');
+    const downloadLink = document.querySelector('#downloadLink');
+    const statusEl = document.querySelector('#status');
+    const framesList = document.querySelector('#framesList');
+    const canvas = document.querySelector('#previewCanvas');
+    const emptyState = document.querySelector('#emptyState');
+    const keypointPanel = document.querySelector('#keypointPanel');
+    const keypointTitle = document.querySelector('#keypointTitle');
+    const keypointText = document.querySelector('#keypointText');
+    const ctx = canvas.getContext('2d');
+
+    let sourceImage = null;
+    let rawFrameCanvases = [];
+    let finalFrameCanvases = [];
+    let keypoints = [];
+    let selectingKeypoints = false;
+    let keypointStep = 0;
+    let animationTimer = null;
+    let frameIndex = 0;
+    let exportTimer = null;
+    let exportStart = 0;
+    let exportProgress = 0;
+
+    const setStatus = (text) => statusEl.textContent = text;
+    const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
+
+    delayInput.addEventListener('input', () => {
+      delayValue.textContent = `${delayInput.value}ms`;
+      if (!selectingKeypoints) startPreview();
+    });
+
+    frameCountSelect.addEventListener('change', () => {
+      if (sourceImage) {
+        clearKeypoints(false);
+        processImage();
+      }
+    });
+
+    boomerangInput.addEventListener('change', () => {
+      if (!selectingKeypoints) startPreview();
+    });
+
+    totalDurationSelect.addEventListener('change', () => {
+      if (!selectingKeypoints) startPreview();
+    });
+
+    dropzone.addEventListener('dragover', (event) => {
+      event.preventDefault();
+      dropzone.classList.add('dragover');
+    });
+
+    dropzone.addEventListener('dragleave', () => dropzone.classList.remove('dragover'));
+
+    dropzone.addEventListener('drop', (event) => {
+      event.preventDefault();
+      dropzone.classList.remove('dragover');
+      const file = event.dataTransfer.files?.[0];
+      if (file) loadFile(file);
+    });
+
+    fileInput.addEventListener('change', (event) => {
+      const file = event.target.files?.[0];
+      if (file) loadFile(file);
+    });
+
+    keypointBtn.addEventListener('click', startKeypointSelection);
+    applyKeypointsBtn.addEventListener('click', finishKeypointSelection);
+    clearKeypointsBtn.addEventListener('click', () => clearKeypoints(true));
+    generateBtn.addEventListener('click', generateGif);
+    resetBtn.addEventListener('click', resetAll);
+    canvas.addEventListener('click', handleCanvasClick);
+
+    function loadFile(file) {
+      if (!file.type.startsWith('image/')) {
+        setStatus('Envie um arquivo de imagem em PNG ou JPG.');
+        return;
+      }
+
+      const img = new Image();
+      img.onload = () => {
+        sourceImage = img;
+        downloadLink.style.display = 'none';
+        downloadLink.href = '';
+        clearKeypoints(false);
+        processImage();
+      };
+      img.onerror = () => setStatus('Não consegui ler essa imagem. Tente outro arquivo.');
+      img.src = URL.createObjectURL(file);
+    }
+
+    function processImage() {
+      const count = Number(frameCountSelect.value);
+      const frameWidth = Math.floor(sourceImage.width / count);
+      const frameHeight = sourceImage.height;
+
+      rawFrameCanvases = [];
+      finalFrameCanvases = [];
+
+      for (let i = 0; i < count; i++) {
+        const frameCanvas = document.createElement('canvas');
+        const frameCtx = frameCanvas.getContext('2d');
+        frameCanvas.width = frameWidth;
+        frameCanvas.height = frameHeight;
+        frameCtx.drawImage(sourceImage, i * frameWidth, 0, frameWidth, frameHeight, 0, 0, frameWidth, frameHeight);
+        rawFrameCanvases.push(frameCanvas);
+      }
+
+      rebuildFinalFrames();
+      canvas.style.display = 'block';
+      emptyState.style.display = 'none';
+      generateBtn.disabled = false;
+      keypointBtn.disabled = false;
+      renderFramesList();
+      startPreview();
+      setStatus(`${count} frames recortados. Para alinhar melhor, clique em “Gerar pontos de referência”.`);
+    }
+
+    function rebuildFinalFrames() {
+      if (!rawFrameCanvases.length) return;
+      finalFrameCanvases = composeFullHdFrames();
+    }
+
+    function composeFullHdFrames() {
+      const w = rawFrameCanvases[0].width;
+      const h = rawFrameCanvases[0].height;
+      const hasCompleteKeypoints = keypoints.length === rawFrameCanvases.length && keypoints.every(Boolean);
+      const anchor = hasCompleteKeypoints ? keypoints[0] : { x: w / 2, y: h / 2 };
+      const shifts = rawFrameCanvases.map((_, index) => {
+        if (!hasCompleteKeypoints) return { dx: 0, dy: 0 };
+        return {
+          dx: anchor.x - keypoints[index].x,
+          dy: anchor.y - keypoints[index].y
+        };
+      });
+
+      const commonRect = getCommonVisibleRect(w, h, shifts);
+      const verticalRect = cropRectToAspect(commonRect, EXPORT_ASPECT, anchor);
+
+      return rawFrameCanvases.map((frame, index) => {
+        const output = document.createElement('canvas');
+        output.width = EXPORT_WIDTH;
+        output.height = EXPORT_HEIGHT;
+        const outputCtx = output.getContext('2d');
+        outputCtx.imageSmoothingEnabled = true;
+        outputCtx.imageSmoothingQuality = 'high';
+
+        const sourceX = verticalRect.x - shifts[index].dx;
+        const sourceY = verticalRect.y - shifts[index].dy;
+        outputCtx.drawImage(
+          frame,
+          sourceX,
+          sourceY,
+          verticalRect.width,
+          verticalRect.height,
+          0,
+          0,
+          EXPORT_WIDTH,
+          EXPORT_HEIGHT
+        );
+        return output;
+      });
+    }
+
+    function getCommonVisibleRect(w, h, shifts) {
+      let left = 0;
+      let top = 0;
+      let right = w;
+      let bottom = h;
+
+      shifts.forEach(({ dx, dy }) => {
+        left = Math.max(left, dx);
+        top = Math.max(top, dy);
+        right = Math.min(right, dx + w);
+        bottom = Math.min(bottom, dy + h);
+      });
+
+      if (right <= left + 20 || bottom <= top + 20) {
+        return { x: 0, y: 0, width: w, height: h };
+      }
+
+      return { x: left, y: top, width: right - left, height: bottom - top };
+    }
+
+    function cropRectToAspect(rect, aspect, focus) {
+      let cropWidth = rect.width;
+      let cropHeight = cropWidth / aspect;
+
+      if (cropHeight > rect.height) {
+        cropHeight = rect.height;
+        cropWidth = cropHeight * aspect;
+      }
+
+      const focusX = focus ? focus.x : rect.x + rect.width / 2;
+      const focusY = focus ? focus.y : rect.y + rect.height / 2;
+      const x = clamp(focusX - cropWidth / 2, rect.x, rect.x + rect.width - cropWidth);
+      const y = clamp(focusY - cropHeight / 2, rect.y, rect.y + rect.height - cropHeight);
+
+      return { x, y, width: cropWidth, height: cropHeight };
+    }
+
+    function renderFramesList() {
+      framesList.innerHTML = '';
+      rawFrameCanvases.forEach((frame, index) => {
+        const card = document.createElement('div');
+        card.className = 'frame-thumb';
+
+        const thumb = document.createElement('canvas');
+        thumb.width = frame.width;
+        thumb.height = frame.height;
+        const thumbCtx = thumb.getContext('2d');
+        thumbCtx.drawImage(frame, 0, 0);
+
+        if (keypoints[index]) {
+          drawCross(thumbCtx, keypoints[index].x, keypoints[index].y, Math.max(2, frame.width / 260));
+        }
+
+        const label = document.createElement('span');
+        const hasPoint = Boolean(keypoints[index]);
+        label.innerHTML = `Frame ${index + 1} ${hasPoint ? '<b class="ok">• ponto registrado</b>' : '• sem ponto'}`;
+
+        card.appendChild(thumb);
+        card.appendChild(label);
+        framesList.appendChild(card);
+      });
+    }
+
+    function startKeypointSelection() {
+      if (!rawFrameCanvases.length) return;
+      selectingKeypoints = true;
+      keypointStep = 0;
+      keypoints = [];
+      clearInterval(animationTimer);
+      canvas.classList.add('keypoint-mode');
+      keypointPanel.classList.add('active');
+      downloadLink.style.display = 'none';
+      generateBtn.disabled = true;
+      keypointBtn.disabled = true;
+      applyKeypointsBtn.disabled = true;
+      clearKeypointsBtn.disabled = true;
+      renderFramesList();
+      drawKeypointFrame();
+    }
+
+    function drawKeypointFrame() {
+      const current = rawFrameCanvases[keypointStep];
+      const point = keypoints[keypointStep];
+      canvas.width = current.width;
+      canvas.height = current.height;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(current, 0, 0);
+
+      if (point) drawCross(ctx, point.x, point.y, Math.max(2, canvas.width / 260));
+
+      keypointTitle.textContent = `Ponto de referência — frame ${keypointStep + 1} de ${rawFrameCanvases.length}`;
+
+      if (keypointStep === 0) {
+        keypointText.textContent = 'Clique em um detalhe do objeto principal. O site vai tentar encontrar esse mesmo ponto automaticamente nos outros frames.';
+        setStatus('Selecione o primeiro ponto de referência.');
+      } else {
+        keypointText.textContent = 'O ponto azul/rosa foi sugerido automaticamente. Se estiver certo, clique em “Aplicar pontos sugeridos”. Se estiver errado, clique no ponto correto desta foto.';
+        setStatus(`Confira o ponto sugerido no frame ${keypointStep + 1}.`);
+      }
+    }
+
+    function drawCross(targetCtx, x, y, lineWidth = 3) {
+      targetCtx.save();
+      targetCtx.strokeStyle = '#1e9bff';
+      targetCtx.lineWidth = lineWidth;
+      targetCtx.beginPath();
+      targetCtx.moveTo(x - 18, y);
+      targetCtx.lineTo(x + 18, y);
+      targetCtx.moveTo(x, y - 18);
+      targetCtx.lineTo(x, y + 18);
+      targetCtx.stroke();
+      targetCtx.fillStyle = '#ffffff';
+      targetCtx.beginPath();
+      targetCtx.arc(x, y, 6, 0, Math.PI * 2);
+      targetCtx.fill();
+      targetCtx.restore();
+    }
+
+    function handleCanvasClick(event) {
+      if (!selectingKeypoints) return;
+
+      const rect = canvas.getBoundingClientRect();
+      const scaleX = canvas.width / rect.width;
+      const scaleY = canvas.height / rect.height;
+      const point = {
+        x: (event.clientX - rect.left) * scaleX,
+        y: (event.clientY - rect.top) * scaleY
+      };
+
+      if (keypointStep === 0 && keypoints.length === 0) {
+        keypoints[0] = point;
+        renderFramesList();
+        drawKeypointFrame();
+        setStatus('Analisando a imagem e sugerindo pontos nos outros frames...');
+
+        setTimeout(() => {
+          autoFillKeypointsFromFirst(point);
+          renderFramesList();
+          applyKeypointsBtn.disabled = false;
+          clearKeypointsBtn.disabled = false;
+
+          if (rawFrameCanvases.length > 1) {
+            keypointStep = 1;
+            drawKeypointFrame();
+          } else {
+            finishKeypointSelection();
+          }
+        }, 80);
+        return;
+      }
+
+      keypoints[keypointStep] = point;
+      renderFramesList();
+      drawKeypointFrame();
+
+      setTimeout(() => {
+        if (keypointStep >= rawFrameCanvases.length - 1) {
+          finishKeypointSelection();
+        } else {
+          keypointStep++;
+          drawKeypointFrame();
+        }
+      }, 180);
+    }
+
+    function autoFillKeypointsFromFirst(firstPoint) {
+      const firstFrame = rawFrameCanvases[0];
+      const w = firstFrame.width;
+      const h = firstFrame.height;
+      const patchRadius = clamp(Math.round(Math.min(w, h) * 0.025), 10, 28);
+      const searchRadiusX = clamp(Math.round(w * 0.24), 40, 220);
+      const searchRadiusY = clamp(Math.round(h * 0.10), 30, 120);
+
+      const baseData = firstFrame.getContext('2d').getImageData(0, 0, w, h).data;
+
+      for (let i = 1; i < rawFrameCanvases.length; i++) {
+        const targetFrame = rawFrameCanvases[i];
+        const targetData = targetFrame.getContext('2d').getImageData(0, 0, w, h).data;
+        keypoints[i] = findBestTemplateMatch({
+          baseData,
+          targetData,
+          width: w,
+          height: h,
+          point: firstPoint,
+          patchRadius,
+          searchRadiusX,
+          searchRadiusY
+        });
+      }
+    }
+
+    function findBestTemplateMatch({ baseData, targetData, width, height, point, patchRadius, searchRadiusX, searchRadiusY }) {
+      const sampleStep = 2;
+      const searchStep = 2;
+      const startX = clamp(Math.round(point.x - searchRadiusX), patchRadius, width - patchRadius - 1);
+      const endX = clamp(Math.round(point.x + searchRadiusX), patchRadius, width - patchRadius - 1);
+      const startY = clamp(Math.round(point.y - searchRadiusY), patchRadius, height - patchRadius - 1);
+      const endY = clamp(Math.round(point.y + searchRadiusY), patchRadius, height - patchRadius - 1);
+
+      let bestScore = Number.POSITIVE_INFINITY;
+      let bestPoint = { x: point.x, y: point.y };
+
+      for (let cy = startY; cy <= endY; cy += searchStep) {
+        for (let cx = startX; cx <= endX; cx += searchStep) {
+          let score = 0;
+          let samples = 0;
+
+          for (let dy = -patchRadius; dy <= patchRadius; dy += sampleStep) {
+            for (let dx = -patchRadius; dx <= patchRadius; dx += sampleStep) {
+              const bx = Math.round(point.x + dx);
+              const by = Math.round(point.y + dy);
+              const tx = cx + dx;
+              const ty = cy + dy;
+
+              const b = grayAt(baseData, width, bx, by);
+              const t = grayAt(targetData, width, tx, ty);
+              const diff = b - t;
+              score += diff * diff;
+              samples++;
+            }
+          }
+
+          score = score / samples;
+          if (score < bestScore) {
+            bestScore = score;
+            bestPoint = { x: cx, y: cy };
+          }
+        }
+      }
+
+      return bestPoint;
+    }
+
+    function grayAt(data, width, x, y) {
+      const index = (y * width + x) * 4;
+      return data[index] * 0.299 + data[index + 1] * 0.587 + data[index + 2] * 0.114;
+    }
+
+    function finishKeypointSelection() {
+      if (!keypoints.length || keypoints.length !== rawFrameCanvases.length || !keypoints.every(Boolean)) {
+        setStatus('Ainda falta registrar ponto em algum frame.');
+        return;
+      }
+
+      selectingKeypoints = false;
+      canvas.classList.remove('keypoint-mode');
+      keypointPanel.classList.remove('active');
+      keypointBtn.disabled = false;
+      applyKeypointsBtn.disabled = true;
+      clearKeypointsBtn.disabled = false;
+      generateBtn.disabled = false;
+      rebuildFinalFrames();
+      renderFramesList();
+      startPreview();
+      setStatus('Pontos aplicados. O preview e a exportação agora usam alinhamento e crop vertical Full HD sem bordas pretas.');
+    }
+
+    function clearKeypoints(shouldRestartPreview) {
+      keypoints = [];
+      selectingKeypoints = false;
+      keypointStep = 0;
+      canvas.classList.remove('keypoint-mode');
+      keypointPanel.classList.remove('active');
+      applyKeypointsBtn.disabled = true;
+      clearKeypointsBtn.disabled = true;
+
+      if (rawFrameCanvases.length) {
+        rebuildFinalFrames();
+        renderFramesList();
+        keypointBtn.disabled = false;
+        generateBtn.disabled = false;
+        if (shouldRestartPreview) {
+          startPreview();
+          setStatus('Alinhamento removido. O site voltou ao recorte automático vertical sem pontos.');
+        }
+      }
+    }
+
+    function getPlaybackFrames() {
+      if (!boomerangInput.checked || finalFrameCanvases.length <= 2) return finalFrameCanvases;
+      const backwards = finalFrameCanvases.slice(1, -1).reverse();
+      return [...finalFrameCanvases, ...backwards];
+    }
+
+    function getFrameDelay(frameTotal) {
+      if (totalDurationSelect.value !== 'auto') {
+        const totalDuration = Number(totalDurationSelect.value);
+        return Math.max(20, Math.round(totalDuration / frameTotal));
+      }
+      return Number(delayInput.value);
+    }
+
+    function getTotalDurationText(frameTotal) {
+      if (totalDurationSelect.value !== 'auto') {
+        return `${(Number(totalDurationSelect.value) / 1000).toString().replace('.', ',')}s`;
+      }
+      return `${((getFrameDelay(frameTotal) * frameTotal) / 1000).toFixed(2).replace('.', ',')}s`;
+    }
+
+    function startPreview() {
+      clearInterval(animationTimer);
+      if (!finalFrameCanvases.length || selectingKeypoints) return;
+
+      const playbackFrames = getPlaybackFrames();
+      const frameDelay = getFrameDelay(playbackFrames.length);
+      frameIndex = 0;
+      canvas.width = EXPORT_WIDTH;
+      canvas.height = EXPORT_HEIGHT;
+
+      const draw = () => {
+        const currentFrame = playbackFrames[frameIndex % playbackFrames.length];
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(currentFrame, 0, 0);
+        frameIndex++;
+      };
+
+      draw();
+      animationTimer = setInterval(draw, frameDelay);
+    }
+
+    function generateGif() {
+      if (!finalFrameCanvases.length) return;
+
+      clearInterval(animationTimer);
+      generateBtn.disabled = true;
+      keypointBtn.disabled = true;
+      applyKeypointsBtn.disabled = true;
+      clearKeypointsBtn.disabled = true;
+      downloadLink.style.display = 'none';
+
+      exportProgress = 0;
+      exportStart = performance.now();
+      updateExportStatus();
+      exportTimer = setInterval(updateExportStatus, 250);
+
+      const gif = new GIF({
+        workers: 2,
+        quality: 10,
+        width: EXPORT_WIDTH,
+        height: EXPORT_HEIGHT,
+        workerScript: 'https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.worker.js'
+      });
+
+      const playbackFrames = getPlaybackFrames();
+      const frameDelay = getFrameDelay(playbackFrames.length);
+      const totalDurationText = getTotalDurationText(playbackFrames.length);
+
+      playbackFrames.forEach((frame) => {
+        gif.addFrame(frame, { delay: frameDelay, copy: true });
+      });
+
+      gif.on('finished', (blob) => {
+        clearInterval(exportTimer);
+        const url = URL.createObjectURL(blob);
+        downloadLink.href = url;
+        downloadLink.style.display = 'block';
+        generateBtn.disabled = false;
+        keypointBtn.disabled = false;
+        clearKeypointsBtn.disabled = keypoints.length === 0;
+        startPreview();
+        setStatus(`GIF Full HD pronto! Tempo total: ${formatElapsed(performance.now() - exportStart)}.`);
+      });
+
+      gif.on('progress', (progress) => {
+        exportProgress = progress;
+        updateExportStatus();
+      });
+
+      gif.render();
+    }
+
+    function updateExportStatus() {
+      const elapsed = formatElapsed(performance.now() - exportStart);
+      const percent = Math.round(exportProgress * 100);
+      const frameTotal = getPlaybackFrames().length;
+      const selectedTotal = getTotalDurationText(frameTotal);
+      setStatus(`Exportando GIF Full HD... ${percent}% concluído • duração final: ${selectedTotal} • tempo decorrido: ${elapsed}`);
+    }
+
+    function formatElapsed(milliseconds) {
+      const totalSeconds = Math.floor(milliseconds / 1000);
+      const minutes = Math.floor(totalSeconds / 60).toString().padStart(2, '0');
+      const seconds = (totalSeconds % 60).toString().padStart(2, '0');
+      return `${minutes}:${seconds}`;
+    }
+
+    function resetAll() {
+      sourceImage = null;
+      rawFrameCanvases = [];
+      finalFrameCanvases = [];
+      keypoints = [];
+      selectingKeypoints = false;
+      keypointStep = 0;
+      fileInput.value = '';
+      clearInterval(animationTimer);
+      clearInterval(exportTimer);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      canvas.style.display = 'none';
+      canvas.classList.remove('keypoint-mode');
+      emptyState.style.display = 'block';
+      framesList.innerHTML = '';
+      generateBtn.disabled = true;
+      keypointBtn.disabled = true;
+      applyKeypointsBtn.disabled = true;
+      clearKeypointsBtn.disabled = true;
+      downloadLink.style.display = 'none';
+      downloadLink.href = '';
+      keypointPanel.classList.remove('active');
+      setStatus('Aguardando imagem.');
+    }
+
+    canvas.style.display = 'none';
+  </script>
+</body>
+</html>
