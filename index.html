@@ -48,6 +48,35 @@
       background: rgba(255,255,255,.06);
     }
 
+    .badge-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .social-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--text);
+      font-size: 13px;
+      margin-bottom: 14px;
+      background: rgba(255,255,255,.08);
+      text-decoration: none;
+      transition: .2s ease;
+    }
+
+    .social-link:hover {
+      transform: translateY(-1px);
+      border-color: var(--accent);
+      color: var(--text);
+    }
+
     header h1 {
       font-size: clamp(34px, 6vw, 66px);
       letter-spacing: -0.07em;
@@ -105,10 +134,12 @@
 
     select,
     input[type="range"],
-    input[type="number"] { width: 100%; }
+    input[type="number"],
+    input[type="text"] { width: 100%; }
 
     select,
-    input[type="number"] {
+    input[type="number"],
+    input[type="text"] {
       appearance: none;
       background: #07182b;
       color: var(--text);
@@ -128,6 +159,69 @@
 
     .toggle { display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: 14px; }
     .toggle input { accent-color: var(--accent); }
+
+    .switch-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: #07182b;
+    }
+
+    .switch-label-text {
+      color: var(--text);
+      font-size: 14px;
+      line-height: 1.35;
+    }
+
+    .switch-control {
+      position: relative;
+      display: inline-block;
+      width: 54px;
+      height: 30px;
+      flex: 0 0 auto;
+    }
+
+    .switch-control input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .switch-slider {
+      position: absolute;
+      inset: 0;
+      cursor: pointer;
+      background: rgba(255,255,255,.12);
+      border: 1px solid var(--line);
+      transition: .25s ease;
+      border-radius: 999px;
+    }
+
+    .switch-slider::before {
+      content: '';
+      position: absolute;
+      width: 22px;
+      height: 22px;
+      left: 3px;
+      top: 3px;
+      background: #fff;
+      border-radius: 50%;
+      transition: .25s ease;
+      box-shadow: 0 6px 16px rgba(0,0,0,.25);
+    }
+
+    .switch-control input:checked + .switch-slider {
+      background: rgba(30,155,255,.28);
+      border-color: var(--accent);
+    }
+
+    .switch-control input:checked + .switch-slider::before {
+      transform: translateX(24px);
+      background: var(--accent);
+    }
 
     .actions { display: grid; gap: 10px; margin-top: 20px; }
 
@@ -193,6 +287,98 @@
 
     canvas { max-width: 100%; max-height: 76vh; border-radius: 14px; }
     canvas.keypoint-mode { cursor: crosshair; outline: 2px solid var(--blue); }
+
+    .fine-adjust-overlay {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      z-index: 7;
+      width: min(320px, calc(100% - 24px));
+    }
+
+    .fine-adjust-panel {
+      pointer-events: auto;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 12px;
+      background: rgba(11, 31, 56, 0.90);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 16px 36px rgba(0,0,0,.28);
+    }
+
+    .fine-adjust-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .fine-adjust-head strong {
+      font-size: 13px;
+      color: var(--text);
+    }
+
+    .fine-adjust-mini {
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.35;
+      margin: 0 0 10px;
+    }
+
+    .frame-jump-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .frame-jump-buttons button {
+      padding: 8px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      background: transparent;
+      border: 1px solid var(--line);
+      color: var(--muted);
+    }
+
+    .frame-jump-buttons button.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    .nudge-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 42px);
+      grid-template-rows: repeat(3, 42px);
+      gap: 8px;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .nudge-grid .placeholder {
+      width: 42px;
+      height: 42px;
+    }
+
+    .nudge-btn {
+      padding: 0;
+      border-radius: 12px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      font-weight: 900;
+      min-height: 42px;
+    }
+
+    .nudge-btn.reset-offset {
+      font-size: 11px;
+      line-height: 1.1;
+      padding: 4px;
+    }
 
     .export-overlay {
       position: absolute;
@@ -400,6 +586,11 @@
         padding: 7px 10px;
       }
 
+      .social-link {
+        font-size: 12px;
+        padding: 7px 10px;
+      }
+
       header h1 {
         font-size: 38px;
         letter-spacing: -0.05em;
@@ -485,6 +676,22 @@
         border-radius: 16px;
       }
 
+      .fine-adjust-overlay {
+        top: 8px;
+        right: 8px;
+        left: 8px;
+        width: auto;
+      }
+
+      .fine-adjust-panel {
+        padding: 10px;
+      }
+
+      .frame-jump-buttons button {
+        font-size: 11px;
+        padding: 7px 9px;
+      }
+
       .export-progress-card {
         padding: 18px;
         border-radius: 22px;
@@ -517,7 +724,10 @@
 <body>
   <main class="app">
     <header>
-      <div class="badge">Feito In3D • ferramenta experimental</div>
+      <div class="badge-row">
+        <div class="badge">Feito In3D • ferramenta experimental</div>
+        <a class="social-link" href="https://www.instagram.com/feitoin3d/" target="_blank" rel="noopener noreferrer">Instagram Feito In3D</a>
+      </div>
       <h1>Feitoin3d <span>Maker</span></h1>
       <p>Carregue uma imagem 3D em tiras lado a lado, escolha se ela tem 2, 3 ou 4 fotos, alinhe por ponto de referência e exporte em GIF, MP4 ou MOV no formato Full HD vertical.</p>
     </header>
@@ -645,6 +855,22 @@
           </div>
         </div>
 
+        <div class="field">
+          <label>Marca d'água personalizada nas bordas</label>
+          <div class="switch-row">
+            <label class="switch-control" for="watermarkEnabled">
+              <input id="watermarkEnabled" type="checkbox" />
+              <span class="switch-slider"></span>
+            </label>
+            <span class="switch-label-text">Adicionar marca d'água repetida nas bordas do arquivo</span>
+          </div>
+        </div>
+
+        <div class="field" id="watermarkTextField" style="display: none;">
+          <label for="watermarkText">Texto da marca d'água</label>
+          <input id="watermarkText" type="text" value="Feito In3D" maxlength="48" placeholder="Digite sua marca d'água" />
+        </div>
+
         <div class="export-box" id="exportBox">
           <strong>Exportação:</strong> escolha entre Vertical Full HD 9:16 ou 4:3 clássico. O enquadramento usa crop automático para preencher a tela sem bordas pretas. Você também pode aplicar deslocamento RGB 3D com ajuste fino no preview e no arquivo final.
         </div>
@@ -658,6 +884,27 @@
           <div class="empty" id="emptyState">O preview vertical animado vai aparecer aqui.</div>
           <canvas id="previewCanvas"></canvas>
           <a class="preview-download" id="previewDownloadLink" download="feitoin3d-maker-padrao.gif">Baixar arquivo</a>
+
+          <div class="fine-adjust-overlay" id="fineAdjustOverlay" hidden>
+            <div class="fine-adjust-panel">
+              <div class="fine-adjust-head">
+                <strong>Ajuste fino por frame</strong>
+              </div>
+              <p class="fine-adjust-mini">Escolha um frame para ajuste rápido e use as setas para corrigir tremidos finos sobre o preview.</p>
+              <div class="frame-jump-buttons" id="frameJumpButtons"></div>
+              <div class="nudge-grid">
+                <span class="placeholder"></span>
+                <button class="secondary nudge-btn" type="button" data-nudge="up">↑</button>
+                <span class="placeholder"></span>
+                <button class="secondary nudge-btn" type="button" data-nudge="left">←</button>
+                <button class="secondary nudge-btn reset-offset" type="button" data-nudge="reset">Reset</button>
+                <button class="secondary nudge-btn" type="button" data-nudge="right">→</button>
+                <span class="placeholder"></span>
+                <button class="secondary nudge-btn" type="button" data-nudge="down">↓</button>
+                <span class="placeholder"></span>
+              </div>
+            </div>
+          </div>
 
           <div class="export-overlay" id="exportOverlay">
             <div class="export-progress-card">
@@ -753,6 +1000,9 @@
     const vintageIntensityValue = document.querySelector('#vintageIntensityValue');
     const rgbDisplacementInput = document.querySelector('#rgbDisplacement');
     const rgbDisplacementValue = document.querySelector('#rgbDisplacementValue');
+    const watermarkEnabledInput = document.querySelector('#watermarkEnabled');
+    const watermarkTextField = document.querySelector('#watermarkTextField');
+    const watermarkTextInput = document.querySelector('#watermarkText');
     const generateBtn = document.querySelector('#generateBtn');
     const keypointBtn = document.querySelector('#keypointBtn');
     const applyKeypointsBtn = document.querySelector('#applyKeypointsBtn');
@@ -760,6 +1010,9 @@
     const resetBtn = document.querySelector('#resetBtn');
     const downloadLink = document.querySelector('#downloadLink');
     const previewDownloadLink = document.querySelector('#previewDownloadLink');
+    const fineAdjustOverlay = document.querySelector('#fineAdjustOverlay');
+    const frameJumpButtons = document.querySelector('#frameJumpButtons');
+    const nudgeButtons = document.querySelectorAll('[data-nudge]');
     const statusEl = document.querySelector('#status');
     const framesList = document.querySelector('#framesList');
     const canvas = document.querySelector('#previewCanvas');
@@ -788,6 +1041,9 @@
     let exportStart = 0;
     let exportProgress = 0;
     let currentExportLabel = 'GIF Padrão';
+    let manualFrameOffsets = [];
+    let selectedAdjustFrame = 0;
+    let previewMode = 'animated';
 
     const setStatus = (text) => statusEl.textContent = text;
     const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
@@ -875,6 +1131,51 @@
       }
     });
 
+    watermarkEnabledInput.addEventListener('change', () => {
+      watermarkTextField.style.display = watermarkEnabledInput.checked ? 'block' : 'none';
+      if (!rawFrameCanvases.length || selectingKeypoints) return;
+      rebuildFinalFrames();
+      startPreview();
+      setStatus(watermarkEnabledInput.checked ? "Marca d'água ativada nas bordas do arquivo." : "Marca d'água desativada.");
+    });
+
+    watermarkTextInput.addEventListener('input', () => {
+      if (!watermarkEnabledInput.checked || !rawFrameCanvases.length || selectingKeypoints) return;
+      rebuildFinalFrames();
+      startPreview();
+      setStatus("Texto da marca d'água atualizado.");
+    });
+
+    frameJumpButtons.addEventListener('click', (event) => {
+      const target = event.target.closest('button[data-frame-mode]');
+      if (!target || !rawFrameCanvases.length) return;
+      const mode = target.dataset.frameMode;
+      if (mode === 'preview') {
+        previewMode = 'animated';
+      } else {
+        previewMode = 'frame';
+        selectedAdjustFrame = Number(target.dataset.frameIndex || 0);
+      }
+      updateFineAdjustButtons();
+      startPreview();
+    });
+
+    nudgeButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        if (!rawFrameCanvases.length) return;
+        const action = button.dataset.nudge;
+        if (previewMode !== 'frame') {
+          previewMode = 'frame';
+        }
+        const step = 1;
+        if (action === 'up') nudgeSelectedFrame(0, -step);
+        if (action === 'down') nudgeSelectedFrame(0, step);
+        if (action === 'left') nudgeSelectedFrame(-step, 0);
+        if (action === 'right') nudgeSelectedFrame(step, 0);
+        if (action === 'reset') resetSelectedFrameOffset();
+      });
+    });
+
     dropzone.addEventListener('dragover', (event) => {
       event.preventDefault();
       dropzone.classList.add('dragover');
@@ -954,6 +1255,9 @@
 
       rawFrameCanvases = [];
       finalFrameCanvases = [];
+      manualFrameOffsets = Array.from({ length: count }, () => ({ dx: 0, dy: 0 }));
+      selectedAdjustFrame = 0;
+      previewMode = 'animated';
 
       for (let i = 0; i < count; i++) {
         const frameCanvas = document.createElement('canvas');
@@ -970,6 +1274,7 @@
       generateBtn.disabled = false;
       keypointBtn.disabled = false;
       renderFramesList();
+      updateFineAdjustControls();
       startPreview();
       setStatus(`${count} frames recortados. Para alinhar melhor, clique em “Gerar pontos de referência”.`);
       updateExportControls();
@@ -990,10 +1295,13 @@
       const hasCompleteKeypoints = keypoints.length === rawFrameCanvases.length && keypoints.every(Boolean);
       const anchor = hasCompleteKeypoints ? keypoints[0] : { x: w / 2, y: h / 2 };
       const shifts = rawFrameCanvases.map((_, index) => {
-        if (!hasCompleteKeypoints) return { dx: 0, dy: 0 };
+        const manualOffset = manualFrameOffsets[index] || { dx: 0, dy: 0 };
+        if (!hasCompleteKeypoints) {
+          return { dx: manualOffset.dx, dy: manualOffset.dy };
+        }
         return {
-          dx: anchor.x - keypoints[index].x,
-          dy: anchor.y - keypoints[index].y
+          dx: anchor.x - keypoints[index].x + manualOffset.dx,
+          dy: anchor.y - keypoints[index].y + manualOffset.dy
         };
       });
 
@@ -1024,6 +1332,7 @@
 
         applyVintageEffect(output, vintageEffectSelect.value);
         applyRgbDisplacement(output);
+        applyBorderWatermark(output);
         return output;
       });
     }
@@ -1188,6 +1497,53 @@
       targetCtx.putImageData(destData, 0, 0);
     }
 
+    function applyBorderWatermark(canvasElement) {
+      if (!watermarkEnabledInput.checked) return;
+      const watermarkText = (watermarkTextInput.value || 'Feito In3D').trim();
+      if (!watermarkText) return;
+
+      const watermarkCtx = canvasElement.getContext('2d');
+      const width = canvasElement.width;
+      const height = canvasElement.height;
+      const minSide = Math.min(width, height);
+      const fontSize = Math.max(16, Math.round(minSide * 0.028));
+      const padding = Math.max(12, Math.round(minSide * 0.02));
+      const repeated = `${watermarkText} • ${watermarkText} • ${watermarkText} • ${watermarkText} • `;
+
+      watermarkCtx.save();
+      watermarkCtx.font = `700 ${fontSize}px Inter, system-ui, sans-serif`;
+      watermarkCtx.fillStyle = 'rgba(255,255,255,0.20)';
+      watermarkCtx.strokeStyle = 'rgba(6,20,38,0.18)';
+      watermarkCtx.lineWidth = Math.max(1, Math.round(fontSize * 0.08));
+      watermarkCtx.textBaseline = 'middle';
+
+      const drawLine = (availableLength, y) => {
+        let line = '';
+        while (watermarkCtx.measureText(line).width < availableLength + fontSize * 8) {
+          line += repeated;
+        }
+        watermarkCtx.strokeText(line, -fontSize * 0.8, y);
+        watermarkCtx.fillText(line, -fontSize * 0.8, y);
+      };
+
+      drawLine(width, padding + fontSize * 0.45);
+      drawLine(width, height - padding - fontSize * 0.45);
+
+      watermarkCtx.save();
+      watermarkCtx.translate(padding + fontSize * 0.45, height / 2);
+      watermarkCtx.rotate(-Math.PI / 2);
+      drawLine(height, 0);
+      watermarkCtx.restore();
+
+      watermarkCtx.save();
+      watermarkCtx.translate(width - padding - fontSize * 0.45, height / 2);
+      watermarkCtx.rotate(Math.PI / 2);
+      drawLine(height, 0);
+      watermarkCtx.restore();
+
+      watermarkCtx.restore();
+    }
+
     function getCommonVisibleRect(w, h, shifts) {
       let left = 0;
       let top = 0;
@@ -1223,6 +1579,50 @@
       const y = clamp(focusY - cropHeight / 2, rect.y, rect.y + rect.height - cropHeight);
 
       return { x, y, width: cropWidth, height: cropHeight };
+    }
+
+    function updateFineAdjustControls() {
+      const hasFrames = rawFrameCanvases.length > 0;
+      fineAdjustOverlay.hidden = !hasFrames || selectingKeypoints;
+      if (!hasFrames) {
+        frameJumpButtons.innerHTML = '';
+        return;
+      }
+      renderFrameJumpButtons();
+    }
+
+    function renderFrameJumpButtons() {
+      const buttons = [`<button type="button" data-frame-mode="preview" class="${previewMode === 'animated' ? 'active' : ''}">Preview</button>`];
+      rawFrameCanvases.forEach((_, index) => {
+        const isActive = previewMode === 'frame' && selectedAdjustFrame === index;
+        buttons.push(`<button type="button" data-frame-mode="frame" data-frame-index="${index}" class="${isActive ? 'active' : ''}">Frame ${index + 1}</button>`);
+      });
+      frameJumpButtons.innerHTML = buttons.join('');
+    }
+
+    function updateFineAdjustButtons() {
+      renderFrameJumpButtons();
+    }
+
+    function nudgeSelectedFrame(dx, dy) {
+      const current = manualFrameOffsets[selectedAdjustFrame] || { dx: 0, dy: 0 };
+      current.dx += dx;
+      current.dy += dy;
+      manualFrameOffsets[selectedAdjustFrame] = current;
+      rebuildFinalFrames();
+      renderFramesList();
+      updateFineAdjustButtons();
+      startPreview();
+      setStatus(`Ajuste fino aplicado no Frame ${selectedAdjustFrame + 1}: X ${current.dx}px • Y ${current.dy}px.`);
+    }
+
+    function resetSelectedFrameOffset() {
+      manualFrameOffsets[selectedAdjustFrame] = { dx: 0, dy: 0 };
+      rebuildFinalFrames();
+      renderFramesList();
+      updateFineAdjustButtons();
+      startPreview();
+      setStatus(`Ajuste fino do Frame ${selectedAdjustFrame + 1} foi resetado.`);
     }
 
     function renderFramesList() {
@@ -1265,6 +1665,7 @@
       keypointBtn.disabled = true;
       applyKeypointsBtn.disabled = true;
       clearKeypointsBtn.disabled = true;
+      updateFineAdjustControls();
       renderFramesList();
       drawKeypointFrame();
     }
@@ -1442,6 +1843,7 @@
       generateBtn.disabled = false;
       rebuildFinalFrames();
       renderFramesList();
+      updateFineAdjustControls();
       startPreview();
       setStatus('Pontos aplicados. O preview e a exportação agora usam alinhamento e crop vertical Full HD sem bordas pretas.');
     }
@@ -1450,6 +1852,9 @@
       keypoints = [];
       selectingKeypoints = false;
       keypointStep = 0;
+      manualFrameOffsets = [];
+      selectedAdjustFrame = 0;
+      previewMode = 'animated';
       canvas.classList.remove('keypoint-mode');
       keypointPanel.classList.remove('active');
       applyKeypointsBtn.disabled = true;
@@ -1458,6 +1863,7 @@
       if (rawFrameCanvases.length) {
         rebuildFinalFrames();
         renderFramesList();
+        updateFineAdjustControls();
         keypointBtn.disabled = false;
         generateBtn.disabled = false;
         if (shouldRestartPreview) {
@@ -1563,24 +1969,37 @@
     }
 
 
+    function drawPreviewFrame(frameCanvas) {
+      if (!frameCanvas) return;
+      canvas.width = frameCanvas.width;
+      canvas.height = frameCanvas.height;
+      canvas.style.display = 'block';
+      emptyState.style.display = 'none';
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(frameCanvas, 0, 0);
+    }
+
     function startPreview() {
       clearInterval(animationTimer);
       if (!finalFrameCanvases.length || selectingKeypoints) return;
+
+      canvas.style.display = 'block';
+      emptyState.style.display = 'none';
+
+      if (previewMode === 'frame') {
+        const chosenFrame = finalFrameCanvases[selectedAdjustFrame] || finalFrameCanvases[0];
+        drawPreviewFrame(chosenFrame);
+        return;
+      }
 
       const playbackFrames = getBasePlaybackFrames();
       const frameDelay = getMovementFrameDelay();
       if (!playbackFrames.length) return;
 
       frameIndex = 0;
-      canvas.width = finalFrameCanvases[0].width;
-      canvas.height = finalFrameCanvases[0].height;
-      canvas.style.display = 'block';
-      emptyState.style.display = 'none';
-
       const draw = () => {
         const currentFrame = playbackFrames[frameIndex % playbackFrames.length];
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.drawImage(currentFrame, 0, 0);
+        drawPreviewFrame(currentFrame);
         frameIndex++;
       };
 
@@ -1612,7 +2031,7 @@
 
       if (exportBox) {
         const preset = getExportPreset();
-        exportBox.innerHTML = `<strong>Exportação:</strong> arquivo ${label} em ${preset.aspectLabel} (${preset.width} × ${preset.height} px), qualidade ${preset.label}. O enquadramento usa crop automático para preencher a tela sem bordas pretas.`;
+        exportBox.innerHTML = `<strong>Exportação:</strong> arquivo ${label} em ${preset.aspectLabel} (${preset.width} × ${preset.height} px), qualidade ${preset.label}. O enquadramento usa crop automático para preencher a tela sem bordas pretas.${watermarkEnabledInput.checked ? " A marca d'água nas bordas será aplicada no arquivo final." : ''}`;
       }
     }
 
@@ -1630,6 +2049,11 @@
       delayInput.disabled = disabled;
       vintageEffectSelect.disabled = disabled;
       vintageIntensityInput.disabled = disabled;
+      rgbDisplacementInput.disabled = disabled;
+      watermarkEnabledInput.disabled = disabled;
+      watermarkTextInput.disabled = disabled || !watermarkEnabledInput.checked;
+      frameJumpButtons.querySelectorAll('button').forEach((button) => button.disabled = disabled);
+      nudgeButtons.forEach((button) => button.disabled = disabled);
     }
 
     function generateGif() {
@@ -1870,6 +2294,9 @@
       keypoints = [];
       selectingKeypoints = false;
       keypointStep = 0;
+      manualFrameOffsets = [];
+      selectedAdjustFrame = 0;
+      previewMode = 'animated';
       fileInput.value = '';
       clearInterval(animationTimer);
       clearInterval(exportTimer);
@@ -1886,11 +2313,14 @@
         hidePreviewDownload();
       downloadLink.href = '';
       keypointPanel.classList.remove('active');
+      watermarkTextField.style.display = watermarkEnabledInput.checked ? 'block' : 'none';
+      updateFineAdjustControls();
       hideExportOverlay();
       setStatus('Aguardando imagem.');
     }
 
     updateExportControls();
+    updateFineAdjustControls();
     canvas.style.display = 'none';
   </script>
 </body>
