@@ -319,6 +319,32 @@
       color: var(--text);
     }
 
+    .fine-adjust-toggle {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.08);
+      color: var(--text);
+      border-radius: 999px;
+      padding: 7px 10px;
+      font-size: 11px;
+      font-weight: 800;
+      min-height: auto;
+    }
+
+    .fine-adjust-panel.minimized {
+      width: auto;
+      min-width: 170px;
+    }
+
+    .fine-adjust-panel.minimized .fine-adjust-mini,
+    .fine-adjust-panel.minimized .frame-jump-buttons,
+    .fine-adjust-panel.minimized .nudge-grid {
+      display: none;
+    }
+
+    .fine-adjust-panel.minimized .fine-adjust-head {
+      margin-bottom: 0;
+    }
+
     .fine-adjust-mini {
       color: var(--muted);
       font-size: 11px;
@@ -687,6 +713,15 @@
         padding: 10px;
       }
 
+      .fine-adjust-panel.minimized {
+        min-width: 0;
+      }
+
+      .fine-adjust-toggle {
+        padding: 7px 9px;
+        font-size: 11px;
+      }
+
       .frame-jump-buttons button {
         font-size: 11px;
         padding: 7px 9px;
@@ -889,6 +924,7 @@
             <div class="fine-adjust-panel">
               <div class="fine-adjust-head">
                 <strong>Ajuste fino por frame</strong>
+                <button class="fine-adjust-toggle" id="fineAdjustToggleBtn" type="button">Minimizar</button>
               </div>
               <p class="fine-adjust-mini">Escolha um frame para ajuste rápido e use as setas para corrigir tremidos finos sobre o preview.</p>
               <div class="frame-jump-buttons" id="frameJumpButtons"></div>
@@ -1011,6 +1047,8 @@
     const downloadLink = document.querySelector('#downloadLink');
     const previewDownloadLink = document.querySelector('#previewDownloadLink');
     const fineAdjustOverlay = document.querySelector('#fineAdjustOverlay');
+    const fineAdjustPanel = document.querySelector('.fine-adjust-panel');
+    const fineAdjustToggleBtn = document.querySelector('#fineAdjustToggleBtn');
     const frameJumpButtons = document.querySelector('#frameJumpButtons');
     const nudgeButtons = document.querySelectorAll('[data-nudge]');
     const statusEl = document.querySelector('#status');
@@ -1044,6 +1082,7 @@
     let manualFrameOffsets = [];
     let selectedAdjustFrame = 0;
     let previewMode = 'animated';
+    let fineAdjustMinimized = false;
 
     const setStatus = (text) => statusEl.textContent = text;
     const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
@@ -1144,6 +1183,11 @@
       rebuildFinalFrames();
       startPreview();
       setStatus("Texto da marca d'água atualizado.");
+    });
+
+    fineAdjustToggleBtn.addEventListener('click', () => {
+      fineAdjustMinimized = !fineAdjustMinimized;
+      updateFineAdjustMinimizedState();
     });
 
     frameJumpButtons.addEventListener('click', (event) => {
@@ -1589,6 +1633,7 @@
         return;
       }
       renderFrameJumpButtons();
+      updateFineAdjustMinimizedState();
     }
 
     function renderFrameJumpButtons() {
@@ -1602,6 +1647,12 @@
 
     function updateFineAdjustButtons() {
       renderFrameJumpButtons();
+    }
+
+    function updateFineAdjustMinimizedState() {
+      fineAdjustPanel.classList.toggle('minimized', fineAdjustMinimized);
+      fineAdjustToggleBtn.textContent = fineAdjustMinimized ? 'Mostrar' : 'Minimizar';
+      fineAdjustToggleBtn.setAttribute('aria-expanded', fineAdjustMinimized ? 'false' : 'true');
     }
 
     function nudgeSelectedFrame(dx, dy) {
@@ -1855,6 +1906,7 @@
       manualFrameOffsets = [];
       selectedAdjustFrame = 0;
       previewMode = 'animated';
+      fineAdjustMinimized = false;
       canvas.classList.remove('keypoint-mode');
       keypointPanel.classList.remove('active');
       applyKeypointsBtn.disabled = true;
@@ -2297,6 +2349,7 @@
       manualFrameOffsets = [];
       selectedAdjustFrame = 0;
       previewMode = 'animated';
+      fineAdjustMinimized = false;
       fileInput.value = '';
       clearInterval(animationTimer);
       clearInterval(exportTimer);
