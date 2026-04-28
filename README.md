@@ -2,18 +2,14 @@
 
 Versão corrigida para GitHub Pages.
 
-## Ajustes desta versão
+Ajustes desta versão:
+- Preview restaurado após o carregamento da imagem.
+- Velocidade do movimento separada da duração final do arquivo.
+- Duração final do GIF por repetição de ciclos, sem deixar o movimento lento.
+- Exportação em GIF, MP4 ou MOV conforme suporte do navegador.
+- Botão de baixar arquivo também aparece sobre o preview após a exportação.
 
-- Separação entre velocidade do movimento e duração final do arquivo.
-- A velocidade controla apenas o ritmo da animação.
-- A duração final do GIF/vídeo agora repete o movimento até completar o tempo escolhido.
-- Exportação em GIF, MP4 ou MOV.
-- Botão de download também aparece sobre a área de preview depois da exportação.
-
-## Como publicar no GitHub Pages
-
-1. Envie o arquivo `index.html` para a raiz do repositório.
-2. Vá em Settings > Pages.
-3. Escolha Deploy from a branch.
-4. Selecione a branch main e a pasta /root.
-5. Aguarde o link do GitHub Pages.
+Para publicar:
+1. Envie `index.html` para a raiz do repositório.
+2. Ative GitHub Pages em Settings > Pages.
+3. Use o link gerado no Wix como Embed a Site.
