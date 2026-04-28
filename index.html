@@ -588,8 +588,16 @@
           </div>
         </div>
 
+        <div class="field">
+          <label for="rgbDisplacement">Deslocamento RGB 3D</label>
+          <div class="range-row">
+            <input id="rgbDisplacement" type="range" min="0" max="20" value="0" step="1" />
+            <output id="rgbDisplacementValue">0px</output>
+          </div>
+        </div>
+
         <div class="export-box" id="exportBox">
-          <strong>Exportação:</strong> escolha entre Vertical Full HD 9:16 ou 4:3 clássico. O enquadramento usa crop automático para preencher a tela sem bordas pretas.
+          <strong>Exportação:</strong> escolha entre Vertical Full HD 9:16 ou 4:3 clássico. O enquadramento usa crop automático para preencher a tela sem bordas pretas. Você também pode aplicar deslocamento RGB 3D com ajuste fino no preview e no arquivo final.
         </div>
 
         <div class="actions">
@@ -691,6 +699,8 @@
     const vintageEffectSelect = document.querySelector('#vintageEffect');
     const vintageIntensityInput = document.querySelector('#vintageIntensity');
     const vintageIntensityValue = document.querySelector('#vintageIntensityValue');
+    const rgbDisplacementInput = document.querySelector('#rgbDisplacement');
+    const rgbDisplacementValue = document.querySelector('#rgbDisplacementValue');
     const generateBtn = document.querySelector('#generateBtn');
     const keypointBtn = document.querySelector('#keypointBtn');
     const applyKeypointsBtn = document.querySelector('#applyKeypointsBtn');
@@ -799,6 +809,18 @@
       rebuildFinalFrames();
       startPreview();
       setStatus(`Intensidade do efeito ajustada para ${vintageIntensityInput.value}%.`);
+    });
+
+    rgbDisplacementInput.addEventListener('input', () => {
+      rgbDisplacementValue.textContent = `${rgbDisplacementInput.value}px`;
+      if (!rawFrameCanvases.length || selectingKeypoints) return;
+      rebuildFinalFrames();
+      startPreview();
+      if (Number(rgbDisplacementInput.value) > 0) {
+        setStatus(`Deslocamento RGB 3D ajustado para ${rgbDisplacementInput.value}px.`);
+      } else {
+        setStatus('Deslocamento RGB 3D desativado.');
+      }
     });
 
     dropzone.addEventListener('dragover', (event) => {
@@ -949,6 +971,7 @@
         );
 
         applyVintageEffect(output, vintageEffectSelect.value);
+        applyRgbDisplacement(output);
         return output;
       });
     }
@@ -1068,6 +1091,49 @@
       }
 
       effectCtx.putImageData(image, 0, 0);
+    }
+
+    function applyRgbDisplacement(canvasElement) {
+      const amount = Number(rgbDisplacementInput.value || 0);
+      if (amount <= 0) return;
+
+      const width = canvasElement.width;
+      const height = canvasElement.height;
+      const sourceCanvas = document.createElement('canvas');
+      sourceCanvas.width = width;
+      sourceCanvas.height = height;
+      const sourceCtx = sourceCanvas.getContext('2d');
+      sourceCtx.drawImage(canvasElement, 0, 0);
+
+      const sourceData = sourceCtx.getImageData(0, 0, width, height);
+      const destData = sourceCtx.createImageData(width, height);
+      const src = sourceData.data;
+      const dst = destData.data;
+      const halfShift = Math.max(1, Math.round(amount * 0.5));
+
+      function sampleIndex(x, y) {
+        const sx = Math.max(0, Math.min(width - 1, x));
+        const sy = Math.max(0, Math.min(height - 1, y));
+        return (sy * width + sx) * 4;
+      }
+
+      for (let y = 0; y < height; y++) {
+        for (let x = 0; x < width; x++) {
+          const destIndex = (y * width + x) * 4;
+          const redIndex = sampleIndex(x - amount, y);
+          const greenIndex = sampleIndex(x - halfShift, y);
+          const blueIndex = sampleIndex(x + amount, y);
+          const alphaIndex = sampleIndex(x, y);
+
+          dst[destIndex] = src[redIndex];
+          dst[destIndex + 1] = src[greenIndex + 1];
+          dst[destIndex + 2] = src[blueIndex + 2];
+          dst[destIndex + 3] = src[alphaIndex + 3];
+        }
+      }
+
+      const targetCtx = canvasElement.getContext('2d');
+      targetCtx.putImageData(destData, 0, 0);
     }
 
     function getCommonVisibleRect(w, h, shifts) {
