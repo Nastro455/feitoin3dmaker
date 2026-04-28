@@ -104,9 +104,11 @@
     label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 8px; }
 
     select,
-    input[type="range"] { width: 100%; }
+    input[type="range"],
+    input[type="number"] { width: 100%; }
 
-    select {
+    select,
+    input[type="number"] {
       appearance: none;
       background: #07182b;
       color: var(--text);
@@ -114,6 +116,11 @@
       border-radius: 14px;
       padding: 13px 14px;
       font-size: 15px;
+    }
+
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button {
+      opacity: 1;
     }
 
     .range-row { display: flex; align-items: center; gap: 12px; }
@@ -187,6 +194,91 @@
     canvas { max-width: 100%; max-height: 76vh; border-radius: 14px; }
     canvas.keypoint-mode { cursor: crosshair; outline: 2px solid var(--blue); }
 
+    .export-overlay {
+      position: absolute;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: rgba(3, 11, 20, 0.78);
+      backdrop-filter: blur(10px);
+      z-index: 10;
+    }
+
+    .export-overlay.active { display: flex; }
+
+    .export-progress-card {
+      width: min(360px, 92%);
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      padding: 24px;
+      text-align: center;
+      background: rgba(11, 31, 56, 0.94);
+      box-shadow: 0 24px 80px rgba(0,0,0,.45);
+    }
+
+    .progress-circle {
+      width: 132px;
+      height: 132px;
+      margin: 0 auto 16px;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      color: var(--text);
+      font-size: 30px;
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      background: conic-gradient(var(--accent) 0deg, rgba(255,255,255,.12) 0deg);
+      position: relative;
+    }
+
+    .progress-circle::before {
+      content: '';
+      position: absolute;
+      inset: 10px;
+      border-radius: inherit;
+      background: var(--card);
+    }
+
+    .progress-circle { isolation: isolate; }
+    .progress-circle::before { z-index: -1; }
+
+    .export-progress-card strong {
+      display: block;
+      font-size: 18px;
+      margin-bottom: 8px;
+    }
+
+    .export-progress-card p {
+      margin: 0 0 14px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .progress-track {
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.12);
+      overflow: hidden;
+      margin-bottom: 10px;
+    }
+
+    .progress-bar {
+      width: 0%;
+      height: 100%;
+      border-radius: inherit;
+      background: var(--accent);
+      transition: width .2s ease;
+    }
+
+    .export-progress-card span {
+      display: block;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
     .empty { color: var(--muted); text-align: center; padding: 30px; line-height: 1.4; }
 
     .frames {
@@ -253,13 +345,13 @@
     <section class="grid">
       <aside class="card">
         <label class="dropzone" id="dropzone">
-          <strong>Carregar foto 3D</strong>
+          <strong>1. Carregar foto 3D</strong>
           <span>PNG, JPG ou JPEG com as fotos lado a lado</span>
           <input id="fileInput" type="file" accept="image/png,image/jpeg" />
         </label>
 
         <div class="field">
-          <label for="frameCount">Quantidade de fotos no arquivo</label>
+          <label for="frameCount">2. Selecionar quantidade de fotos</label>
           <select id="frameCount">
             <option value="2">2 fotos</option>
             <option value="3" selected>3 fotos</option>
@@ -267,8 +359,37 @@
           </select>
         </div>
 
+        <div class="actions">
+          <button class="blue" id="keypointBtn" disabled>3. Selecionar pontos automáticos</button>
+          <button class="green" id="applyKeypointsBtn" type="button" disabled>4. Aplicar pontos</button>
+        </div>
+
+        <div class="keypoint-panel" id="keypointPanel">
+          <strong id="keypointTitle">Ponto de referência</strong>
+          <p id="keypointText">Clique no objeto principal. Depois disso, o site tenta encontrar automaticamente o mesmo ponto nos outros frames.</p>
+        </div>
+
         <div class="field">
-          <label for="delay">Velocidade do movimento</label>
+          <label for="totalDuration">5. Definir duração do GIF</label>
+          <select id="totalDuration">
+            <option value="auto" selected>Automático pela velocidade</option>
+            <option value="1000">1 segundo</option>
+            <option value="1500">1,5 segundo</option>
+            <option value="2000">2 segundos</option>
+            <option value="3000">3 segundos</option>
+            <option value="5000">5 segundos</option>
+            <option value="10000">10 segundos</option>
+            <option value="custom">Personalizado em segundos</option>
+          </select>
+        </div>
+
+        <div class="field" id="customDurationField" style="display: none;">
+          <label for="customDurationSeconds">Tempo total personalizado</label>
+          <input id="customDurationSeconds" type="number" min="0.2" max="60" step="0.1" value="3" placeholder="Ex: 3" />
+        </div>
+
+        <div class="field">
+          <label for="delay">Velocidade manual dos frames</label>
           <div class="range-row">
             <input id="delay" type="range" min="60" max="500" value="130" step="10" />
             <output id="delayValue">130ms</output>
@@ -281,16 +402,28 @@
         </div>
 
         <div class="field">
-          <label for="totalDuration">Tempo total do GIF</label>
-          <select id="totalDuration">
-            <option value="auto" selected>Automático pela velocidade</option>
-            <option value="1000">1 segundo</option>
-            <option value="1500">1,5 segundo</option>
-            <option value="2000">2 segundos</option>
-            <option value="3000">3 segundos</option>
-            <option value="5000">5 segundos</option>
-            <option value="10000">10 segundos</option>
+          <label for="vintageEffect">6. Selecionar efeito vintage</label>
+          <select id="vintageEffect">
+            <option value="none" selected>Sem efeito</option>
+            <option value="kodak">01 — Kodak quente + granulado</option>
+            <option value="fuji">02 — Fuji verde + granulado</option>
+            <option value="polaroid">03 — Polaroid pastel + granulado</option>
+            <option value="vhs">04 — VHS azul + granulado</option>
+            <option value="sepia">05 — Retrô sépia + granulado</option>
+            <option value="bw">06 — Preto e branco + granulado</option>
+            <option value="cinema">07 — Cor de cinema + granulado</option>
+            <option value="neon">08 — Noite neon + granulado</option>
+            <option value="faded">09 — Filme desbotado + granulado</option>
+            <option value="slide">10 — Slide vintage + granulado</option>
           </select>
+        </div>
+
+        <div class="field">
+          <label for="vintageIntensity">Ajustar intensidade do efeito</label>
+          <div class="range-row">
+            <input id="vintageIntensity" type="range" min="0" max="100" value="70" step="5" />
+            <output id="vintageIntensityValue">70%</output>
+          </div>
         </div>
 
         <div class="export-box">
@@ -298,17 +431,10 @@
         </div>
 
         <div class="actions">
-          <button class="blue" id="keypointBtn" disabled>Gerar pontos de referência</button>
-          <button class="green" id="applyKeypointsBtn" type="button" disabled>Aplicar pontos sugeridos</button>
-          <button id="generateBtn" disabled>Exportar GIF Full HD</button>
+          <button id="generateBtn" disabled>7. Exportar GIF Full HD</button>
           <button class="secondary" id="clearKeypointsBtn" type="button" disabled>Limpar alinhamento</button>
-          <button class="secondary" id="resetBtn" type="button">Limpar tudo</button>
+          <button class="secondary" id="resetBtn" type="button">8. Limpar tudo</button>
           <a class="download" id="downloadLink" download="feitoin3d-maker-fullhd.gif">Baixar GIF</a>
-        </div>
-
-        <div class="keypoint-panel" id="keypointPanel">
-          <strong id="keypointTitle">Ponto de referência</strong>
-          <p id="keypointText">Clique no objeto principal. Depois disso, o site tenta encontrar automaticamente o mesmo ponto nos outros frames.</p>
         </div>
 
         <p class="status" id="status">Aguardando imagem.</p>
@@ -319,6 +445,18 @@
         <div class="card canvas-box" id="previewBox">
           <div class="empty" id="emptyState">O preview vertical animado vai aparecer aqui.</div>
           <canvas id="previewCanvas"></canvas>
+
+          <div class="export-overlay" id="exportOverlay">
+            <div class="export-progress-card">
+              <div class="progress-circle" id="exportCircle">0%</div>
+              <strong>Exportando GIF Full HD</strong>
+              <p id="exportOverlayText">Preparando os frames...</p>
+              <div class="progress-track">
+                <div class="progress-bar" id="exportProgressBar"></div>
+              </div>
+              <span id="exportElapsed">Tempo decorrido: 00:00</span>
+            </div>
+          </div>
         </div>
 
         <div class="card">
@@ -341,6 +479,11 @@
     const delayValue = document.querySelector('#delayValue');
     const boomerangInput = document.querySelector('#boomerang');
     const totalDurationSelect = document.querySelector('#totalDuration');
+    const customDurationField = document.querySelector('#customDurationField');
+    const customDurationSeconds = document.querySelector('#customDurationSeconds');
+    const vintageEffectSelect = document.querySelector('#vintageEffect');
+    const vintageIntensityInput = document.querySelector('#vintageIntensity');
+    const vintageIntensityValue = document.querySelector('#vintageIntensityValue');
     const generateBtn = document.querySelector('#generateBtn');
     const keypointBtn = document.querySelector('#keypointBtn');
     const applyKeypointsBtn = document.querySelector('#applyKeypointsBtn');
@@ -354,6 +497,11 @@
     const keypointPanel = document.querySelector('#keypointPanel');
     const keypointTitle = document.querySelector('#keypointTitle');
     const keypointText = document.querySelector('#keypointText');
+    const exportOverlay = document.querySelector('#exportOverlay');
+    const exportCircle = document.querySelector('#exportCircle');
+    const exportOverlayText = document.querySelector('#exportOverlayText');
+    const exportProgressBar = document.querySelector('#exportProgressBar');
+    const exportElapsed = document.querySelector('#exportElapsed');
     const ctx = canvas.getContext('2d');
 
     let sourceImage = null;
@@ -388,7 +536,28 @@
     });
 
     totalDurationSelect.addEventListener('change', () => {
+      customDurationField.style.display = totalDurationSelect.value === 'custom' ? 'block' : 'none';
       if (!selectingKeypoints) startPreview();
+    });
+
+    customDurationSeconds.addEventListener('input', () => {
+      if (totalDurationSelect.value !== 'custom') return;
+      if (!selectingKeypoints) startPreview();
+    });
+
+    vintageEffectSelect.addEventListener('change', () => {
+      if (!rawFrameCanvases.length || selectingKeypoints) return;
+      rebuildFinalFrames();
+      startPreview();
+      setStatus('Efeito vintage aplicado no preview e será usado na exportação do GIF.');
+    });
+
+    vintageIntensityInput.addEventListener('input', () => {
+      vintageIntensityValue.textContent = `${vintageIntensityInput.value}%`;
+      if (!rawFrameCanvases.length || selectingKeypoints) return;
+      rebuildFinalFrames();
+      startPreview();
+      setStatus(`Intensidade do efeito ajustada para ${vintageIntensityInput.value}%.`);
     });
 
     dropzone.addEventListener('dragover', (event) => {
@@ -504,8 +673,127 @@
           EXPORT_WIDTH,
           EXPORT_HEIGHT
         );
+
+        applyVintageEffect(output, vintageEffectSelect.value);
         return output;
       });
+    }
+
+    function applyVintageEffect(canvasElement, preset) {
+      if (preset === 'none') return;
+
+      const intensity = Number(vintageIntensityInput.value) / 100;
+      if (intensity <= 0) return;
+
+      const effectCtx = canvasElement.getContext('2d');
+      const image = effectCtx.getImageData(0, 0, canvasElement.width, canvasElement.height);
+      const data = image.data;
+
+      const presets = {
+        kodak: {
+          contrast: 1.12,
+          brightness: 8,
+          grain: 11,
+          matrix: [1.12, 0.04, -0.03, 0.03, 1.03, -0.02, -0.04, 0.02, 0.88]
+        },
+        fuji: {
+          contrast: 1.06,
+          brightness: 4,
+          grain: 9,
+          matrix: [0.92, 0.04, 0.02, 0.02, 1.12, 0.02, -0.02, 0.04, 0.96]
+        },
+        polaroid: {
+          contrast: 0.92,
+          brightness: 14,
+          grain: 8,
+          matrix: [1.06, 0.02, 0.04, 0.03, 0.98, 0.04, 0.02, 0.03, 1.08]
+        },
+        vhs: {
+          contrast: 1.08,
+          brightness: -2,
+          grain: 12,
+          matrix: [0.88, 0.02, 0.08, 0.00, 0.98, 0.08, 0.04, 0.06, 1.18]
+        },
+        sepia: {
+          contrast: 1.02,
+          brightness: 6,
+          grain: 10,
+          matrix: [1.12, 0.12, 0.02, 0.08, 0.98, 0.02, 0.02, 0.05, 0.82]
+        },
+        bw: {
+          contrast: 1.18,
+          brightness: 2,
+          grain: 13,
+          blackWhite: true
+        },
+        cinema: {
+          contrast: 1.16,
+          brightness: 0,
+          grain: 7,
+          matrix: [1.10, 0.05, -0.10, 0.00, 1.02, 0.02, -0.08, 0.06, 1.18]
+        },
+        neon: {
+          contrast: 1.22,
+          brightness: -4,
+          grain: 9,
+          matrix: [0.92, 0.02, 0.12, 0.02, 0.92, 0.16, 0.08, 0.05, 1.25]
+        },
+        faded: {
+          contrast: 0.82,
+          brightness: 20,
+          grain: 10,
+          matrix: [1.04, 0.04, 0.04, 0.04, 1.02, 0.04, 0.05, 0.04, 1.00]
+        },
+        slide: {
+          contrast: 1.24,
+          brightness: -6,
+          grain: 8,
+          matrix: [1.08, 0.00, 0.02, 0.02, 1.10, -0.02, 0.00, 0.02, 1.12]
+        }
+      };
+
+      const config = presets[preset];
+      if (!config) return;
+
+      for (let i = 0; i < data.length; i += 4) {
+        const originalR = data[i];
+        const originalG = data[i + 1];
+        const originalB = data[i + 2];
+
+        let r = originalR;
+        let g = originalG;
+        let b = originalB;
+
+        if (config.blackWhite) {
+          const gray = r * 0.299 + g * 0.587 + b * 0.114;
+          r = gray;
+          g = gray;
+          b = gray;
+        } else {
+          const matrix = config.matrix;
+          const nr = r * matrix[0] + g * matrix[1] + b * matrix[2];
+          const ng = r * matrix[3] + g * matrix[4] + b * matrix[5];
+          const nb = r * matrix[6] + g * matrix[7] + b * matrix[8];
+          r = nr;
+          g = ng;
+          b = nb;
+        }
+
+        r = (r - 128) * config.contrast + 128 + config.brightness;
+        g = (g - 128) * config.contrast + 128 + config.brightness;
+        b = (b - 128) * config.contrast + 128 + config.brightness;
+
+        const grain = (Math.random() - 0.5) * config.grain;
+        r += grain;
+        g += grain;
+        b += grain;
+
+        data[i] = clamp(Math.round(originalR + (r - originalR) * intensity), 0, 255);
+        data[i + 1] = clamp(Math.round(originalG + (g - originalG) * intensity), 0, 255);
+        data[i + 2] = clamp(Math.round(originalB + (b - originalB) * intensity), 0, 255);
+      }
+
+      effectCtx.putImageData(image, 0, 0);
     }
 
     function getCommonVisibleRect(w, h, shifts) {
@@ -792,17 +1080,31 @@
       return [...finalFrameCanvases, ...backwards];
     }
 
-    function getFrameDelay(frameTotal) {
+    function getSelectedTotalDurationMs() {
+      if (totalDurationSelect.value === 'custom') {
+        const seconds = Number(customDurationSeconds.value);
+        return Math.max(200, Math.round(seconds * 1000));
+      }
+
       if (totalDurationSelect.value !== 'auto') {
-        const totalDuration = Number(totalDurationSelect.value);
-        return Math.max(20, Math.round(totalDuration / frameTotal));
+        return Number(totalDurationSelect.value);
+      }
+
+      return null;
+    }
+
+    function getFrameDelay(frameTotal) {
+      const selectedDuration = getSelectedTotalDurationMs();
+      if (selectedDuration) {
+        return Math.max(20, Math.round(selectedDuration / frameTotal));
       }
       return Number(delayInput.value);
     }
 
     function getTotalDurationText(frameTotal) {
-      if (totalDurationSelect.value !== 'auto') {
-        return `${(Number(totalDurationSelect.value) / 1000).toString().replace('.', ',')}s`;
+      const selectedDuration = getSelectedTotalDurationMs();
+      if (selectedDuration) {
+        return `${(selectedDuration / 1000).toFixed(1).replace('.', ',')}s`;
       }
       return `${((getFrameDelay(frameTotal) * frameTotal) / 1000).toFixed(2).replace('.', ',')}s`;
     }
@@ -828,6 +1130,19 @@
       animationTimer = setInterval(draw, frameDelay);
     }
 
+    let gifWorkerScriptUrl = null;
+
+    function getGifWorkerScriptUrl() {
+      if (gifWorkerScriptUrl) return gifWorkerScriptUrl;
+
+      // GitHub Pages pode bloquear workers carregados diretamente de outro domínio.
+      // Este blob cria um worker local que importa o gif.worker.js do CDN.
+      const workerCode = `importScripts('https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.worker.js');`;
+      const workerBlob = new Blob([workerCode], { type: 'application/javascript' });
+      gifWorkerScriptUrl = URL.createObjectURL(workerBlob);
+      return gifWorkerScriptUrl;
+    }
+
     function generateGif() {
       if (!finalFrameCanvases.length) return;
 
@@ -848,7 +1163,7 @@
         quality: 10,
         width: EXPORT_WIDTH,
         height: EXPORT_HEIGHT,
-        workerScript: 'https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.worker.js'
+        workerScript: getGifWorkerScriptUrl()
       });
 
       const playbackFrames = getPlaybackFrames();
@@ -861,6 +1176,9 @@
 
       gif.on('finished', (blob) => {
         clearInterval(exportTimer);
+        exportProgress = 1;
+        updateExportStatus();
+        setTimeout(hideExportOverlay, 900);
         const url = URL.createObjectURL(blob);
         downloadLink.href = url;
         downloadLink.style.display = 'block';
@@ -876,15 +1194,55 @@
         updateExportStatus();
       });
 
-      gif.render();
+      gif.on('error', (error) => {
+        clearInterval(exportTimer);
+        hideExportOverlay();
+        generateBtn.disabled = false;
+        keypointBtn.disabled = false;
+        clearKeypointsBtn.disabled = keypoints.length === 0;
+        startPreview();
+        console.error(error);
+        setStatus('Não foi possível exportar o GIF. Confira se o navegador permitiu carregar o worker do GIF.');
+      });
+
+      try {
+        gif.render();
+      } catch (error) {
+        clearInterval(exportTimer);
+        hideExportOverlay();
+        generateBtn.disabled = false;
+        keypointBtn.disabled = false;
+        clearKeypointsBtn.disabled = keypoints.length === 0;
+        startPreview();
+        console.error(error);
+        setStatus('Não foi possível iniciar a exportação. Tente recarregar a página ou usar outro navegador.');
+      }
     }
 
     function updateExportStatus() {
       const elapsed = formatElapsed(performance.now() - exportStart);
       const percent = Math.round(exportProgress * 100);
+      const degrees = Math.round((percent / 100) * 360);
       const frameTotal = getPlaybackFrames().length;
       const selectedTotal = getTotalDurationText(frameTotal);
+
+      exportOverlay.classList.add('active');
+      exportCircle.textContent = `${percent}%`;
+      exportCircle.style.background = `conic-gradient(var(--accent) ${degrees}deg, rgba(255,255,255,.12) ${degrees}deg)`;
+      exportProgressBar.style.width = `${percent}%`;
+      exportOverlayText.textContent = `Duração final: ${selectedTotal}`;
+      exportElapsed.textContent = `Tempo decorrido: ${elapsed}`;
+
       setStatus(`Exportando GIF Full HD... ${percent}% concluído • duração final: ${selectedTotal} • tempo decorrido: ${elapsed}`);
+    }
+
+    function hideExportOverlay() {
+      exportOverlay.classList.remove('active');
+      exportCircle.textContent = '0%';
+      exportCircle.style.background = 'conic-gradient(var(--accent) 0deg, rgba(255,255,255,.12) 0deg)';
+      exportProgressBar.style.width = '0%';
+      exportOverlayText.textContent = 'Preparando os frames...';
+      exportElapsed.textContent = 'Tempo decorrido: 00:00';
     }
 
     function formatElapsed(milliseconds) {
@@ -916,6 +1274,7 @@
       downloadLink.style.display = 'none';
       downloadLink.href = '';
       keypointPanel.classList.remove('active');
+      hideExportOverlay();
       setStatus('Aguardando imagem.');
     }
 
