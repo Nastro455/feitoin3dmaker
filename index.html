@@ -528,6 +528,15 @@
           </select>
         </div>
 
+        <div class="field">
+          <label for="exportQuality">Qualidade do arquivo final</label>
+          <select id="exportQuality">
+            <option value="light">Leve / mais rápido — 540 × 960</option>
+            <option value="standard" selected>Padrão — 720 × 1280</option>
+            <option value="high">Alta qualidade — 1080 × 1920</option>
+          </select>
+        </div>
+
         <div class="field" id="videoDurationField" style="display: none;">
           <label for="videoDurationSeconds">Tempo total do vídeo</label>
           <input id="videoDurationSeconds" type="number" min="0.5" max="60" step="0.1" value="3" placeholder="Ex: 3" />
@@ -579,7 +588,7 @@
           <button id="generateBtn" disabled>7. Exportar arquivo Full HD</button>
           <button class="secondary" id="clearKeypointsBtn" type="button" disabled>Limpar alinhamento</button>
           <button class="secondary" id="resetBtn" type="button">8. Limpar tudo</button>
-          <a class="download" id="downloadLink" download="feitoin3d-maker-fullhd.gif">Baixar GIF</a>
+          <a class="download" id="downloadLink" download="feitoin3d-maker-padrao.gif">Baixar GIF</a>
         </div>
 
         <p class="status" id="status">Aguardando imagem.</p>
@@ -590,7 +599,7 @@
         <div class="card canvas-box" id="previewBox">
           <div class="empty" id="emptyState">O preview vertical animado vai aparecer aqui.</div>
           <canvas id="previewCanvas"></canvas>
-          <a class="preview-download" id="previewDownloadLink" download="feitoin3d-maker-fullhd.gif">Baixar arquivo</a>
+          <a class="preview-download" id="previewDownloadLink" download="feitoin3d-maker-padrao.gif">Baixar arquivo</a>
 
           <div class="export-overlay" id="exportOverlay">
             <div class="export-progress-card">
@@ -614,9 +623,33 @@
   </main>
 
   <script>
-    const EXPORT_WIDTH = 1080;
-    const EXPORT_HEIGHT = 1920;
-    const EXPORT_ASPECT = EXPORT_WIDTH / EXPORT_HEIGHT;
+    const EXPORT_PRESETS = {
+      light: {
+        label: 'Leve',
+        width: 540,
+        height: 960,
+        gifQuality: 14,
+        videoBitsPerSecond: 4500000
+      },
+      standard: {
+        label: 'Padrão',
+        width: 720,
+        height: 1280,
+        gifQuality: 10,
+        videoBitsPerSecond: 9000000
+      },
+      high: {
+        label: 'Alta qualidade',
+        width: 1080,
+        height: 1920,
+        gifQuality: 6,
+        videoBitsPerSecond: 16000000
+      }
+    };
+
+    const GIF_WORKER_SCRIPT = URL.createObjectURL(new Blob([
+      'importScripts("https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.worker.js");'
+    ], { type: 'application/javascript' }));
 
     const fileInput = document.querySelector('#fileInput');
     const dropzone = document.querySelector('#dropzone');
@@ -628,6 +661,7 @@
     const customDurationField = document.querySelector('#customDurationField');
     const customDurationSeconds = document.querySelector('#customDurationSeconds');
     const exportFormatSelect = document.querySelector('#exportFormat');
+    const exportQualitySelect = document.querySelector('#exportQuality');
     const videoDurationField = document.querySelector('#videoDurationField');
     const videoDurationSeconds = document.querySelector('#videoDurationSeconds');
     const vintageEffectSelect = document.querySelector('#vintageEffect');
@@ -667,7 +701,7 @@
     let exportTimer = null;
     let exportStart = 0;
     let exportProgress = 0;
-    let currentExportLabel = 'GIF Full HD';
+    let currentExportLabel = 'GIF Padrão';
 
     const setStatus = (text) => statusEl.textContent = text;
     const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
@@ -701,6 +735,16 @@
     exportFormatSelect.addEventListener('change', () => {
       updateExportControls();
       if (!selectingKeypoints) startPreview();
+    });
+
+    exportQualitySelect.addEventListener('change', () => {
+      if (rawFrameCanvases.length && !selectingKeypoints) {
+        rebuildFinalFrames();
+        startPreview();
+      }
+      updateExportControls();
+      const preset = getExportPreset();
+      setStatus(`Qualidade selecionada: ${preset.label} — ${preset.width} × ${preset.height}px.`);
     });
 
     videoDurationSeconds.addEventListener('input', () => {
@@ -748,6 +792,21 @@
     generateBtn.addEventListener('click', generateExport);
     resetBtn.addEventListener('click', resetAll);
     canvas.addEventListener('click', handleCanvasClick);
+
+    function getExportPreset() {
+      return EXPORT_PRESETS[exportQualitySelect.value] || EXPORT_PRESETS.standard;
+    }
+
+    function getExportSizeText() {
+      const preset = getExportPreset();
+      return `${preset.width} × ${preset.height} px`;
+    }
+
+    function getOutputFileBaseName() {
+      const preset = getExportPreset();
+      const qualityName = preset.label.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s+/g, '-');
+      return `feitoin3d-maker-${qualityName}`;
+    }
 
     function loadFile(file) {
       if (!file.type.startsWith('image/')) {
@@ -802,6 +861,10 @@
     }
 
     function composeFullHdFrames() {
+      const preset = getExportPreset();
+      const exportWidth = preset.width;
+      const exportHeight = preset.height;
+      const exportAspect = exportWidth / exportHeight;
       const w = rawFrameCanvases[0].width;
       const h = rawFrameCanvases[0].height;
       const hasCompleteKeypoints = keypoints.length === rawFrameCanvases.length && keypoints.every(Boolean);
@@ -815,12 +878,12 @@
       });
 
       const commonRect = getCommonVisibleRect(w, h, shifts);
-      const verticalRect = cropRectToAspect(commonRect, EXPORT_ASPECT, anchor);
+      const verticalRect = cropRectToAspect(commonRect, exportAspect, anchor);
 
       return rawFrameCanvases.map((frame, index) => {
         const output = document.createElement('canvas');
-        output.width = EXPORT_WIDTH;
-        output.height = EXPORT_HEIGHT;
+        output.width = exportWidth;
+        output.height = exportHeight;
         const outputCtx = output.getContext('2d');
         outputCtx.imageSmoothingEnabled = true;
         outputCtx.imageSmoothingQuality = 'high';
@@ -835,8 +898,8 @@
           verticalRect.height,
           0,
           0,
-          EXPORT_WIDTH,
-          EXPORT_HEIGHT
+          exportWidth,
+          exportHeight
         );
 
         applyVintageEffect(output, vintageEffectSelect.value);
@@ -1345,8 +1408,8 @@
       if (!playbackFrames.length) return;
 
       frameIndex = 0;
-      canvas.width = EXPORT_WIDTH;
-      canvas.height = EXPORT_HEIGHT;
+      canvas.width = finalFrameCanvases[0].width;
+      canvas.height = finalFrameCanvases[0].height;
       canvas.style.display = 'block';
       emptyState.style.display = 'none';
 
@@ -1379,12 +1442,13 @@
       videoDurationField.style.display = isGif ? 'none' : 'block';
 
       const label = format.toUpperCase();
-      generateBtn.textContent = `7. Exportar ${label} Full HD`;
+      generateBtn.textContent = `7. Exportar ${label}`;
       downloadLink.textContent = `Baixar ${label}`;
-      downloadLink.download = `feitoin3d-maker-fullhd.${format}`;
+      downloadLink.download = `${getOutputFileBaseName()}.${format}`;
 
       if (exportBox) {
-        exportBox.innerHTML = `<strong>Exportação:</strong> arquivo ${label} vertical 1080 × 1920 px. O enquadramento usa crop automático para preencher a tela sem bordas pretas.`;
+        const preset = getExportPreset();
+        exportBox.innerHTML = `<strong>Exportação:</strong> arquivo ${label} vertical ${preset.width} × ${preset.height} px em qualidade ${preset.label}. O enquadramento usa crop automático para preencher a tela sem bordas pretas.`;
       }
     }
 
@@ -1394,6 +1458,7 @@
       applyKeypointsBtn.disabled = disabled || !(selectingKeypoints && keypoints.length === rawFrameCanvases.length);
       clearKeypointsBtn.disabled = disabled || keypoints.length === 0;
       exportFormatSelect.disabled = disabled;
+      exportQualitySelect.disabled = disabled;
       totalDurationSelect.disabled = disabled;
       customDurationSeconds.disabled = disabled;
       videoDurationSeconds.disabled = disabled;
@@ -1410,7 +1475,8 @@
       downloadLink.style.display = 'none';
         hidePreviewDownload();
 
-      currentExportLabel = 'GIF Full HD';
+      const preset = getExportPreset();
+      currentExportLabel = `GIF ${preset.label}`;
       exportProgress = 0;
       exportStart = performance.now();
       updateExportStatus();
@@ -1418,10 +1484,10 @@
 
       const gif = new GIF({
         workers: 2,
-        quality: 10,
-        width: EXPORT_WIDTH,
-        height: EXPORT_HEIGHT,
-        workerScript: 'https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.worker.js'
+        quality: preset.gifQuality,
+        width: preset.width,
+        height: preset.height,
+        workerScript: GIF_WORKER_SCRIPT
       });
 
       const exportSequence = buildGifExportSequence();
@@ -1436,14 +1502,15 @@
         updateExportStatus();
         setTimeout(hideExportOverlay, 900);
         const url = URL.createObjectURL(blob);
+        const filename = `${getOutputFileBaseName()}.gif`;
         downloadLink.href = url;
-        downloadLink.download = 'feitoin3d-maker-fullhd.gif';
+        downloadLink.download = filename;
         downloadLink.textContent = 'Baixar GIF';
         downloadLink.style.display = 'block';
-        showPreviewDownload(url, 'feitoin3d-maker-fullhd.gif', 'Baixar GIF');
+        showPreviewDownload(url, filename, 'Baixar GIF');
         setExportButtonsDisabled(false);
         startPreview();
-        setStatus(`GIF Full HD pronto! Tempo total de exportação: ${formatElapsed(performance.now() - exportStart)}.`);
+        setStatus(`GIF ${getExportPreset().label} pronto! Tempo total de exportação: ${formatElapsed(performance.now() - exportStart)}.`);
       });
 
       gif.on('progress', (progress) => {
@@ -1481,15 +1548,16 @@
       downloadLink.style.display = 'none';
         hidePreviewDownload();
 
-      currentExportLabel = `${format.toUpperCase()} Full HD`;
+      const preset = getExportPreset();
+      currentExportLabel = `${format.toUpperCase()} ${preset.label}`;
       exportProgress = 0;
       exportStart = performance.now();
       updateExportStatus();
       exportTimer = setInterval(updateExportStatus, 250);
 
       const recordCanvas = document.createElement('canvas');
-      recordCanvas.width = EXPORT_WIDTH;
-      recordCanvas.height = EXPORT_HEIGHT;
+      recordCanvas.width = preset.width;
+      recordCanvas.height = preset.height;
       const recordCtx = recordCanvas.getContext('2d');
 
       const fps = 30;
@@ -1500,7 +1568,7 @@
       try {
         recorder = new MediaRecorder(stream, {
           mimeType,
-          videoBitsPerSecond: 9000000
+          videoBitsPerSecond: preset.videoBitsPerSecond
         });
       } catch (error) {
         clearInterval(exportTimer);
@@ -1533,15 +1601,16 @@
         const url = URL.createObjectURL(blob);
         const extension = format === 'mov' ? 'mov' : 'mp4';
 
+        const filename = `${getOutputFileBaseName()}.${extension}`;
         downloadLink.href = url;
-        downloadLink.download = `feitoin3d-maker-fullhd.${extension}`;
+        downloadLink.download = filename;
         downloadLink.textContent = `Baixar ${format.toUpperCase()}`;
         downloadLink.style.display = 'block';
-        showPreviewDownload(url, `feitoin3d-maker-fullhd.${extension}`, `Baixar ${format.toUpperCase()}`);
+        showPreviewDownload(url, filename, `Baixar ${format.toUpperCase()}`);
 
         setExportButtonsDisabled(false);
         startPreview();
-        setStatus(`${format.toUpperCase()} Full HD pronto! Tempo total de exportação: ${formatElapsed(performance.now() - exportStart)}.`);
+        setStatus(`${format.toUpperCase()} ${getExportPreset().label} pronto! Tempo total de exportação: ${formatElapsed(performance.now() - exportStart)}.`);
       };
 
       const playbackFrames = getBasePlaybackFrames();
@@ -1556,10 +1625,10 @@
         const progress = clamp(elapsed / videoDurationMs, 0, 1);
         const frameIndexForVideo = Math.floor(elapsed / movementFrameDelay) % playbackFrames.length;
 
-        recordCtx.clearRect(0, 0, EXPORT_WIDTH, EXPORT_HEIGHT);
+        recordCtx.clearRect(0, 0, preset.width, preset.height);
         recordCtx.drawImage(playbackFrames[frameIndexForVideo], 0, 0);
 
-        ctx.clearRect(0, 0, EXPORT_WIDTH, EXPORT_HEIGHT);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.drawImage(playbackFrames[frameIndexForVideo], 0, 0);
 
         exportProgress = progress;
@@ -1570,7 +1639,7 @@
         } else {
           exportProgress = 1;
           const finalFrameIndex = Math.floor(videoDurationMs / movementFrameDelay) % playbackFrames.length;
-          recordCtx.clearRect(0, 0, EXPORT_WIDTH, EXPORT_HEIGHT);
+          recordCtx.clearRect(0, 0, preset.width, preset.height);
           recordCtx.drawImage(playbackFrames[finalFrameIndex], 0, 0);
 
           setTimeout(() => {
@@ -1594,7 +1663,7 @@
       exportCircle.textContent = `${percent}%`;
       exportCircle.style.background = `conic-gradient(var(--accent) ${degrees}deg, rgba(255,255,255,.12) ${degrees}deg)`;
       exportProgressBar.style.width = `${percent}%`;
-      exportOverlayText.textContent = `Duração final: ${selectedTotal}`;
+      exportOverlayText.textContent = `Duração final: ${selectedTotal} • Qualidade: ${getExportSizeText()}`;
       exportElapsed.textContent = `Tempo decorrido: ${elapsed}`;
 
       setStatus(`Exportando ${currentExportLabel}... ${percent}% concluído • duração final: ${selectedTotal} • tempo decorrido: ${elapsed}`);

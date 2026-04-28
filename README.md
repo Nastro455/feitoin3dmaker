@@ -1,20 +1,30 @@
 # Feitoin3d Maker
 
-Versão pronta para publicação no GitHub Pages.
+Versão pronta para GitHub Pages.
 
 ## Arquivos
 
-- `index.html`: ferramenta completa em HTML/CSS/JavaScript.
+- `index.html`: ferramenta completa em HTML, CSS e JavaScript.
 
-## Como publicar no GitHub Pages
+## Atualizações desta versão
 
-1. Crie um repositório público no GitHub.
-2. Envie o arquivo `index.html` para a raiz do repositório.
-3. Vá em **Settings > Pages**.
-4. Em **Build and deployment**, selecione **Deploy from a branch**.
-5. Selecione a branch `main` e a pasta `/root`.
-6. Salve e aguarde o link ser gerado.
+- Exportação em GIF, MP4 e MOV.
+- Controle separado entre velocidade do movimento e duração final do arquivo.
+- Três opções de qualidade de exportação:
+  - Leve / rápido: 540 × 960
+  - Padrão: 720 × 1280
+  - Alta qualidade: 1080 × 1920
+- Correção no carregamento do GIF usando worker em Blob para evitar travamento comum com worker externo.
+- Botão de download na lateral e sobre o preview após exportar.
+
+## Publicação no GitHub Pages
+
+1. Suba o `index.html` na raiz do repositório.
+2. Vá em Settings > Pages.
+3. Escolha Deploy from a branch.
+4. Selecione a branch `main` e a pasta `/root`.
+5. Salve e aguarde o link do GitHub Pages.
 
 ## Observação
 
-A versão mobile foi ajustada com CSS responsivo dentro de `@media (max-width: 768px)`, então o layout desktop permanece preservado.
+GIF em alta qualidade pode gerar arquivos muito pesados. Para vídeos longos, MP4 costuma ser mais leve e mais estável.
