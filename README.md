@@ -1,15 +1,20 @@
 # Feitoin3d Maker
 
-Versão corrigida para GitHub Pages.
+Versão pronta para publicação no GitHub Pages.
 
-Ajustes desta versão:
-- Preview restaurado após o carregamento da imagem.
-- Velocidade do movimento separada da duração final do arquivo.
-- Duração final do GIF por repetição de ciclos, sem deixar o movimento lento.
-- Exportação em GIF, MP4 ou MOV conforme suporte do navegador.
-- Botão de baixar arquivo também aparece sobre o preview após a exportação.
+## Arquivos
 
-Para publicar:
-1. Envie `index.html` para a raiz do repositório.
-2. Ative GitHub Pages em Settings > Pages.
-3. Use o link gerado no Wix como Embed a Site.
+- `index.html`: ferramenta completa em HTML/CSS/JavaScript.
+
+## Como publicar no GitHub Pages
+
+1. Crie um repositório público no GitHub.
+2. Envie o arquivo `index.html` para a raiz do repositório.
+3. Vá em **Settings > Pages**.
+4. Em **Build and deployment**, selecione **Deploy from a branch**.
+5. Selecione a branch `main` e a pasta `/root`.
+6. Salve e aguarde o link ser gerado.
+
+## Observação
+
+A versão mobile foi ajustada com CSS responsivo dentro de `@media (max-width: 768px)`, então o layout desktop permanece preservado.
