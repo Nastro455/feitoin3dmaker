@@ -34,3 +34,8 @@ Versão pronta para GitHub Pages.
 ## Observação
 
 GIF em alta qualidade pode gerar arquivos muito pesados. Para vídeos longos, MP4 costuma ser mais leve e mais estável.
+
+
+## Atualização de navegação
+
+Os botões Exportar, Limpar alinhamento, Limpar tudo e Baixar arquivo ficam na coluna direita, abaixo do visualizador, para facilitar o fluxo de uso.

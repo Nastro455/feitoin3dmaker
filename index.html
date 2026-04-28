@@ -346,6 +346,33 @@
 
     .preview-download.show { display: inline-flex; align-items: center; justify-content: center; }
 
+
+    .visualizer-actions-card {
+      position: sticky;
+      top: 16px;
+      z-index: 2;
+    }
+
+    .visualizer-actions {
+      margin-top: 0;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .visualizer-actions button,
+    .visualizer-actions .download {
+      width: 100%;
+    }
+
+    @media (max-width: 900px) {
+      .visualizer-actions-card {
+        position: static;
+      }
+
+      .visualizer-actions {
+        grid-template-columns: 1fr;
+      }
+    }
+
     .mini-note {
       color: var(--muted);
       font-size: 12px;
@@ -600,13 +627,6 @@
           <strong>Exportação:</strong> escolha entre Vertical Full HD 9:16 ou 4:3 clássico. O enquadramento usa crop automático para preencher a tela sem bordas pretas. Você também pode aplicar deslocamento RGB 3D com ajuste fino no preview e no arquivo final.
         </div>
 
-        <div class="actions">
-          <button id="generateBtn" disabled>7. Exportar arquivo Full HD</button>
-          <button class="secondary" id="clearKeypointsBtn" type="button" disabled>Limpar alinhamento</button>
-          <button class="secondary" id="resetBtn" type="button">8. Limpar tudo</button>
-          <a class="download" id="downloadLink" download="feitoin3d-maker-padrao.gif">Baixar GIF</a>
-        </div>
-
         <p class="status" id="status">Aguardando imagem.</p>
         <p class="mini-note">Dica: escolha um ponto de alto contraste, como olho, logo, parafuso, canto da lente ou botão. O ponto fica registrado em cada miniatura abaixo.</p>
       </aside>
@@ -627,6 +647,16 @@
               </div>
               <span id="exportElapsed">Tempo decorrido: 00:00</span>
             </div>
+          </div>
+        </div>
+
+        <div class="card visualizer-actions-card">
+          <label>Ações do arquivo</label>
+          <div class="actions visualizer-actions">
+            <button id="generateBtn" disabled>7. Exportar arquivo Full HD</button>
+            <button class="secondary" id="clearKeypointsBtn" type="button" disabled>Limpar alinhamento</button>
+            <button class="secondary" id="resetBtn" type="button">8. Limpar tudo</button>
+            <a class="download" id="downloadLink" download="feitoin3d-maker-padrao.gif">Baixar GIF</a>
           </div>
         </div>
 
