@@ -529,11 +529,19 @@
         </div>
 
         <div class="field">
+          <label for="exportAspect">Formato da tela</label>
+          <select id="exportAspect">
+            <option value="vertical" selected>Vertical Full HD — 9:16</option>
+            <option value="classic4x3">4:3 clássico</option>
+          </select>
+        </div>
+
+        <div class="field">
           <label for="exportQuality">Qualidade do arquivo final</label>
           <select id="exportQuality">
-            <option value="light">Leve / mais rápido — 540 × 960</option>
-            <option value="standard" selected>Padrão — 720 × 1280</option>
-            <option value="high">Alta qualidade — 1080 × 1920</option>
+            <option value="light">Leve / mais rápido</option>
+            <option value="standard" selected>Padrão</option>
+            <option value="high">Alta qualidade</option>
           </select>
         </div>
 
@@ -581,7 +589,7 @@
         </div>
 
         <div class="export-box" id="exportBox">
-          <strong>Exportação:</strong> arquivo vertical 1080 × 1920 px. O enquadramento usa crop automático para preencher a tela sem bordas pretas.
+          <strong>Exportação:</strong> escolha entre Vertical Full HD 9:16 ou 4:3 clássico. O enquadramento usa crop automático para preencher a tela sem bordas pretas.
         </div>
 
         <div class="actions">
@@ -626,24 +634,39 @@
     const EXPORT_PRESETS = {
       light: {
         label: 'Leve',
-        width: 540,
-        height: 960,
         gifQuality: 14,
         videoBitsPerSecond: 4500000
       },
       standard: {
         label: 'Padrão',
-        width: 720,
-        height: 1280,
         gifQuality: 10,
         videoBitsPerSecond: 9000000
       },
       high: {
         label: 'Alta qualidade',
-        width: 1080,
-        height: 1920,
         gifQuality: 6,
         videoBitsPerSecond: 16000000
+      }
+    };
+
+    const EXPORT_ASPECT_PRESETS = {
+      vertical: {
+        label: 'Vertical Full HD',
+        slug: 'vertical-9x16',
+        sizes: {
+          light: { width: 540, height: 960 },
+          standard: { width: 720, height: 1280 },
+          high: { width: 1080, height: 1920 }
+        }
+      },
+      classic4x3: {
+        label: '4:3 clássico',
+        slug: '4x3',
+        sizes: {
+          light: { width: 640, height: 480 },
+          standard: { width: 960, height: 720 },
+          high: { width: 1440, height: 1080 }
+        }
       }
     };
 
@@ -661,6 +684,7 @@
     const customDurationField = document.querySelector('#customDurationField');
     const customDurationSeconds = document.querySelector('#customDurationSeconds');
     const exportFormatSelect = document.querySelector('#exportFormat');
+    const exportAspectSelect = document.querySelector('#exportAspect');
     const exportQualitySelect = document.querySelector('#exportQuality');
     const videoDurationField = document.querySelector('#videoDurationField');
     const videoDurationSeconds = document.querySelector('#videoDurationSeconds');
@@ -737,6 +761,16 @@
       if (!selectingKeypoints) startPreview();
     });
 
+    exportAspectSelect.addEventListener('change', () => {
+      if (rawFrameCanvases.length && !selectingKeypoints) {
+        rebuildFinalFrames();
+        startPreview();
+      }
+      updateExportControls();
+      const preset = getExportPreset();
+      setStatus(`Formato de tela selecionado: ${preset.aspectLabel} — ${preset.width} × ${preset.height}px.`);
+    });
+
     exportQualitySelect.addEventListener('change', () => {
       if (rawFrameCanvases.length && !selectingKeypoints) {
         rebuildFinalFrames();
@@ -744,7 +778,7 @@
       }
       updateExportControls();
       const preset = getExportPreset();
-      setStatus(`Qualidade selecionada: ${preset.label} — ${preset.width} × ${preset.height}px.`);
+      setStatus(`Qualidade selecionada: ${preset.label} • ${preset.aspectLabel} — ${preset.width} × ${preset.height}px.`);
     });
 
     videoDurationSeconds.addEventListener('input', () => {
@@ -794,18 +828,30 @@
     canvas.addEventListener('click', handleCanvasClick);
 
     function getExportPreset() {
-      return EXPORT_PRESETS[exportQualitySelect.value] || EXPORT_PRESETS.standard;
+      const qualityKey = exportQualitySelect.value || 'standard';
+      const quality = EXPORT_PRESETS[qualityKey] || EXPORT_PRESETS.standard;
+      const aspect = EXPORT_ASPECT_PRESETS[exportAspectSelect.value] || EXPORT_ASPECT_PRESETS.vertical;
+      const size = aspect.sizes[qualityKey] || aspect.sizes.standard;
+
+      return {
+        ...quality,
+        ...size,
+        qualityKey,
+        aspectLabel: aspect.label,
+        aspectSlug: aspect.slug,
+        aspectRatio: size.width / size.height
+      };
     }
 
     function getExportSizeText() {
       const preset = getExportPreset();
-      return `${preset.width} × ${preset.height} px`;
+      return `${preset.aspectLabel} — ${preset.width} × ${preset.height} px`;
     }
 
     function getOutputFileBaseName() {
       const preset = getExportPreset();
       const qualityName = preset.label.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s+/g, '-');
-      return `feitoin3d-maker-${qualityName}`;
+      return `feitoin3d-maker-${preset.aspectSlug}-${qualityName}`;
     }
 
     function loadFile(file) {
@@ -1448,7 +1494,7 @@
 
       if (exportBox) {
         const preset = getExportPreset();
-        exportBox.innerHTML = `<strong>Exportação:</strong> arquivo ${label} vertical ${preset.width} × ${preset.height} px em qualidade ${preset.label}. O enquadramento usa crop automático para preencher a tela sem bordas pretas.`;
+        exportBox.innerHTML = `<strong>Exportação:</strong> arquivo ${label} em ${preset.aspectLabel} (${preset.width} × ${preset.height} px), qualidade ${preset.label}. O enquadramento usa crop automático para preencher a tela sem bordas pretas.`;
       }
     }
 
@@ -1458,6 +1504,7 @@
       applyKeypointsBtn.disabled = disabled || !(selectingKeypoints && keypoints.length === rawFrameCanvases.length);
       clearKeypointsBtn.disabled = disabled || keypoints.length === 0;
       exportFormatSelect.disabled = disabled;
+      exportAspectSelect.disabled = disabled;
       exportQualitySelect.disabled = disabled;
       totalDurationSelect.disabled = disabled;
       customDurationSeconds.disabled = disabled;
@@ -1476,7 +1523,7 @@
         hidePreviewDownload();
 
       const preset = getExportPreset();
-      currentExportLabel = `GIF ${preset.label}`;
+      currentExportLabel = `GIF ${preset.aspectLabel} ${preset.label}`;
       exportProgress = 0;
       exportStart = performance.now();
       updateExportStatus();
@@ -1510,7 +1557,7 @@
         showPreviewDownload(url, filename, 'Baixar GIF');
         setExportButtonsDisabled(false);
         startPreview();
-        setStatus(`GIF ${getExportPreset().label} pronto! Tempo total de exportação: ${formatElapsed(performance.now() - exportStart)}.`);
+        setStatus(`GIF ${getExportPreset().aspectLabel} ${getExportPreset().label} pronto! Tempo total de exportação: ${formatElapsed(performance.now() - exportStart)}.`);
       });
 
       gif.on('progress', (progress) => {
@@ -1549,7 +1596,7 @@
         hidePreviewDownload();
 
       const preset = getExportPreset();
-      currentExportLabel = `${format.toUpperCase()} ${preset.label}`;
+      currentExportLabel = `${format.toUpperCase()} ${preset.aspectLabel} ${preset.label}`;
       exportProgress = 0;
       exportStart = performance.now();
       updateExportStatus();
@@ -1610,7 +1657,7 @@
 
         setExportButtonsDisabled(false);
         startPreview();
-        setStatus(`${format.toUpperCase()} ${getExportPreset().label} pronto! Tempo total de exportação: ${formatElapsed(performance.now() - exportStart)}.`);
+        setStatus(`${format.toUpperCase()} ${getExportPreset().aspectLabel} ${getExportPreset().label} pronto! Tempo total de exportação: ${formatElapsed(performance.now() - exportStart)}.`);
       };
 
       const playbackFrames = getBasePlaybackFrames();
