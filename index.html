@@ -411,8 +411,30 @@
       }
 
       .grid {
-        grid-template-columns: 1fr;
+        display: flex;
+        flex-direction: column;
         gap: 12px;
+      }
+
+      .preview-wrap {
+        display: contents;
+      }
+
+      .canvas-box {
+        order: -1;
+        width: 100%;
+      }
+
+      .grid > aside.card {
+        order: 0;
+      }
+
+      .visualizer-actions-card {
+        order: 1;
+      }
+
+      .preview-wrap > .card:not(.canvas-box):not(.visualizer-actions-card) {
+        order: 2;
       }
 
       .card {

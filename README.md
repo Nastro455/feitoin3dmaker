@@ -39,3 +39,8 @@ GIF em alta qualidade pode gerar arquivos muito pesados. Para vídeos longos, MP
 ## Atualização de navegação
 
 Os botões Exportar, Limpar alinhamento, Limpar tudo e Baixar arquivo ficam na coluna direita, abaixo do visualizador, para facilitar o fluxo de uso.
+
+
+## Ajuste mobile
+
+Na versão mobile, o preview aparece acima da área de carregamento da foto para facilitar a visualização do resultado antes dos controles.
