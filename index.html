@@ -326,6 +326,26 @@
       background: var(--blue);
     }
 
+    .preview-download {
+      position: absolute;
+      left: 50%;
+      bottom: 24px;
+      transform: translateX(-50%);
+      display: none;
+      z-index: 9;
+      text-align: center;
+      text-decoration: none;
+      border-radius: 999px;
+      padding: 14px 22px;
+      font-weight: 900;
+      color: var(--bg);
+      background: var(--success);
+      box-shadow: 0 18px 50px rgba(0,0,0,.38);
+      border: 1px solid rgba(255,255,255,.45);
+    }
+
+    .preview-download.show { display: inline-flex; align-items: center; justify-content: center; }
+
     .mini-note {
       color: var(--muted);
       font-size: 12px;
@@ -370,7 +390,7 @@
         </div>
 
         <div class="field">
-          <label for="totalDuration">5. Definir duração do GIF</label>
+          <label for="totalDuration">5. Definir duração final do GIF</label>
           <select id="totalDuration">
             <option value="auto" selected>Automático pela velocidade</option>
             <option value="1000">1 segundo</option>
@@ -403,7 +423,7 @@
         </div>
 
         <div class="field">
-          <label for="delay">Velocidade manual dos frames</label>
+          <label for="delay">Velocidade do movimento</label>
           <div class="range-row">
             <input id="delay" type="range" min="60" max="500" value="130" step="10" />
             <output id="delayValue">130ms</output>
@@ -412,7 +432,7 @@
 
         <div class="field toggle">
           <input id="boomerang" type="checkbox" checked />
-          <span>Movimento ida e volta</span>
+          <span>Movimento ida e volta em loop</span>
         </div>
 
         <div class="field">
@@ -459,6 +479,7 @@
         <div class="card canvas-box" id="previewBox">
           <div class="empty" id="emptyState">O preview vertical animado vai aparecer aqui.</div>
           <canvas id="previewCanvas"></canvas>
+          <a class="preview-download" id="previewDownloadLink" download="feitoin3d-maker-fullhd.gif">Baixar arquivo</a>
 
           <div class="export-overlay" id="exportOverlay">
             <div class="export-progress-card">
@@ -507,6 +528,7 @@
     const clearKeypointsBtn = document.querySelector('#clearKeypointsBtn');
     const resetBtn = document.querySelector('#resetBtn');
     const downloadLink = document.querySelector('#downloadLink');
+    const previewDownloadLink = document.querySelector('#previewDownloadLink');
     const statusEl = document.querySelector('#status');
     const framesList = document.querySelector('#framesList');
     const canvas = document.querySelector('#previewCanvas');
@@ -626,6 +648,7 @@
       img.onload = () => {
         sourceImage = img;
         downloadLink.style.display = 'none';
+        hidePreviewDownload();
         downloadLink.href = '';
         clearKeypoints(false);
         processImage();
@@ -899,6 +922,7 @@
       canvas.classList.add('keypoint-mode');
       keypointPanel.classList.add('active');
       downloadLink.style.display = 'none';
+        hidePreviewDownload();
       generateBtn.disabled = true;
       keypointBtn.disabled = true;
       applyKeypointsBtn.disabled = true;
@@ -1105,16 +1129,24 @@
       }
     }
 
-    function getPlaybackFrames() {
+    function getBasePlaybackFrames() {
       if (!boomerangInput.checked || finalFrameCanvases.length <= 2) return finalFrameCanvases;
       const backwards = finalFrameCanvases.slice(1, -1).reverse();
       return [...finalFrameCanvases, ...backwards];
     }
 
-    function getSelectedTotalDurationMs() {
+    function getPlaybackFrames() {
+      return getBasePlaybackFrames();
+    }
+
+    function getMovementFrameDelay() {
+      return Number(delayInput.value);
+    }
+
+    function getSelectedGifDurationMs() {
       if (totalDurationSelect.value === 'custom') {
         const seconds = Number(customDurationSeconds.value);
-        return Math.max(200, Math.round(seconds * 1000));
+        return Math.max(200, Math.round((Number.isFinite(seconds) ? seconds : 3) * 1000));
       }
 
       if (totalDurationSelect.value !== 'auto') {
@@ -1124,79 +1156,40 @@
       return null;
     }
 
-    function getFrameDelay(frameTotal) {
-      const selectedDuration = getSelectedTotalDurationMs();
-      if (selectedDuration) {
-        return Math.max(20, Math.round(selectedDuration / frameTotal));
+    function buildGifExportSequence() {
+      const baseFrames = getBasePlaybackFrames();
+      const frameDelay = getMovementFrameDelay();
+      const selectedDuration = getSelectedGifDurationMs();
+
+      if (!selectedDuration) {
+        return {
+          frames: baseFrames,
+          delays: baseFrames.map(() => frameDelay),
+          totalDuration: baseFrames.length * frameDelay
+        };
       }
-      return Number(delayInput.value);
-    }
 
-    function getTotalDurationText(frameTotal) {
-      const selectedDuration = getSelectedTotalDurationMs();
-      if (selectedDuration) {
-        return `${(selectedDuration / 1000).toFixed(1).replace('.', ',')}s`;
+      const framesNeeded = Math.max(1, Math.ceil(selectedDuration / frameDelay));
+      const frames = [];
+      const delays = [];
+
+      for (let i = 0; i < framesNeeded; i++) {
+        frames.push(baseFrames[i % baseFrames.length]);
+        const usedBefore = i * frameDelay;
+        const remaining = selectedDuration - usedBefore;
+        delays.push(i === framesNeeded - 1 ? Math.max(20, remaining) : frameDelay);
       }
-      return `${((getFrameDelay(frameTotal) * frameTotal) / 1000).toFixed(2).replace('.', ',')}s`;
-    }
 
-    function startPreview() {
-      clearInterval(animationTimer);
-      if (!finalFrameCanvases.length || selectingKeypoints) return;
-
-      const playbackFrames = getPlaybackFrames();
-      const frameDelay = getFrameDelay(playbackFrames.length);
-      frameIndex = 0;
-      canvas.width = EXPORT_WIDTH;
-      canvas.height = EXPORT_HEIGHT;
-
-      const draw = () => {
-        const currentFrame = playbackFrames[frameIndex % playbackFrames.length];
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.drawImage(currentFrame, 0, 0);
-        frameIndex++;
+      return {
+        frames,
+        delays,
+        totalDuration: delays.reduce((sum, delay) => sum + delay, 0)
       };
-
-      draw();
-      animationTimer = setInterval(draw, frameDelay);
     }
 
-    function generateExport() {
-      const format = exportFormatSelect.value;
-
-      if (format === 'gif') {
-        generateGif();
-        return;
-      }
-
-      generateVideo(format);
-    }
-
-    function updateExportControls() {
-      const format = exportFormatSelect.value;
-      const isVideo = format !== 'gif';
-      videoDurationField.style.display = isVideo ? 'block' : 'none';
-
-      if (format === 'gif') {
-        generateBtn.textContent = '7. Exportar GIF Full HD';
-        downloadLink.download = 'feitoin3d-maker-fullhd.gif';
-        exportBox.innerHTML = '<strong>Exportação:</strong> GIF vertical 1080 × 1920 px. O enquadramento usa crop automático para preencher a tela sem bordas pretas.';
-      } else if (format === 'mp4') {
-        generateBtn.textContent = '7. Exportar MP4 Full HD';
-        downloadLink.download = 'feitoin3d-maker-fullhd.mp4';
-        exportBox.innerHTML = '<strong>Exportação:</strong> vídeo MP4 vertical 1080 × 1920 px. O tempo do vídeo é definido no campo “Tempo total do vídeo”.';
-      } else {
-        generateBtn.textContent = '7. Exportar MOV Full HD';
-        downloadLink.download = 'feitoin3d-maker-fullhd.mov';
-        exportBox.innerHTML = '<strong>Exportação:</strong> MOV experimental em 1080 × 1920 px. Em alguns navegadores, o MOV pode depender do suporte interno de gravação de vídeo.';
-      }
-    }
-
-    function setExportButtonsDisabled(disabled) {
-      generateBtn.disabled = disabled;
-      keypointBtn.disabled = disabled;
-      applyKeypointsBtn.disabled = true;
-      clearKeypointsBtn.disabled = disabled ? true : keypoints.length === 0;
+    function getTotalDurationText() {
+      const exportSequence = buildGifExportSequence();
+      return `${(exportSequence.totalDuration / 1000).toFixed(1).replace('.', ',')}s`;
     }
 
     function getVideoDurationMs() {
@@ -1206,7 +1199,7 @@
 
     function getActiveExportDurationText() {
       if (exportFormatSelect.value === 'gif') {
-        return getTotalDurationText(getPlaybackFrames().length);
+        return getTotalDurationText();
       }
 
       return `${(getVideoDurationMs() / 1000).toFixed(1).replace('.', ',')}s`;
@@ -1237,6 +1230,7 @@
       clearInterval(animationTimer);
       setExportButtonsDisabled(true);
       downloadLink.style.display = 'none';
+        hidePreviewDownload();
 
       currentExportLabel = 'GIF Full HD';
       exportProgress = 0;
@@ -1252,8 +1246,8 @@
         workerScript: 'https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.worker.js'
       });
 
-      const playbackFrames = getPlaybackFrames();
-      const frameDelay = getFrameDelay(playbackFrames.length);
+      const playbackFrames = getBasePlaybackFrames();
+      const frameDelay = getMovementFrameDelay();
 
       playbackFrames.forEach((frame) => {
         gif.addFrame(frame, { delay: frameDelay, copy: true });
@@ -1269,6 +1263,7 @@
         downloadLink.download = 'feitoin3d-maker-fullhd.gif';
         downloadLink.textContent = 'Baixar GIF';
         downloadLink.style.display = 'block';
+        showPreviewDownload(url, 'feitoin3d-maker-fullhd.gif', 'Baixar GIF');
         setExportButtonsDisabled(false);
         startPreview();
         setStatus(`GIF Full HD pronto! Tempo total de exportação: ${formatElapsed(performance.now() - exportStart)}.`);
@@ -1307,6 +1302,7 @@
       clearInterval(animationTimer);
       setExportButtonsDisabled(true);
       downloadLink.style.display = 'none';
+        hidePreviewDownload();
 
       currentExportLabel = `${format.toUpperCase()} Full HD`;
       exportProgress = 0;
@@ -1364,13 +1360,15 @@
         downloadLink.download = `feitoin3d-maker-fullhd.${extension}`;
         downloadLink.textContent = `Baixar ${format.toUpperCase()}`;
         downloadLink.style.display = 'block';
+        showPreviewDownload(url, `feitoin3d-maker-fullhd.${extension}`, `Baixar ${format.toUpperCase()}`);
 
         setExportButtonsDisabled(false);
         startPreview();
         setStatus(`${format.toUpperCase()} Full HD pronto! Tempo total de exportação: ${formatElapsed(performance.now() - exportStart)}.`);
       };
 
-      const playbackFrames = getPlaybackFrames();
+      const playbackFrames = getBasePlaybackFrames();
+      const movementFrameDelay = getMovementFrameDelay();
       const videoDurationMs = getVideoDurationMs();
       const startedAt = performance.now();
 
@@ -1379,8 +1377,7 @@
       function drawVideoFrame() {
         const elapsed = performance.now() - startedAt;
         const progress = clamp(elapsed / videoDurationMs, 0, 1);
-        const framePosition = progress * playbackFrames.length;
-        const frameIndexForVideo = Math.min(playbackFrames.length - 1, Math.floor(framePosition));
+        const frameIndexForVideo = Math.floor(elapsed / movementFrameDelay) % playbackFrames.length;
 
         recordCtx.clearRect(0, 0, EXPORT_WIDTH, EXPORT_HEIGHT);
         recordCtx.drawImage(playbackFrames[frameIndexForVideo], 0, 0);
@@ -1395,8 +1392,9 @@
           requestAnimationFrame(drawVideoFrame);
         } else {
           exportProgress = 1;
+          const finalFrameIndex = Math.floor(videoDurationMs / movementFrameDelay) % playbackFrames.length;
           recordCtx.clearRect(0, 0, EXPORT_WIDTH, EXPORT_HEIGHT);
-          recordCtx.drawImage(playbackFrames[playbackFrames.length - 1], 0, 0);
+          recordCtx.drawImage(playbackFrames[finalFrameIndex], 0, 0);
 
           setTimeout(() => {
             if (recorder.state !== 'inactive') recorder.stop();
@@ -1423,6 +1421,18 @@
       exportElapsed.textContent = `Tempo decorrido: ${elapsed}`;
 
       setStatus(`Exportando ${currentExportLabel}... ${percent}% concluído • duração final: ${selectedTotal} • tempo decorrido: ${elapsed}`);
+    }
+
+    function showPreviewDownload(url, filename, label = 'Baixar arquivo') {
+      previewDownloadLink.href = url;
+      previewDownloadLink.download = filename;
+      previewDownloadLink.textContent = label;
+      previewDownloadLink.classList.add('show');
+    }
+
+    function hidePreviewDownload() {
+      previewDownloadLink.classList.remove('show');
+      previewDownloadLink.removeAttribute('href');
     }
 
     function hideExportOverlay() {
@@ -1462,6 +1472,7 @@
       applyKeypointsBtn.disabled = true;
       clearKeypointsBtn.disabled = true;
       downloadLink.style.display = 'none';
+        hidePreviewDownload();
       downloadLink.href = '';
       keypointPanel.classList.remove('active');
       hideExportOverlay();
