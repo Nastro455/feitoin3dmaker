@@ -592,6 +592,27 @@
       margin-top: 12px;
     }
 
+    .site-footer {
+      margin: 26px auto 0;
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .site-footer a {
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 800;
+      border-bottom: 1px solid rgba(255,255,255,.35);
+      transition: .2s ease;
+    }
+
+    .site-footer a:hover {
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+
 
     /* Ajustes para mobile — não afeta desktop */
     @media (max-width: 768px) {
@@ -751,6 +772,12 @@
       .mini-note,
       .status {
         font-size: 12px;
+      }
+
+      .site-footer {
+        margin-top: 18px;
+        font-size: 12px;
+        padding: 0 8px;
       }
     }
 
@@ -971,6 +998,10 @@
         </div>
       </section>
     </section>
+
+    <footer class="site-footer">
+      Desenvolvido por <a href="https://www.instagram.com/omateusmorales/" target="_blank" rel="noopener noreferrer">Mateus Morales - @omateusmorales</a>
+    </footer>
   </main>
 
   <script>
