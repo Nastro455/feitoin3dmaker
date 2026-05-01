@@ -223,6 +223,94 @@
       background: var(--accent);
     }
 
+    .tool-groups {
+      display: grid;
+      gap: 12px;
+    }
+
+    .tool-group {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(255,255,255,.03);
+      overflow: hidden;
+    }
+
+    .tool-group summary {
+      list-style: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 14px;
+      user-select: none;
+      background: rgba(255,255,255,.05);
+    }
+
+    .tool-group summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .tool-group-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .tool-group-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 28px;
+      height: 28px;
+      padding: 0 9px;
+      border-radius: 999px;
+      background: rgba(30, 155, 255, .18);
+      border: 1px solid var(--line);
+      color: var(--text);
+      font-size: 12px;
+      font-weight: 800;
+      flex: 0 0 auto;
+    }
+
+    .tool-group-title strong {
+      font-size: 14px;
+      color: var(--text);
+    }
+
+    .tool-group-title span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+      margin-top: 2px;
+    }
+
+    .tool-group-arrow {
+      color: var(--muted);
+      font-size: 14px;
+      transition: transform .2s ease;
+      flex: 0 0 auto;
+    }
+
+    .tool-group[open] .tool-group-arrow {
+      transform: rotate(180deg);
+    }
+
+    .tool-group-content {
+      padding: 14px;
+      border-top: 1px solid rgba(255,255,255,.05);
+    }
+
+    .tool-group-content > :first-child {
+      margin-top: 0;
+    }
+
+    .tool-group-content .actions {
+      margin-top: 14px;
+    }
+
     .actions { display: grid; gap: 10px; margin-top: 20px; }
 
     button {
@@ -694,6 +782,22 @@
         gap: 8px;
       }
 
+      .tool-group summary {
+        padding: 11px 12px;
+      }
+
+      .tool-group-content {
+        padding: 12px;
+      }
+
+      .tool-group-title strong {
+        font-size: 13px;
+      }
+
+      .tool-group-title span {
+        font-size: 11px;
+      }
+
       button,
       .download {
         width: 100%;
@@ -796,156 +900,200 @@
 
     <section class="grid">
       <aside class="card">
-        <label class="dropzone" id="dropzone">
-          <strong>1. Carregar foto 3D</strong>
-          <span>PNG, JPG ou JPEG com as fotos lado a lado</span>
-          <input id="fileInput" type="file" accept="image/png,image/jpeg" />
-        </label>
-
-        <div class="field">
-          <label for="frameCount">2. Selecionar quantidade de fotos</label>
-          <select id="frameCount">
-            <option value="2">2 fotos</option>
-            <option value="3" selected>3 fotos</option>
-            <option value="4">4 fotos</option>
-          </select>
-        </div>
-
-        <div class="actions">
-          <button class="blue" id="keypointBtn" disabled>3. Selecionar pontos automáticos</button>
-          <button class="green" id="applyKeypointsBtn" type="button" disabled>4. Aplicar pontos</button>
-        </div>
-
-        <div class="keypoint-panel" id="keypointPanel">
-          <strong id="keypointTitle">Ponto de referência</strong>
-          <p id="keypointText">Clique no objeto principal. Depois disso, o site tenta encontrar automaticamente o mesmo ponto nos outros frames.</p>
-        </div>
-
-        <div class="field">
-          <label for="totalDuration">5. Definir duração final do GIF</label>
-          <select id="totalDuration">
-            <option value="auto" selected>Automático pela velocidade</option>
-            <option value="1000">1 segundo</option>
-            <option value="1500">1,5 segundo</option>
-            <option value="2000">2 segundos</option>
-            <option value="3000">3 segundos</option>
-            <option value="5000">5 segundos</option>
-            <option value="10000">10 segundos</option>
-            <option value="custom">Personalizado em segundos</option>
-          </select>
-        </div>
-
-        <div class="field" id="customDurationField" style="display: none;">
-          <label for="customDurationSeconds">Tempo total personalizado do GIF</label>
-          <input id="customDurationSeconds" type="number" min="0.2" max="60" step="0.1" value="3" placeholder="Ex: 3" />
-        </div>
-
-        <div class="field">
-          <label for="exportFormat">Formato do arquivo exportado</label>
-          <select id="exportFormat">
-            <option value="gif" selected>GIF</option>
-            <option value="mp4">MP4</option>
-            <option value="mov">MOV</option>
-          </select>
-        </div>
-
-        <div class="field">
-          <label for="exportAspect">Formato da tela</label>
-          <select id="exportAspect">
-            <option value="vertical" selected>Vertical Full HD — 9:16</option>
-            <option value="classic4x3">4:3 clássico</option>
-          </select>
-        </div>
-
-        <div class="field">
-          <label for="exportQuality">Qualidade do arquivo final</label>
-          <select id="exportQuality">
-            <option value="light">Leve / mais rápido</option>
-            <option value="standard" selected>Padrão</option>
-            <option value="high">Alta qualidade</option>
-          </select>
-        </div>
-
-        <div class="field" id="videoDurationField" style="display: none;">
-          <label for="videoDurationSeconds">Tempo total do vídeo</label>
-          <input id="videoDurationSeconds" type="number" min="0.5" max="60" step="0.1" value="3" placeholder="Ex: 3" />
-        </div>
-
-        <div class="field">
-          <label for="delay">Velocidade do movimento</label>
-          <div class="range-row">
-            <input id="delay" type="range" min="60" max="500" value="130" step="10" />
-            <output id="delayValue">130ms</output>
-          </div>
-        </div>
-
-        <div class="field toggle">
-          <input id="boomerang" type="checkbox" checked />
-          <span>Movimento ida e volta em loop</span>
-        </div>
-
-        <div class="field">
-          <label for="vintageEffect">6. Selecionar efeito vintage</label>
-          <select id="vintageEffect">
-            <option value="none" selected>Sem efeito</option>
-            <option value="kodak">01 — Kodak quente + granulado</option>
-            <option value="fuji">02 — Fuji verde + granulado</option>
-            <option value="polaroid">03 — Polaroid pastel + granulado</option>
-            <option value="vhs">04 — VHS azul + granulado</option>
-            <option value="sepia">05 — Retrô sépia + granulado</option>
-            <option value="bw">06 — Preto e branco + granulado</option>
-            <option value="cinema">07 — Cor de cinema + granulado</option>
-            <option value="neon">08 — Noite neon + granulado</option>
-            <option value="faded">09 — Filme desbotado + granulado</option>
-            <option value="slide">10 — Slide vintage + granulado</option>
-          </select>
-        </div>
-
-        <div class="field">
-          <label for="vintageIntensity">Ajustar intensidade do efeito</label>
-          <div class="range-row">
-            <input id="vintageIntensity" type="range" min="0" max="100" value="70" step="5" />
-            <output id="vintageIntensityValue">70%</output>
-          </div>
-        </div>
-
-        <div class="field">
-          <label for="exposureAdjust">Exposição / luz da imagem</label>
-          <div class="range-row">
-            <input id="exposureAdjust" type="range" min="-100" max="100" value="0" step="5" />
-            <output id="exposureAdjustValue">0</output>
-          </div>
-        </div>
-
-        <div class="field">
-          <label for="rgbDisplacement">Deslocamento RGB 3D</label>
-          <div class="range-row">
-            <input id="rgbDisplacement" type="range" min="0" max="20" value="0" step="1" />
-            <output id="rgbDisplacementValue">0px</output>
-          </div>
-        </div>
-
-        <div class="field">
-          <label>Marca d'água personalizada nas bordas</label>
-          <div class="switch-row">
-            <label class="switch-control" for="watermarkEnabled">
-              <input id="watermarkEnabled" type="checkbox" />
-              <span class="switch-slider"></span>
+        <div class="tool-groups">
+        <details class="tool-group" open>
+          <summary>
+            <div class="tool-group-title">
+              <span class="tool-group-badge">1</span>
+              <div>
+                <strong>Carregamento e ajuste de ponto</strong>
+                <span>Upload da foto 3D, quantidade de frames e alinhamento por ponto.</span>
+              </div>
+            </div>
+            <span class="tool-group-arrow">⌄</span>
+          </summary>
+          <div class="tool-group-content">
+            <label class="dropzone" id="dropzone">
+              <strong>1. Carregar foto 3D</strong>
+              <span>PNG, JPG ou JPEG com as fotos lado a lado</span>
+              <input id="fileInput" type="file" accept="image/png,image/jpeg" />
             </label>
-            <span class="switch-label-text">Adicionar marca d'água repetida nas bordas do arquivo</span>
+
+            <div class="field">
+              <label for="frameCount">2. Selecionar quantidade de fotos</label>
+              <select id="frameCount">
+                <option value="2">2 fotos</option>
+                <option value="3" selected>3 fotos</option>
+                <option value="4">4 fotos</option>
+              </select>
+            </div>
+
+            <div class="actions">
+              <button class="blue" id="keypointBtn" disabled>3. Selecionar pontos automáticos</button>
+              <button class="green" id="applyKeypointsBtn" type="button" disabled>4. Aplicar pontos</button>
+            </div>
+
+            <div class="keypoint-panel" id="keypointPanel">
+              <strong id="keypointTitle">Ponto de referência</strong>
+              <p id="keypointText">Clique no objeto principal. Depois disso, o site tenta encontrar automaticamente o mesmo ponto nos outros frames.</p>
+            </div>
           </div>
-        </div>
+        </details>
 
-        <div class="field" id="watermarkTextField" style="display: none;">
-          <label for="watermarkText">Texto da marca d'água</label>
-          <input id="watermarkText" type="text" value="Feito In3D" maxlength="48" placeholder="Digite sua marca d'água" />
-        </div>
+        <details class="tool-group">
+          <summary>
+            <div class="tool-group-title">
+              <span class="tool-group-badge">2</span>
+              <div>
+                <strong>Configurações de exportação</strong>
+                <span>Formato, duração, qualidade e velocidade da animação final.</span>
+              </div>
+            </div>
+            <span class="tool-group-arrow">⌄</span>
+          </summary>
+          <div class="tool-group-content">
+            <div class="field">
+              <label for="totalDuration">5. Definir duração final do GIF</label>
+              <select id="totalDuration">
+                <option value="auto" selected>Automático pela velocidade</option>
+                <option value="1000">1 segundo</option>
+                <option value="1500">1,5 segundo</option>
+                <option value="2000">2 segundos</option>
+                <option value="3000">3 segundos</option>
+                <option value="5000">5 segundos</option>
+                <option value="10000">10 segundos</option>
+                <option value="custom">Personalizado em segundos</option>
+              </select>
+            </div>
 
-        <div class="export-box" id="exportBox">
-          <strong>Exportação:</strong> escolha entre Vertical Full HD 9:16 ou 4:3 clássico. O enquadramento usa crop automático para preencher a tela sem bordas pretas. Você também pode ajustar exposição, deslocamento RGB 3D e marca d'água no preview e no arquivo final.
-        </div>
+            <div class="field" id="customDurationField" style="display: none;">
+              <label for="customDurationSeconds">Tempo total personalizado do GIF</label>
+              <input id="customDurationSeconds" type="number" min="0.2" max="60" step="0.1" value="3" placeholder="Ex: 3" />
+            </div>
 
-        <p class="status" id="status">Aguardando imagem.</p>
+            <div class="field">
+              <label for="exportFormat">Formato do arquivo exportado</label>
+              <select id="exportFormat">
+                <option value="gif" selected>GIF</option>
+                <option value="mp4">MP4</option>
+                <option value="mov">MOV</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="exportAspect">Formato da tela</label>
+              <select id="exportAspect">
+                <option value="vertical" selected>Vertical Full HD — 9:16</option>
+                <option value="classic4x3">4:3 clássico</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="exportQuality">Qualidade do arquivo final</label>
+              <select id="exportQuality">
+                <option value="light">Leve / mais rápido</option>
+                <option value="standard" selected>Padrão</option>
+                <option value="high">Alta qualidade</option>
+              </select>
+            </div>
+
+            <div class="field" id="videoDurationField" style="display: none;">
+              <label for="videoDurationSeconds">Tempo total do vídeo</label>
+              <input id="videoDurationSeconds" type="number" min="0.5" max="60" step="0.1" value="3" placeholder="Ex: 3" />
+            </div>
+
+            <div class="field">
+              <label for="delay">Velocidade do movimento</label>
+              <div class="range-row">
+                <input id="delay" type="range" min="60" max="500" value="130" step="10" />
+                <output id="delayValue">130ms</output>
+              </div>
+            </div>
+
+            <div class="field toggle">
+              <input id="boomerang" type="checkbox" checked />
+              <span>Movimento ida e volta em loop</span>
+            </div>
+
+            <div class="export-box" id="exportBox">
+              <strong>Exportação:</strong> escolha entre Vertical Full HD 9:16 ou 4:3 clássico. O enquadramento usa crop automático para preencher a tela sem bordas pretas. Você também pode ajustar exposição, deslocamento RGB 3D e marca d'água no preview e no arquivo final.
+            </div>
+          </div>
+        </details>
+
+        <details class="tool-group">
+          <summary>
+            <div class="tool-group-title">
+              <span class="tool-group-badge">3</span>
+              <div>
+                <strong>Ajustes criativos</strong>
+                <span>Filtros de cor, luz, RGB displaced e marca d'água personalizada.</span>
+              </div>
+            </div>
+            <span class="tool-group-arrow">⌄</span>
+          </summary>
+          <div class="tool-group-content">
+            <div class="field">
+              <label for="vintageEffect">6. Selecionar efeito vintage</label>
+              <select id="vintageEffect">
+                <option value="none" selected>Sem efeito</option>
+                <option value="kodak">01 — Kodak quente + granulado</option>
+                <option value="fuji">02 — Fuji verde + granulado</option>
+                <option value="polaroid">03 — Polaroid pastel + granulado</option>
+                <option value="vhs">04 — VHS azul + granulado</option>
+                <option value="sepia">05 — Retrô sépia + granulado</option>
+                <option value="bw">06 — Preto e branco + granulado</option>
+                <option value="cinema">07 — Cor de cinema + granulado</option>
+                <option value="neon">08 — Noite neon + granulado</option>
+                <option value="faded">09 — Filme desbotado + granulado</option>
+                <option value="slide">10 — Slide vintage + granulado</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="vintageIntensity">Ajustar intensidade do efeito</label>
+              <div class="range-row">
+                <input id="vintageIntensity" type="range" min="0" max="100" value="70" step="5" />
+                <output id="vintageIntensityValue">70%</output>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="exposureAdjust">Exposição / luz da imagem</label>
+              <div class="range-row">
+                <input id="exposureAdjust" type="range" min="-100" max="100" value="0" step="5" />
+                <output id="exposureAdjustValue">0</output>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="rgbDisplacement">Deslocamento RGB 3D</label>
+              <div class="range-row">
+                <input id="rgbDisplacement" type="range" min="0" max="20" value="0" step="1" />
+                <output id="rgbDisplacementValue">0px</output>
+              </div>
+            </div>
+
+            <div class="field">
+              <label>Marca d'água personalizada nas bordas</label>
+              <div class="switch-row">
+                <label class="switch-control" for="watermarkEnabled">
+                  <input id="watermarkEnabled" type="checkbox" />
+                  <span class="switch-slider"></span>
+                </label>
+                <span class="switch-label-text">Adicionar marca d'água repetida nas bordas do arquivo</span>
+              </div>
+            </div>
+
+            <div class="field" id="watermarkTextField" style="display: none;">
+              <label for="watermarkText">Texto da marca d'água</label>
+              <input id="watermarkText" type="text" value="Feito In3D" maxlength="48" placeholder="Digite sua marca d'água" />
+            </div>
+          </div>
+        </details>
+      </div>
+
+      <p class="status" id="status">Aguardando imagem.</p>
         <p class="mini-note">Dica: escolha um ponto de alto contraste, como olho, logo, parafuso, canto da lente ou botão. O ponto fica registrado em cada miniatura abaixo.</p>
       </aside>
 
