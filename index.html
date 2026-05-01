@@ -910,6 +910,14 @@
         </div>
 
         <div class="field">
+          <label for="exposureAdjust">Exposição / luz da imagem</label>
+          <div class="range-row">
+            <input id="exposureAdjust" type="range" min="-100" max="100" value="0" step="5" />
+            <output id="exposureAdjustValue">0</output>
+          </div>
+        </div>
+
+        <div class="field">
           <label for="rgbDisplacement">Deslocamento RGB 3D</label>
           <div class="range-row">
             <input id="rgbDisplacement" type="range" min="0" max="20" value="0" step="1" />
@@ -934,7 +942,7 @@
         </div>
 
         <div class="export-box" id="exportBox">
-          <strong>Exportação:</strong> escolha entre Vertical Full HD 9:16 ou 4:3 clássico. O enquadramento usa crop automático para preencher a tela sem bordas pretas. Você também pode aplicar deslocamento RGB 3D com ajuste fino no preview e no arquivo final.
+          <strong>Exportação:</strong> escolha entre Vertical Full HD 9:16 ou 4:3 clássico. O enquadramento usa crop automático para preencher a tela sem bordas pretas. Você também pode ajustar exposição, deslocamento RGB 3D e marca d'água no preview e no arquivo final.
         </div>
 
         <p class="status" id="status">Aguardando imagem.</p>
@@ -1065,6 +1073,8 @@
     const vintageEffectSelect = document.querySelector('#vintageEffect');
     const vintageIntensityInput = document.querySelector('#vintageIntensity');
     const vintageIntensityValue = document.querySelector('#vintageIntensityValue');
+    const exposureAdjustInput = document.querySelector('#exposureAdjust');
+    const exposureAdjustValue = document.querySelector('#exposureAdjustValue');
     const rgbDisplacementInput = document.querySelector('#rgbDisplacement');
     const rgbDisplacementValue = document.querySelector('#rgbDisplacementValue');
     const watermarkEnabledInput = document.querySelector('#watermarkEnabled');
@@ -1187,6 +1197,21 @@
       rebuildFinalFrames();
       startPreview();
       setStatus(`Intensidade do efeito ajustada para ${vintageIntensityInput.value}%.`);
+    });
+
+    exposureAdjustInput.addEventListener('input', () => {
+      const exposure = Number(exposureAdjustInput.value);
+      exposureAdjustValue.textContent = exposure > 0 ? `+${exposure}` : `${exposure}`;
+      if (!rawFrameCanvases.length || selectingKeypoints) return;
+      rebuildFinalFrames();
+      startPreview();
+      if (exposure > 0) {
+        setStatus(`Exposição aumentada em +${exposure}.`);
+      } else if (exposure < 0) {
+        setStatus(`Exposição reduzida em ${exposure}.`);
+      } else {
+        setStatus('Exposição neutra aplicada.');
+      }
     });
 
     rgbDisplacementInput.addEventListener('input', () => {
@@ -1406,6 +1431,7 @@
         );
 
         applyVintageEffect(output, vintageEffectSelect.value);
+        applyExposureAdjustment(output);
         applyRgbDisplacement(output);
         applyBorderWatermark(output);
         return output;
@@ -1527,6 +1553,24 @@
       }
 
       effectCtx.putImageData(image, 0, 0);
+    }
+
+    function applyExposureAdjustment(canvasElement) {
+      const exposure = Number(exposureAdjustInput.value || 0);
+      if (exposure === 0) return;
+
+      const exposureCtx = canvasElement.getContext('2d');
+      const image = exposureCtx.getImageData(0, 0, canvasElement.width, canvasElement.height);
+      const data = image.data;
+      const factor = Math.pow(2, exposure / 100);
+
+      for (let i = 0; i < data.length; i += 4) {
+        data[i] = clamp(Math.round(data[i] * factor), 0, 255);
+        data[i + 1] = clamp(Math.round(data[i + 1] * factor), 0, 255);
+        data[i + 2] = clamp(Math.round(data[i + 2] * factor), 0, 255);
+      }
+
+      exposureCtx.putImageData(image, 0, 0);
     }
 
     function applyRgbDisplacement(canvasElement) {
@@ -2132,6 +2176,7 @@
       delayInput.disabled = disabled;
       vintageEffectSelect.disabled = disabled;
       vintageIntensityInput.disabled = disabled;
+      exposureAdjustInput.disabled = disabled;
       rgbDisplacementInput.disabled = disabled;
       watermarkEnabledInput.disabled = disabled;
       watermarkTextInput.disabled = disabled || !watermarkEnabledInput.checked;

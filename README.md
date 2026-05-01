@@ -44,3 +44,7 @@ Os botões Exportar, Limpar alinhamento, Limpar tudo e Baixar arquivo ficam na c
 ## Ajuste mobile
 
 Na versão mobile, o preview aparece acima da área de carregamento da foto para facilitar a visualização do resultado antes dos controles.
+
+## Atualização — controle de exposição
+
+Adicionada uma barra de Exposição / luz da imagem logo abaixo da intensidade do efeito de cor. O ajuste aparece no preview e também é aplicado no GIF, MP4 ou MOV exportado.
