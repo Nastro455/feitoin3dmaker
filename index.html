@@ -85,6 +85,44 @@
 
     header h1 span { color: var(--accent); }
 
+    .br-flag {
+      display: inline-block;
+      width: .92em;
+      height: .64em;
+      margin-left: .12em;
+      border-radius: .10em;
+      background: #009b3a;
+      position: relative;
+      vertical-align: .03em;
+      box-shadow: 0 0 0 1px rgba(255,255,255,.24), 0 4px 10px rgba(0,0,0,.18);
+      overflow: hidden;
+    }
+
+    .br-flag::before {
+      content: "";
+      position: absolute;
+      width: .48em;
+      height: .48em;
+      left: 50%;
+      top: 50%;
+      background: #ffdf00;
+      transform: translate(-50%, -50%) rotate(45deg);
+      border-radius: .03em;
+    }
+
+    .br-flag::after {
+      content: "";
+      position: absolute;
+      width: .27em;
+      height: .27em;
+      left: 50%;
+      top: 50%;
+      background: #002776;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      box-shadow: inset 0 .035em 0 rgba(255,255,255,.75);
+    }
+
     header p {
       color: var(--muted);
       max-width: 780px;
@@ -886,7 +924,7 @@
         <div class="badge">Feito In3D • ferramenta experimental</div>
         <a class="social-link" href="https://www.instagram.com/feitoin3d/" target="_blank" rel="noopener noreferrer">Instagram Feito In3D</a>
       </div>
-      <h1>Feitoin3d <span>Maker 🇧🇷</span></h1>
+      <h1>Feitoin3d <span>Maker <i class="br-flag" aria-label="Brasil" title="Brasil"></i></span></h1>
       <p>Carregue uma imagem 3D horizontal ou vertical, escolha se ela tem 2, 3 ou 4 fotos, alinhe por ponto de referência e exporte em GIF, MP4 ou MOV nos formatos vertical, 4:3, Full HD horizontal ou 4K horizontal.</p>
     </header>
 
