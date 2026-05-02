@@ -72,3 +72,8 @@ Essas opções ficam no seletor "Formato da tela". A orientação da foto de ent
 ## Atualização — Sinal visual de ponto automático
 
 Ao clicar em Selecionar pontos automáticos, o preview escurece levemente e exibe uma mira pulsante com instrução para o usuário clicar no ponto principal da imagem. O aviso desaparece quando o mouse entra no preview ou ao tocar/clicar na área.
+
+## Atualização — Ajuste fino e aviso de ponto
+
+- A guia de ajuste fino agora abre minimizada por padrão.
+- O aviso visual para clicar no ponto automático aparece somente na primeira vez que o usuário usa esse recurso no navegador.

@@ -1449,10 +1449,28 @@
     let manualFrameOffsets = [];
     let selectedAdjustFrame = 0;
     let previewMode = 'animated';
-    let fineAdjustMinimized = false;
+    let fineAdjustMinimized = true;
+
+    const KEYPOINT_HINT_SEEN_KEY = 'feitoin3d-keypoint-hint-seen';
 
     const setStatus = (text) => statusEl.textContent = text;
     const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
+
+    function hasSeenKeypointHint() {
+      try {
+        return localStorage.getItem(KEYPOINT_HINT_SEEN_KEY) === 'true';
+      } catch (error) {
+        return false;
+      }
+    }
+
+    function markKeypointHintAsSeen() {
+      try {
+        localStorage.setItem(KEYPOINT_HINT_SEEN_KEY, 'true');
+      } catch (error) {
+        // Se o navegador bloquear localStorage, o site continua funcionando normalmente.
+      }
+    }
 
     delayInput.addEventListener('input', () => {
       delayValue.textContent = `${delayInput.value}ms`;
@@ -2138,7 +2156,8 @@
     }
 
     function showKeypointHint() {
-      if (!keypointHintOverlay) return;
+      if (!keypointHintOverlay || hasSeenKeypointHint()) return;
+      markKeypointHintAsSeen();
       keypointHintOverlay.classList.remove('dismissed');
       keypointHintOverlay.classList.add('active');
       keypointHintOverlay.setAttribute('aria-hidden', 'false');
@@ -2361,7 +2380,7 @@
       manualFrameOffsets = [];
       selectedAdjustFrame = 0;
       previewMode = 'animated';
-      fineAdjustMinimized = false;
+      fineAdjustMinimized = true;
       canvas.classList.remove('keypoint-mode');
       keypointPanel.classList.remove('active');
       applyKeypointsBtn.disabled = true;
@@ -2805,7 +2824,7 @@
       manualFrameOffsets = [];
       selectedAdjustFrame = 0;
       previewMode = 'animated';
-      fineAdjustMinimized = false;
+      fineAdjustMinimized = true;
       fileInput.value = '';
       clearInterval(animationTimer);
       clearInterval(exportTimer);
