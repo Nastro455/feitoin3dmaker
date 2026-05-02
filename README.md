@@ -67,3 +67,8 @@ A ferramenta agora também exporta em:
 - Horizontal 4K — 3840 × 2160
 
 Essas opções ficam no seletor "Formato da tela". A orientação da foto de entrada continua independente do formato final exportado.
+
+
+## Atualização — Sinal visual de ponto automático
+
+Ao clicar em Selecionar pontos automáticos, o preview escurece levemente e exibe uma mira pulsante com instrução para o usuário clicar no ponto principal da imagem. O aviso desaparece quando o mouse entra no preview ou ao tocar/clicar na área.
