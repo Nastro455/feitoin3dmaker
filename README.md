@@ -77,3 +77,8 @@ Ao clicar em Selecionar pontos automáticos, o preview escurece levemente e exib
 
 - A guia de ajuste fino agora abre minimizada por padrão.
 - O aviso visual para clicar no ponto automático aparece somente na primeira vez que o usuário usa esse recurso no navegador.
+
+
+## Atualização — Destaque no botão Aplicar pontos
+
+Depois que o primeiro ponto é marcado e os pontos automáticos são sugeridos, o botão "Aplicar pontos" começa a piscar para indicar ao usuário a próxima ação. O efeito para quando os pontos são aplicados, limpos ou o fluxo é reiniciado.

@@ -362,6 +362,24 @@
     .blue { background: var(--blue); }
     .green { background: var(--success); color: var(--bg); }
 
+    .pulse-attention {
+      animation: applyPulse 1s ease-in-out infinite;
+      box-shadow: 0 0 0 0 rgba(79, 255, 138, 0.42);
+    }
+
+    @keyframes applyPulse {
+      0%, 100% {
+        transform: scale(1);
+        filter: brightness(1);
+        box-shadow: 0 0 0 0 rgba(79, 255, 138, 0.18);
+      }
+      50% {
+        transform: scale(1.03);
+        filter: brightness(1.08);
+        box-shadow: 0 0 0 12px rgba(79, 255, 138, 0);
+      }
+    }
+
     .export-box {
       margin-top: 14px;
       padding: 12px;
@@ -2172,8 +2190,18 @@
       }, 240);
     }
 
+    function startApplyKeypointsPulse() {
+      if (applyKeypointsBtn.disabled) return;
+      applyKeypointsBtn.classList.add('pulse-attention');
+    }
+
+    function stopApplyKeypointsPulse() {
+      applyKeypointsBtn.classList.remove('pulse-attention');
+    }
+
     function startKeypointSelection() {
       if (!rawFrameCanvases.length) return;
+      stopApplyKeypointsPulse();
       selectingKeypoints = true;
       keypointStep = 0;
       keypoints = [];
@@ -2184,6 +2212,7 @@
         hidePreviewDownload();
       generateBtn.disabled = true;
       keypointBtn.disabled = true;
+      stopApplyKeypointsPulse();
       applyKeypointsBtn.disabled = true;
       clearKeypointsBtn.disabled = true;
       updateFineAdjustControls();
@@ -2252,6 +2281,7 @@
           autoFillKeypointsFromFirst(point);
           renderFramesList();
           applyKeypointsBtn.disabled = false;
+          startApplyKeypointsPulse();
           clearKeypointsBtn.disabled = false;
 
           if (rawFrameCanvases.length > 1) {
@@ -2357,6 +2387,7 @@
         return;
       }
 
+      stopApplyKeypointsPulse();
       selectingKeypoints = false;
       hideKeypointHint();
       canvas.classList.remove('keypoint-mode');
@@ -2375,6 +2406,7 @@
     function clearKeypoints(shouldRestartPreview) {
       keypoints = [];
       hideKeypointHint();
+      stopApplyKeypointsPulse();
       selectingKeypoints = false;
       keypointStep = 0;
       manualFrameOffsets = [];
