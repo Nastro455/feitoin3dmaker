@@ -48,3 +48,13 @@ Na versão mobile, o preview aparece acima da área de carregamento da foto para
 ## Atualização — controle de exposição
 
 Adicionada uma barra de Exposição / luz da imagem logo abaixo da intensidade do efeito de cor. O ajuste aparece no preview e também é aplicado no GIF, MP4 ou MOV exportado.
+
+
+## Atualização — Foto Horizontal e Foto Vertical
+
+A ferramenta agora aceita dois tipos de imagem de entrada:
+
+- Foto Horizontal: quadros lado a lado.
+- Foto Vertical: quadros empilhados.
+
+O seletor fica no grupo "Carregamento e ajuste de ponto". O restante da ferramenta continua usando o mesmo fluxo de alinhamento, efeitos, exposição, RGB, marca d'água, ajuste fino e exportação em GIF, MP4 ou MOV.
