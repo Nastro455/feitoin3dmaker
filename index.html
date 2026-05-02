@@ -887,7 +887,7 @@
         <a class="social-link" href="https://www.instagram.com/feitoin3d/" target="_blank" rel="noopener noreferrer">Instagram Feito In3D</a>
       </div>
       <h1>Feitoin3d <span>Maker</span></h1>
-      <p>Carregue uma imagem 3D horizontal ou vertical, escolha se ela tem 2, 3 ou 4 fotos, alinhe por ponto de referência e exporte em GIF, MP4 ou MOV.</p>
+      <p>Carregue uma imagem 3D horizontal ou vertical, escolha se ela tem 2, 3 ou 4 fotos, alinhe por ponto de referência e exporte em GIF, MP4 ou MOV nos formatos vertical, 4:3, Full HD horizontal ou 4K horizontal.</p>
     </header>
 
     <section class="grid">
@@ -985,6 +985,8 @@
                 <select id="exportAspect">
                   <option value="vertical" selected>Vertical Full HD — 9:16</option>
                   <option value="classic4x3">4:3 clássico</option>
+                  <option value="horizontalFullHd">Horizontal Full HD — 16:9</option>
+                  <option value="horizontal4k">Horizontal 4K — 16:9</option>
                 </select>
               </div>
 
@@ -1016,7 +1018,7 @@
               </div>
 
               <div class="export-box" id="exportBox">
-                <strong>Exportação:</strong> escolha entre Vertical Full HD 9:16 ou 4:3 clássico. O enquadramento usa crop automático para preencher a tela sem bordas pretas. Você também pode ajustar exposição, deslocamento RGB 3D e marca d'água no preview e no arquivo final.
+                <strong>Exportação:</strong> escolha entre Vertical Full HD 9:16, 4:3 clássico, Horizontal Full HD 16:9 ou Horizontal 4K 16:9. O enquadramento usa crop automático para preencher a tela sem bordas pretas. Você também pode ajustar exposição, deslocamento RGB 3D e marca d'água no preview e no arquivo final.
               </div>
             </div>
           </details>
@@ -1196,6 +1198,24 @@
           light: { width: 640, height: 480 },
           standard: { width: 960, height: 720 },
           high: { width: 1440, height: 1080 }
+        }
+      },
+      horizontalFullHd: {
+        label: 'Horizontal Full HD',
+        slug: 'horizontal-full-hd-16x9',
+        sizes: {
+          light: { width: 1920, height: 1080 },
+          standard: { width: 1920, height: 1080 },
+          high: { width: 1920, height: 1080 }
+        }
+      },
+      horizontal4k: {
+        label: 'Horizontal 4K',
+        slug: 'horizontal-4k-16x9',
+        sizes: {
+          light: { width: 3840, height: 2160 },
+          standard: { width: 3840, height: 2160 },
+          high: { width: 3840, height: 2160 }
         }
       }
     };

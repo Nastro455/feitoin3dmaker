@@ -58,3 +58,12 @@ A ferramenta agora aceita dois tipos de imagem de entrada:
 - Foto Vertical: quadros empilhados.
 
 O seletor fica no grupo "Carregamento e ajuste de ponto". O restante da ferramenta continua usando o mesmo fluxo de alinhamento, efeitos, exposição, RGB, marca d'água, ajuste fino e exportação em GIF, MP4 ou MOV.
+
+## Atualização — Exportação horizontal
+
+A ferramenta agora também exporta em:
+
+- Horizontal Full HD — 1920 × 1080
+- Horizontal 4K — 3840 × 2160
+
+Essas opções ficam no seletor "Formato da tela". A orientação da foto de entrada continua independente do formato final exportado.
