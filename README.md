@@ -78,7 +78,9 @@ Ao clicar em Selecionar pontos automáticos, o preview escurece levemente e exib
 - A guia de ajuste fino agora abre minimizada por padrão.
 - O aviso visual para clicar no ponto automático aparece somente na primeira vez que o usuário usa esse recurso no navegador.
 
+## Atualização — JPG alto e botão de compra
 
-## Atualização — Destaque no botão Aplicar pontos
-
-Depois que o primeiro ponto é marcado e os pontos automáticos são sugeridos, o botão "Aplicar pontos" começa a piscar para indicar ao usuário a próxima ação. O efeito para quando os pontos são aplicados, limpos ou o fluxo é reiniciado.
+- Adicionado botão "Exportar JPG alto" na área de ações do arquivo.
+- O JPG é gerado em alta qualidade, usando o formato de tela selecionado.
+- Adicionado botão "Compre sua lente" no cabeçalho, apontando para a página do produto no Mercado Livre.
+- Depois que o primeiro ponto é marcado e os pontos automáticos são sugeridos, o botão "Aplicar pontos" pisca para indicar a próxima ação.

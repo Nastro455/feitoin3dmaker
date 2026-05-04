@@ -77,6 +77,18 @@
       color: var(--text);
     }
 
+    .buy-link {
+      background: var(--success);
+      color: var(--bg);
+      border-color: rgba(255,255,255,.50);
+      font-weight: 800;
+    }
+
+    .buy-link:hover {
+      color: var(--bg);
+      filter: brightness(1.03);
+    }
+
     header h1 {
       font-size: clamp(34px, 6vw, 66px);
       letter-spacing: -0.07em;
@@ -1050,6 +1062,7 @@
       <div class="badge-row">
         <div class="badge">Feito In3D • ferramenta experimental</div>
         <a class="social-link" href="https://www.instagram.com/feitoin3d/" target="_blank" rel="noopener noreferrer">Instagram Feito In3D</a>
+        <a class="social-link buy-link" href="https://www.mercadolivre.com.br/lente-3d-para-producao-de-gifs-canon-sony-nikon-fuji/up/MLBU3825732714" target="_blank" rel="noopener noreferrer">Compre sua lente</a>
       </div>
       <h1>Feitoin3d <span>Maker <i class="br-flag" aria-label="Brasil" title="Brasil"></i></span></h1>
       <p>Carregue uma imagem 3D horizontal ou vertical, escolha se ela tem 2, 3 ou 4 fotos, alinhe por ponto de referência e exporte em GIF, MP4 ou MOV nos formatos vertical, 4:3, Full HD horizontal ou 4K horizontal.</p>
@@ -1317,6 +1330,7 @@
           <label>Ações do arquivo</label>
           <div class="actions visualizer-actions">
             <button id="generateBtn" disabled>8. Exportar arquivo Full HD</button>
+            <button class="secondary" id="exportJpgBtn" type="button" disabled>Exportar JPG alto</button>
             <button class="secondary" id="clearKeypointsBtn" type="button" disabled>Limpar alinhamento</button>
             <button class="secondary" id="resetBtn" type="button">9. Limpar tudo</button>
             <a class="download" id="downloadLink" download="feitoin3d-maker-padrao.gif">Baixar GIF</a>
@@ -1423,6 +1437,7 @@
     const watermarkTextField = document.querySelector('#watermarkTextField');
     const watermarkTextInput = document.querySelector('#watermarkText');
     const generateBtn = document.querySelector('#generateBtn');
+    const exportJpgBtn = document.querySelector('#exportJpgBtn');
     const keypointBtn = document.querySelector('#keypointBtn');
     const applyKeypointsBtn = document.querySelector('#applyKeypointsBtn');
     const clearKeypointsBtn = document.querySelector('#clearKeypointsBtn');
@@ -1668,6 +1683,7 @@
     applyKeypointsBtn.addEventListener('click', finishKeypointSelection);
     clearKeypointsBtn.addEventListener('click', () => clearKeypoints(true));
     generateBtn.addEventListener('click', generateExport);
+    exportJpgBtn.addEventListener('click', exportHighJpg);
     resetBtn.addEventListener('click', resetAll);
     canvas.addEventListener('click', handleCanvasClick);
     previewBox.addEventListener('mouseenter', hideKeypointHint);
@@ -1766,6 +1782,7 @@
       canvas.style.display = 'block';
       emptyState.style.display = 'none';
       generateBtn.disabled = false;
+      exportJpgBtn.disabled = false;
       keypointBtn.disabled = false;
       renderFramesList();
       updateFineAdjustControls();
@@ -2211,6 +2228,7 @@
       downloadLink.style.display = 'none';
         hidePreviewDownload();
       generateBtn.disabled = true;
+      exportJpgBtn.disabled = true;
       keypointBtn.disabled = true;
       stopApplyKeypointsPulse();
       applyKeypointsBtn.disabled = true;
@@ -2565,6 +2583,53 @@
       animationTimer = setInterval(draw, frameDelay);
     }
 
+    function exportHighJpg() {
+      if (!rawFrameCanvases.length) return;
+
+      const previousQuality = exportQualitySelect.value;
+      const previousPreviewMode = previewMode;
+      const previousFrame = selectedAdjustFrame;
+
+      exportQualitySelect.value = 'high';
+      rebuildFinalFrames();
+
+      const sourceFrame = previousPreviewMode === 'frame'
+        ? (finalFrameCanvases[previousFrame] || finalFrameCanvases[0])
+        : (finalFrameCanvases[0] || canvas);
+
+      const jpgCanvas = document.createElement('canvas');
+      jpgCanvas.width = sourceFrame.width;
+      jpgCanvas.height = sourceFrame.height;
+
+      const jpgCtx = jpgCanvas.getContext('2d');
+      jpgCtx.fillStyle = '#ffffff';
+      jpgCtx.fillRect(0, 0, jpgCanvas.width, jpgCanvas.height);
+      jpgCtx.drawImage(sourceFrame, 0, 0);
+
+      jpgCanvas.toBlob((blob) => {
+        if (!blob) {
+          setStatus('Não foi possível gerar o JPG. Tente novamente.');
+          return;
+        }
+
+        const url = URL.createObjectURL(blob);
+        const filename = `${getOutputFileBaseName()}-jpg-alto.jpg`;
+
+        downloadLink.href = url;
+        downloadLink.download = filename;
+        downloadLink.textContent = 'Baixar JPG';
+        downloadLink.style.display = 'block';
+
+        showPreviewDownload(url, filename, 'Baixar JPG');
+        setStatus(`JPG em alta qualidade pronto! ${jpgCanvas.width} × ${jpgCanvas.height}px.`);
+      }, 'image/jpeg', 0.95);
+
+      exportQualitySelect.value = previousQuality;
+      rebuildFinalFrames();
+      updateExportControls();
+      startPreview();
+    }
+
     function generateExport() {
       const format = exportFormatSelect.value;
       if (format === 'gif') {
@@ -2595,6 +2660,7 @@
 
     function setExportButtonsDisabled(disabled) {
       generateBtn.disabled = disabled || !finalFrameCanvases.length;
+      exportJpgBtn.disabled = disabled || !finalFrameCanvases.length;
       keypointBtn.disabled = disabled || !rawFrameCanvases.length;
       applyKeypointsBtn.disabled = disabled || !(selectingKeypoints && keypoints.length === rawFrameCanvases.length);
       clearKeypointsBtn.disabled = disabled || keypoints.length === 0;
