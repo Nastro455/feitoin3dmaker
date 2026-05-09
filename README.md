@@ -1,4 +1,4 @@
-# Feitoin3d Maker
+# Feito In 3D Maker
 
 Versão pronta para GitHub Pages.
 
@@ -93,3 +93,7 @@ Adicionada a opção "Nitidez da imagem" na aba Ajustes criativos. A barra vai d
 ## Atualização — Glow
 
 Adicionada a opção "Glow / luz dos sonhos" na aba Ajustes criativos. A barra vai de 0% a 100% e cria um brilho suave nos pontos de luz da imagem, dando um aspecto mais sonhador. O ajuste aparece no preview e também no GIF, MP4, MOV e JPG exportados.
+
+## Atualização — LUT personalizado
+
+Adicionada a opção de carregar LUT personalizado na aba Ajustes criativos. O usuário pode carregar arquivos .CUBE ou .3DL e o LUT é aplicado no preview e nos arquivos exportados em GIF, MP4, MOV e JPG alto.

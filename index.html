@@ -207,6 +207,47 @@
     .range-row { display: flex; align-items: center; gap: 12px; }
     .range-row output { min-width: 54px; text-align: right; color: var(--muted); font-variant-numeric: tabular-nums; }
 
+    .lut-controls {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .lut-upload-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 46px;
+      margin: 0;
+      border: 1px dashed var(--line);
+      border-radius: 14px;
+      background: #07182b;
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: .2s ease;
+      text-align: center;
+      padding: 12px 14px;
+    }
+
+    .lut-upload-btn:hover {
+      border-color: var(--accent);
+      transform: translateY(-1px);
+    }
+
+    .lut-clear-btn {
+      min-height: 46px;
+      padding: 12px 14px;
+      white-space: nowrap;
+    }
+
+    .lut-status {
+      margin-top: 8px;
+      margin-bottom: 0;
+    }
+
     .toggle { display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: 14px; }
     .toggle input { accent-color: var(--accent); }
 
@@ -957,6 +998,14 @@
         border-radius: 14px;
       }
 
+      .lut-controls {
+        grid-template-columns: 1fr;
+      }
+
+      .lut-clear-btn {
+        width: 100%;
+      }
+
       .canvas-box {
         min-height: auto;
         padding: 8px;
@@ -1060,8 +1109,8 @@
   <main class="app">
     <header>
       <div class="badge-row">
-        <div class="badge">Feito In3D • ferramenta experimental</div>
-        <a class="social-link" href="https://www.instagram.com/feitoin3d/" target="_blank" rel="noopener noreferrer">Instagram Feito In3D</a>
+        <div class="badge">Feito In 3D • ferramenta experimental</div>
+        <a class="social-link" href="https://www.instagram.com/feitoin3d/" target="_blank" rel="noopener noreferrer">Instagram Feito In 3D</a>
         <a class="social-link buy-link" href="https://www.mercadolivre.com.br/lente-3d-para-producao-de-gifs-canon-sony-nikon-fuji/up/MLBU3825732714" target="_blank" rel="noopener noreferrer">Compre sua lente</a>
       </div>
       <h1>Feitoin3d <span>Maker <i class="br-flag" aria-label="Brasil" title="Brasil"></i></span></h1>
@@ -1196,7 +1245,7 @@
               </div>
 
               <div class="export-box" id="exportBox">
-                <strong>Exportação:</strong> escolha entre Vertical Full HD 9:16, 4:3 clássico, Horizontal Full HD 16:9 ou Horizontal 4K 16:9. O enquadramento usa crop automático para preencher a tela sem bordas pretas. Você também pode ajustar exposição, nitidez, glow, deslocamento RGB 3D e marca d'água no preview e no arquivo final.
+                <strong>Exportação:</strong> escolha entre Vertical Full HD 9:16, 4:3 clássico, Horizontal Full HD 16:9 ou Horizontal 4K 16:9. O enquadramento usa crop automático para preencher a tela sem bordas pretas. Você também pode ajustar exposição, nitidez, LUT personalizado, glow, deslocamento RGB 3D e marca d'água no preview e no arquivo final.
               </div>
             </div>
           </details>
@@ -1236,6 +1285,16 @@
                   <input id="vintageIntensity" type="range" min="0" max="100" value="70" step="5" />
                   <output id="vintageIntensityValue">70%</output>
                 </div>
+              </div>
+
+              <div class="field lut-field">
+                <label>LUT personalizado</label>
+                <div class="lut-controls">
+                  <label class="lut-upload-btn" for="customLutInput">Carregar LUT (.cube/.3dl)</label>
+                  <input id="customLutInput" type="file" accept=".cube,.CUBE,.3dl,.3DL" />
+                  <button class="secondary lut-clear-btn" id="clearLutBtn" type="button" disabled>Remover LUT</button>
+                </div>
+                <p class="mini-note lut-status" id="lutStatus">Nenhum LUT carregado. Suporte principal: .CUBE e .3DL.</p>
               </div>
 
               <div class="field">
@@ -1283,7 +1342,7 @@
 
               <div class="field" id="watermarkTextField" style="display: none;">
                 <label for="watermarkText">Texto da marca d'água</label>
-                <input id="watermarkText" type="text" value="Feito In3D" maxlength="48" placeholder="Digite sua marca d'água" />
+                <input id="watermarkText" type="text" value="Feito In 3D" maxlength="48" placeholder="Digite sua marca d'água" />
               </div>
             </div>
           </details>
@@ -1445,6 +1504,9 @@
     const vintageEffectSelect = document.querySelector('#vintageEffect');
     const vintageIntensityInput = document.querySelector('#vintageIntensity');
     const vintageIntensityValue = document.querySelector('#vintageIntensityValue');
+    const customLutInput = document.querySelector('#customLutInput');
+    const clearLutBtn = document.querySelector('#clearLutBtn');
+    const lutStatus = document.querySelector('#lutStatus');
     const exposureAdjustInput = document.querySelector('#exposureAdjust');
     const exposureAdjustValue = document.querySelector('#exposureAdjustValue');
     const sharpnessAdjustInput = document.querySelector('#sharpnessAdjust');
@@ -1499,6 +1561,7 @@
     let exportStart = 0;
     let exportProgress = 0;
     let currentExportLabel = 'GIF Padrão';
+    let customLut = null;
     let manualFrameOffsets = [];
     let selectedAdjustFrame = 0;
     let previewMode = 'animated';
@@ -1601,6 +1664,50 @@
       rebuildFinalFrames();
       startPreview();
       setStatus(`Intensidade do efeito ajustada para ${vintageIntensityInput.value}%.`);
+    });
+
+    customLutInput.addEventListener('change', async (event) => {
+      const file = event.target.files?.[0];
+      if (!file) return;
+
+      try {
+        const lutText = await file.text();
+        const extension = file.name.split('.').pop().toLowerCase();
+
+        if (extension === 'cube') {
+          customLut = parseCubeLut(lutText, file.name);
+        } else if (extension === '3dl') {
+          customLut = parse3dlLut(lutText, file.name);
+        } else {
+          throw new Error('Formato de LUT não suportado.');
+        }
+
+        clearLutBtn.disabled = false;
+        lutStatus.textContent = `LUT carregado: ${customLut.fileName} • ${customLut.size}³`;
+        if (rawFrameCanvases.length && !selectingKeypoints) {
+          rebuildFinalFrames();
+          startPreview();
+        }
+        setStatus(`LUT personalizado aplicado: ${customLut.fileName}.`);
+      } catch (error) {
+        customLut = null;
+        clearLutBtn.disabled = true;
+        customLutInput.value = '';
+        lutStatus.textContent = 'Não foi possível carregar esse LUT. Tente um arquivo .CUBE ou .3DL válido.';
+        setStatus(`Erro ao carregar LUT: ${error.message}`);
+      }
+    });
+
+    clearLutBtn.addEventListener('click', () => {
+      customLut = null;
+      customLutInput.value = '';
+      clearLutBtn.disabled = true;
+      lutStatus.textContent = 'Nenhum LUT carregado. Suporte principal: .CUBE e .3DL.';
+      if (rawFrameCanvases.length && !selectingKeypoints) {
+        rebuildFinalFrames();
+        startPreview();
+      }
+      setStatus('LUT personalizado removido.');
     });
 
     exposureAdjustInput.addEventListener('input', () => {
@@ -1891,6 +1998,7 @@
 
         applyVintageEffect(output, vintageEffectSelect.value);
         applyExposureAdjustment(output);
+        applyCustomLut(output);
         applySharpnessAdjustment(output);
         applyGlowEffect(output);
         applyRgbDisplacement(output);
@@ -2014,6 +2122,188 @@
       }
 
       effectCtx.putImageData(image, 0, 0);
+    }
+
+    function parseCubeLut(contents, fileName) {
+      const rawLines = contents.split(/\r?\n/);
+      const data = [];
+      let size = null;
+      let domainMin = [0, 0, 0];
+      let domainMax = [1, 1, 1];
+
+      rawLines.forEach((rawLine) => {
+        const line = rawLine.trim();
+        if (!line || line.startsWith('#')) return;
+
+        const upperLine = line.toUpperCase();
+        const parts = line.split(/\s+/);
+
+        if (upperLine.startsWith('LUT_3D_SIZE')) {
+          size = Number(parts[1]);
+          return;
+        }
+
+        if (upperLine.startsWith('DOMAIN_MIN')) {
+          domainMin = parts.slice(1, 4).map(Number);
+          return;
+        }
+
+        if (upperLine.startsWith('DOMAIN_MAX')) {
+          domainMax = parts.slice(1, 4).map(Number);
+          return;
+        }
+
+        if (
+          upperLine.startsWith('TITLE') ||
+          upperLine.startsWith('LUT_1D_SIZE') ||
+          upperLine.startsWith('LUT_1D_INPUT_RANGE') ||
+          upperLine.startsWith('LUT_3D_INPUT_RANGE')
+        ) {
+          return;
+        }
+
+        const numbers = parts.slice(0, 3).map(Number);
+        if (numbers.length === 3 && numbers.every(Number.isFinite)) {
+          data.push(numbers[0], numbers[1], numbers[2]);
+        }
+      });
+
+      if (!size) {
+        size = Math.round(Math.cbrt(data.length / 3));
+      }
+
+      if (!size || size < 2) {
+        throw new Error('Tamanho do LUT não encontrado.');
+      }
+
+      const expectedValues = size * size * size * 3;
+      if (data.length < expectedValues) {
+        throw new Error(`LUT incompleto. Esperado: ${size}³ pontos.`);
+      }
+
+      return {
+        type: 'cube',
+        fileName,
+        size,
+        domainMin,
+        domainMax,
+        data: new Float32Array(data.slice(0, expectedValues))
+      };
+    }
+
+    function parse3dlLut(contents, fileName) {
+      const rawLines = contents.split(/\r?\n/);
+      const triples = [];
+      let declaredSize = null;
+      let maxValue = 1;
+
+      rawLines.forEach((rawLine) => {
+        const cleanLine = rawLine.replace(/#.*/, '').replace(/\/\/.*/, '').trim();
+        if (!cleanLine) return;
+
+        const meshMatch = cleanLine.match(/(?:MESH|LUT[_\s-]?3D[_\s-]?SIZE)\s+(\d+)/i);
+        if (meshMatch) {
+          declaredSize = Number(meshMatch[1]);
+          return;
+        }
+
+        const parts = cleanLine.split(/\s+/).map(Number).filter(Number.isFinite);
+        if (parts.length === 3) {
+          triples.push(parts[0], parts[1], parts[2]);
+          maxValue = Math.max(maxValue, parts[0], parts[1], parts[2]);
+        }
+      });
+
+      const size = declaredSize || Math.round(Math.cbrt(triples.length / 3));
+      if (!size || size < 2) {
+        throw new Error('Tamanho do LUT .3DL não encontrado.');
+      }
+
+      const expectedValues = size * size * size * 3;
+      if (triples.length < expectedValues) {
+        throw new Error(`LUT .3DL incompleto. Esperado: ${size}³ pontos.`);
+      }
+
+      const normalizer = maxValue > 1 ? maxValue : 1;
+      const data = triples.slice(0, expectedValues).map((value) => clamp(value / normalizer, 0, 1));
+
+      return {
+        type: '3dl',
+        fileName,
+        size,
+        domainMin: [0, 0, 0],
+        domainMax: [1, 1, 1],
+        data: new Float32Array(data)
+      };
+    }
+
+    function applyCustomLut(canvasElement) {
+      if (!customLut) return;
+
+      const lutCtx = canvasElement.getContext('2d');
+      const image = lutCtx.getImageData(0, 0, canvasElement.width, canvasElement.height);
+      const data = image.data;
+      const lut = customLut;
+      const size = lut.size;
+      const maxIndex = size - 1;
+
+      const domainMin = lut.domainMin || [0, 0, 0];
+      const domainMax = lut.domainMax || [1, 1, 1];
+
+      function normalizeChannel(value, channel) {
+        const normalized = value / 255;
+        const min = domainMin[channel];
+        const max = domainMax[channel];
+        return clamp((normalized - min) / Math.max(0.00001, max - min), 0, 1);
+      }
+
+      function lutIndex(r, g, b) {
+        return ((b * size * size) + (g * size) + r) * 3;
+      }
+
+      function sample(rIndex, gIndex, bIndex, channel) {
+        return lut.data[lutIndex(rIndex, gIndex, bIndex) + channel];
+      }
+
+      for (let i = 0; i < data.length; i += 4) {
+        const r = normalizeChannel(data[i], 0) * maxIndex;
+        const g = normalizeChannel(data[i + 1], 1) * maxIndex;
+        const b = normalizeChannel(data[i + 2], 2) * maxIndex;
+
+        const r0 = Math.floor(r);
+        const g0 = Math.floor(g);
+        const b0 = Math.floor(b);
+        const r1 = Math.min(r0 + 1, maxIndex);
+        const g1 = Math.min(g0 + 1, maxIndex);
+        const b1 = Math.min(b0 + 1, maxIndex);
+
+        const rf = r - r0;
+        const gf = g - g0;
+        const bf = b - b0;
+
+        for (let channel = 0; channel < 3; channel++) {
+          const c000 = sample(r0, g0, b0, channel);
+          const c100 = sample(r1, g0, b0, channel);
+          const c010 = sample(r0, g1, b0, channel);
+          const c110 = sample(r1, g1, b0, channel);
+          const c001 = sample(r0, g0, b1, channel);
+          const c101 = sample(r1, g0, b1, channel);
+          const c011 = sample(r0, g1, b1, channel);
+          const c111 = sample(r1, g1, b1, channel);
+
+          const c00 = c000 * (1 - rf) + c100 * rf;
+          const c10 = c010 * (1 - rf) + c110 * rf;
+          const c01 = c001 * (1 - rf) + c101 * rf;
+          const c11 = c011 * (1 - rf) + c111 * rf;
+          const c0 = c00 * (1 - gf) + c10 * gf;
+          const c1 = c01 * (1 - gf) + c11 * gf;
+          const finalValue = c0 * (1 - bf) + c1 * bf;
+
+          data[i + channel] = clamp(Math.round(finalValue * 255), 0, 255);
+        }
+      }
+
+      lutCtx.putImageData(image, 0, 0);
     }
 
     function applyExposureAdjustment(canvasElement) {
@@ -2190,7 +2480,7 @@
 
     function applyBorderWatermark(canvasElement) {
       if (!watermarkEnabledInput.checked) return;
-      const watermarkText = (watermarkTextInput.value || 'Feito In3D').trim();
+      const watermarkText = (watermarkTextInput.value || 'Feito In 3D').trim();
       if (!watermarkText) return;
 
       const watermarkCtx = canvasElement.getContext('2d');
@@ -2832,6 +3122,8 @@
       delayInput.disabled = disabled;
       vintageEffectSelect.disabled = disabled;
       vintageIntensityInput.disabled = disabled;
+      customLutInput.disabled = disabled;
+      clearLutBtn.disabled = disabled || !customLut;
       exposureAdjustInput.disabled = disabled;
       sharpnessAdjustInput.disabled = disabled;
       glowAdjustInput.disabled = disabled;
@@ -3085,6 +3377,10 @@
       previewMode = 'animated';
       fineAdjustMinimized = true;
       fileInput.value = '';
+      customLut = null;
+      customLutInput.value = '';
+      clearLutBtn.disabled = true;
+      lutStatus.textContent = 'Nenhum LUT carregado. Suporte principal: .CUBE e .3DL.';
       clearInterval(animationTimer);
       clearInterval(exportTimer);
       ctx.clearRect(0, 0, canvas.width, canvas.height);
