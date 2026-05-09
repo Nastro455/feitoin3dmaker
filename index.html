@@ -476,8 +476,16 @@
 
     canvas { max-width: 100%; max-height: 76vh; border-radius: 14px; }
     canvas.keypoint-mode { cursor: crosshair; outline: 2px solid var(--blue); }
-    canvas.framing-ready { cursor: grab; }
-    canvas.framing-dragging { cursor: grabbing; }
+    canvas.framing-ready {
+      cursor: grab;
+      touch-action: none;
+      user-select: none;
+    }
+    canvas.framing-dragging {
+      cursor: grabbing;
+      touch-action: none;
+      user-select: none;
+    }
 
     .keypoint-hint-overlay {
       position: absolute;
@@ -1574,6 +1582,15 @@
     let framingStartOffsetX = 0;
     let framingStartOffsetY = 0;
     let framingRefreshPending = false;
+    let touchFramingMode = null;
+    let touchStartDistance = 0;
+    let touchStartZoom = 1;
+    let touchStartOffsetX = 0;
+    let touchStartOffsetY = 0;
+    let touchStartSourceX = 0;
+    let touchStartSourceY = 0;
+    let touchStartPointerX = 0.5;
+    let touchStartPointerY = 0.5;
     let selectedAdjustFrame = 0;
     let previewMode = 'animated';
     let fineAdjustMinimized = true;
@@ -1852,6 +1869,10 @@
     canvas.addEventListener('click', handleCanvasClick);
     canvas.addEventListener('mousedown', beginFramingDrag);
     canvas.addEventListener('wheel', handleFramingWheel, { passive: false });
+    canvas.addEventListener('touchstart', beginTouchFraming, { passive: false });
+    canvas.addEventListener('touchmove', continueTouchFraming, { passive: false });
+    canvas.addEventListener('touchend', endTouchFraming, { passive: false });
+    canvas.addEventListener('touchcancel', endTouchFraming, { passive: false });
     window.addEventListener('mousemove', continueFramingDrag);
     window.addEventListener('mouseup', endFramingDrag);
     previewBox.addEventListener('mouseenter', hideKeypointHint);
@@ -2544,6 +2565,7 @@
       framingOffsetY = 0;
       framingZoom = 1;
       isFramingDragActive = false;
+      touchFramingMode = null;
       updateFramingCursorState();
     }
 
@@ -2675,6 +2697,144 @@
       framingOffsetY += nextCenterY - nextRect.y;
 
       scheduleFramingRefresh();
+    }
+
+    function getTouchDistance(touchA, touchB) {
+      const dx = touchA.clientX - touchB.clientX;
+      const dy = touchA.clientY - touchB.clientY;
+      return Math.hypot(dx, dy);
+    }
+
+    function getTouchCenter(touchA, touchB) {
+      return {
+        clientX: (touchA.clientX + touchB.clientX) / 2,
+        clientY: (touchA.clientY + touchB.clientY) / 2
+      };
+    }
+
+    function prepareTouchPinch(touchA, touchB) {
+      const previousRect = getFramedCropRect();
+      if (!previousRect) return;
+
+      const center = getTouchCenter(touchA, touchB);
+      const rect = canvas.getBoundingClientRect();
+      touchStartPointerX = rect.width ? clamp((center.clientX - rect.left) / rect.width, 0, 1) : 0.5;
+      touchStartPointerY = rect.height ? clamp((center.clientY - rect.top) / rect.height, 0, 1) : 0.5;
+      touchStartSourceX = previousRect.x + previousRect.width * touchStartPointerX;
+      touchStartSourceY = previousRect.y + previousRect.height * touchStartPointerY;
+      touchStartDistance = getTouchDistance(touchA, touchB);
+      touchStartZoom = framingZoom;
+      touchStartOffsetX = framingOffsetX;
+      touchStartOffsetY = framingOffsetY;
+      touchFramingMode = 'pinch';
+      isFramingDragActive = true;
+      updateFramingCursorState();
+    }
+
+    function beginTouchFraming(event) {
+      if (!canUseManualFraming()) return;
+      if (!event.touches.length) return;
+
+      event.preventDefault();
+
+      if (event.touches.length === 1) {
+        const touch = event.touches[0];
+        touchFramingMode = 'drag';
+        isFramingDragActive = true;
+        framingDragStartX = touch.clientX;
+        framingDragStartY = touch.clientY;
+        framingStartOffsetX = framingOffsetX;
+        framingStartOffsetY = framingOffsetY;
+        updateFramingCursorState();
+        return;
+      }
+
+      if (event.touches.length >= 2) {
+        prepareTouchPinch(event.touches[0], event.touches[1]);
+      }
+    }
+
+    function continueTouchFraming(event) {
+      if (!canUseManualFraming() || !touchFramingMode) return;
+      event.preventDefault();
+
+      if (event.touches.length >= 2) {
+        if (touchFramingMode !== 'pinch' || touchStartDistance <= 0) {
+          prepareTouchPinch(event.touches[0], event.touches[1]);
+          return;
+        }
+
+        const distance = getTouchDistance(event.touches[0], event.touches[1]);
+        const factor = distance / Math.max(1, touchStartDistance);
+        framingZoom = clamp(touchStartZoom * factor, 1, 4);
+
+        const alignmentData = getAlignmentData();
+        if (!alignmentData) return;
+
+        const nextRect = applyManualFramingToRect(alignmentData.baseCropRect, alignmentData.commonRect);
+        const nextX = touchStartSourceX - nextRect.width * touchStartPointerX;
+        const nextY = touchStartSourceY - nextRect.height * touchStartPointerY;
+
+        framingOffsetX = touchStartOffsetX + (nextX - nextRect.x);
+        framingOffsetY = touchStartOffsetY + (nextY - nextRect.y);
+        scheduleFramingRefresh();
+        return;
+      }
+
+      if (event.touches.length === 1) {
+        if (touchFramingMode !== 'drag') {
+          const touch = event.touches[0];
+          touchFramingMode = 'drag';
+          framingDragStartX = touch.clientX;
+          framingDragStartY = touch.clientY;
+          framingStartOffsetX = framingOffsetX;
+          framingStartOffsetY = framingOffsetY;
+        }
+
+        const cropRect = getFramedCropRect();
+        if (!cropRect) return;
+
+        const touch = event.touches[0];
+        const { rect } = getCanvasClientScale();
+        const scaleX = rect.width ? cropRect.width / rect.width : 1;
+        const scaleY = rect.height ? cropRect.height / rect.height : 1;
+        const dx = touch.clientX - framingDragStartX;
+        const dy = touch.clientY - framingDragStartY;
+
+        framingOffsetX = framingStartOffsetX - dx * scaleX;
+        framingOffsetY = framingStartOffsetY - dy * scaleY;
+        scheduleFramingRefresh();
+      }
+    }
+
+    function endTouchFraming(event) {
+      if (!canUseManualFraming()) {
+        touchFramingMode = null;
+        isFramingDragActive = false;
+        updateFramingCursorState();
+        return;
+      }
+
+      if (event.touches && event.touches.length >= 2) {
+        prepareTouchPinch(event.touches[0], event.touches[1]);
+        return;
+      }
+
+      if (event.touches && event.touches.length === 1) {
+        const touch = event.touches[0];
+        touchFramingMode = 'drag';
+        framingDragStartX = touch.clientX;
+        framingDragStartY = touch.clientY;
+        framingStartOffsetX = framingOffsetX;
+        framingStartOffsetY = framingOffsetY;
+        isFramingDragActive = true;
+        updateFramingCursorState();
+        return;
+      }
+
+      touchFramingMode = null;
+      isFramingDragActive = false;
+      updateFramingCursorState();
     }
 
     function getCommonVisibleRect(w, h, shifts) {
@@ -3021,7 +3181,11 @@
       updateFineAdjustControls();
       startPreview();
       updateFramingCursorState();
-      setStatus('Pontos aplicados. Se quiser ajustar o enquadramento, mova a imagem no preview com o mouse e use o scroll para dar zoom ou tirar zoom.');
+      const isTouchDevice = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+      setStatus(isTouchDevice
+        ? 'Pontos aplicados. Se quiser ajustar o enquadramento, arraste com 1 dedo no preview e use 2 dedos para dar zoom ou tirar zoom.'
+        : 'Pontos aplicados. Se quiser ajustar o enquadramento, mova a imagem no preview com o mouse e use o scroll para dar zoom ou tirar zoom.'
+      );
     }
 
     function clearKeypoints(shouldRestartPreview) {

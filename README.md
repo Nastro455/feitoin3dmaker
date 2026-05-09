@@ -107,3 +107,11 @@ O controle de intensidade do efeito agora também atua sobre o LUT personalizado
 ## Atualização — Controle manual de enquadramento
 
 Depois que os pontos são aplicados, o usuário pode ajustar o enquadramento diretamente no preview: arrastando com o mouse para reposicionar a imagem e usando o scroll para dar zoom ou tirar zoom. Esse ajuste afeta o preview e também a exportação final.
+
+## Atualização — Enquadramento manual no mobile
+
+O controle manual de enquadramento agora também funciona no mobile:
+- 1 dedo para mover a imagem;
+- 2 dedos em pinça para dar zoom ou tirar zoom.
+
+A versão desktop continua usando mouse para mover e scroll para zoom.
