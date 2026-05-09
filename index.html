@@ -1196,7 +1196,7 @@
               </div>
 
               <div class="export-box" id="exportBox">
-                <strong>Exportação:</strong> escolha entre Vertical Full HD 9:16, 4:3 clássico, Horizontal Full HD 16:9 ou Horizontal 4K 16:9. O enquadramento usa crop automático para preencher a tela sem bordas pretas. Você também pode ajustar exposição, nitidez, deslocamento RGB 3D e marca d'água no preview e no arquivo final.
+                <strong>Exportação:</strong> escolha entre Vertical Full HD 9:16, 4:3 clássico, Horizontal Full HD 16:9 ou Horizontal 4K 16:9. O enquadramento usa crop automático para preencher a tela sem bordas pretas. Você também pode ajustar exposição, nitidez, glow, deslocamento RGB 3D e marca d'água no preview e no arquivo final.
               </div>
             </div>
           </details>
@@ -1251,6 +1251,14 @@
                 <div class="range-row">
                   <input id="sharpnessAdjust" type="range" min="0" max="100" value="0" step="5" />
                   <output id="sharpnessAdjustValue">0%</output>
+                </div>
+              </div>
+
+              <div class="field">
+                <label for="glowAdjust">Glow / luz dos sonhos</label>
+                <div class="range-row">
+                  <input id="glowAdjust" type="range" min="0" max="100" value="0" step="5" />
+                  <output id="glowAdjustValue">0%</output>
                 </div>
               </div>
 
@@ -1441,6 +1449,8 @@
     const exposureAdjustValue = document.querySelector('#exposureAdjustValue');
     const sharpnessAdjustInput = document.querySelector('#sharpnessAdjust');
     const sharpnessAdjustValue = document.querySelector('#sharpnessAdjustValue');
+    const glowAdjustInput = document.querySelector('#glowAdjust');
+    const glowAdjustValue = document.querySelector('#glowAdjustValue');
     const rgbDisplacementInput = document.querySelector('#rgbDisplacement');
     const rgbDisplacementValue = document.querySelector('#rgbDisplacementValue');
     const watermarkEnabledInput = document.querySelector('#watermarkEnabled');
@@ -1618,6 +1628,19 @@
         setStatus(`Nitidez aumentada para ${sharpness}%.`);
       } else {
         setStatus('Nitidez neutra aplicada.');
+      }
+    });
+
+    glowAdjustInput.addEventListener('input', () => {
+      const glow = Number(glowAdjustInput.value);
+      glowAdjustValue.textContent = `${glow}%`;
+      if (!rawFrameCanvases.length || selectingKeypoints) return;
+      rebuildFinalFrames();
+      startPreview();
+      if (glow > 0) {
+        setStatus(`Glow ajustado para ${glow}%.`);
+      } else {
+        setStatus('Glow desativado.');
       }
     });
 
@@ -1869,6 +1892,7 @@
         applyVintageEffect(output, vintageEffectSelect.value);
         applyExposureAdjustment(output);
         applySharpnessAdjustment(output);
+        applyGlowEffect(output);
         applyRgbDisplacement(output);
         applyBorderWatermark(output);
         return output;
@@ -2057,6 +2081,68 @@
       }
 
       sharpnessCtx.putImageData(outputImage, 0, 0);
+    }
+
+    function applyGlowEffect(canvasElement) {
+      const glow = Number(glowAdjustInput.value || 0);
+      if (glow <= 0) return;
+
+      const width = canvasElement.width;
+      const height = canvasElement.height;
+      const glowSource = document.createElement('canvas');
+      glowSource.width = width;
+      glowSource.height = height;
+      const glowSourceCtx = glowSource.getContext('2d');
+      glowSourceCtx.drawImage(canvasElement, 0, 0);
+
+      const brightCanvas = document.createElement('canvas');
+      brightCanvas.width = width;
+      brightCanvas.height = height;
+      const brightCtx = brightCanvas.getContext('2d');
+      const sourceImage = glowSourceCtx.getImageData(0, 0, width, height);
+      const brightImage = brightCtx.createImageData(width, height);
+      const src = sourceImage.data;
+      const dst = brightImage.data;
+
+      const threshold = 185 - Math.round((glow / 100) * 40);
+      for (let i = 0; i < src.length; i += 4) {
+        const r = src[i];
+        const g = src[i + 1];
+        const b = src[i + 2];
+        const a = src[i + 3];
+        const luminance = 0.299 * r + 0.587 * g + 0.114 * b;
+        if (luminance >= threshold) {
+          const lift = Math.min(255, luminance + glow * 0.8);
+          const factor = lift / Math.max(1, luminance);
+          dst[i] = clamp(Math.round(r * factor), 0, 255);
+          dst[i + 1] = clamp(Math.round(g * factor), 0, 255);
+          dst[i + 2] = clamp(Math.round(b * factor), 0, 255);
+          dst[i + 3] = a;
+        }
+      }
+      brightCtx.putImageData(brightImage, 0, 0);
+
+      const targetCtx = canvasElement.getContext('2d');
+      const blurRadius = 2 + (glow / 100) * 14;
+      const alpha = 0.10 + (glow / 100) * 0.55;
+
+      targetCtx.save();
+      targetCtx.globalCompositeOperation = 'screen';
+      targetCtx.globalAlpha = alpha;
+      try {
+        targetCtx.filter = `blur(${blurRadius}px)`;
+      } catch (error) {
+        targetCtx.filter = 'none';
+      }
+      targetCtx.drawImage(brightCanvas, 0, 0);
+      targetCtx.globalAlpha = alpha * 0.55;
+      try {
+        targetCtx.filter = `blur(${Math.max(1, blurRadius * 0.55)}px)`;
+      } catch (error) {
+        targetCtx.filter = 'none';
+      }
+      targetCtx.drawImage(brightCanvas, 0, 0);
+      targetCtx.restore();
     }
 
     function applyRgbDisplacement(canvasElement) {
@@ -2748,6 +2834,7 @@
       vintageIntensityInput.disabled = disabled;
       exposureAdjustInput.disabled = disabled;
       sharpnessAdjustInput.disabled = disabled;
+      glowAdjustInput.disabled = disabled;
       rgbDisplacementInput.disabled = disabled;
       watermarkEnabledInput.disabled = disabled;
       watermarkTextInput.disabled = disabled || !watermarkEnabledInput.checked;
