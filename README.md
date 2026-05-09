@@ -84,3 +84,7 @@ Ao clicar em Selecionar pontos automáticos, o preview escurece levemente e exib
 - O JPG é gerado em alta qualidade, usando o formato de tela selecionado.
 - Adicionado botão "Compre sua lente" no cabeçalho, apontando para a página do produto no Mercado Livre.
 - Depois que o primeiro ponto é marcado e os pontos automáticos são sugeridos, o botão "Aplicar pontos" pisca para indicar a próxima ação.
+
+## Atualização — Nitidez
+
+Adicionada a opção "Nitidez da imagem" na aba Ajustes criativos. A barra vai de 0% a 100% e ajuda a recuperar definição quando a foto está levemente desfocada. O ajuste aparece no preview e também no GIF, MP4, MOV e JPG exportados.

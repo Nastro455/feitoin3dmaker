@@ -1196,7 +1196,7 @@
               </div>
 
               <div class="export-box" id="exportBox">
-                <strong>Exportação:</strong> escolha entre Vertical Full HD 9:16, 4:3 clássico, Horizontal Full HD 16:9 ou Horizontal 4K 16:9. O enquadramento usa crop automático para preencher a tela sem bordas pretas. Você também pode ajustar exposição, deslocamento RGB 3D e marca d'água no preview e no arquivo final.
+                <strong>Exportação:</strong> escolha entre Vertical Full HD 9:16, 4:3 clássico, Horizontal Full HD 16:9 ou Horizontal 4K 16:9. O enquadramento usa crop automático para preencher a tela sem bordas pretas. Você também pode ajustar exposição, nitidez, deslocamento RGB 3D e marca d'água no preview e no arquivo final.
               </div>
             </div>
           </details>
@@ -1243,6 +1243,14 @@
                 <div class="range-row">
                   <input id="exposureAdjust" type="range" min="-100" max="100" value="0" step="5" />
                   <output id="exposureAdjustValue">0</output>
+                </div>
+              </div>
+
+              <div class="field">
+                <label for="sharpnessAdjust">Nitidez da imagem</label>
+                <div class="range-row">
+                  <input id="sharpnessAdjust" type="range" min="0" max="100" value="0" step="5" />
+                  <output id="sharpnessAdjustValue">0%</output>
                 </div>
               </div>
 
@@ -1431,6 +1439,8 @@
     const vintageIntensityValue = document.querySelector('#vintageIntensityValue');
     const exposureAdjustInput = document.querySelector('#exposureAdjust');
     const exposureAdjustValue = document.querySelector('#exposureAdjustValue');
+    const sharpnessAdjustInput = document.querySelector('#sharpnessAdjust');
+    const sharpnessAdjustValue = document.querySelector('#sharpnessAdjustValue');
     const rgbDisplacementInput = document.querySelector('#rgbDisplacement');
     const rgbDisplacementValue = document.querySelector('#rgbDisplacementValue');
     const watermarkEnabledInput = document.querySelector('#watermarkEnabled');
@@ -1595,6 +1605,19 @@
         setStatus(`Exposição reduzida em ${exposure}.`);
       } else {
         setStatus('Exposição neutra aplicada.');
+      }
+    });
+
+    sharpnessAdjustInput.addEventListener('input', () => {
+      const sharpness = Number(sharpnessAdjustInput.value);
+      sharpnessAdjustValue.textContent = `${sharpness}%`;
+      if (!rawFrameCanvases.length || selectingKeypoints) return;
+      rebuildFinalFrames();
+      startPreview();
+      if (sharpness > 0) {
+        setStatus(`Nitidez aumentada para ${sharpness}%.`);
+      } else {
+        setStatus('Nitidez neutra aplicada.');
       }
     });
 
@@ -1845,6 +1868,7 @@
 
         applyVintageEffect(output, vintageEffectSelect.value);
         applyExposureAdjustment(output);
+        applySharpnessAdjustment(output);
         applyRgbDisplacement(output);
         applyBorderWatermark(output);
         return output;
@@ -1984,6 +2008,55 @@
       }
 
       exposureCtx.putImageData(image, 0, 0);
+    }
+
+    function applySharpnessAdjustment(canvasElement) {
+      const sharpness = Number(sharpnessAdjustInput.value || 0);
+      if (sharpness <= 0) return;
+
+      const sharpnessCtx = canvasElement.getContext('2d');
+      const width = canvasElement.width;
+      const height = canvasElement.height;
+      const sourceImage = sharpnessCtx.getImageData(0, 0, width, height);
+      const outputImage = sharpnessCtx.createImageData(width, height);
+      const src = sourceImage.data;
+      const dst = outputImage.data;
+
+      const strength = (sharpness / 100) * 1.25;
+      const centerWeight = 1 + 4 * strength;
+      const sideWeight = -strength;
+
+      function indexFor(x, y) {
+        const sx = Math.max(0, Math.min(width - 1, x));
+        const sy = Math.max(0, Math.min(height - 1, y));
+        return (sy * width + sx) * 4;
+      }
+
+      for (let y = 0; y < height; y++) {
+        for (let x = 0; x < width; x++) {
+          const index = (y * width + x) * 4;
+          const center = indexFor(x, y);
+          const left = indexFor(x - 1, y);
+          const right = indexFor(x + 1, y);
+          const up = indexFor(x, y - 1);
+          const down = indexFor(x, y + 1);
+
+          for (let channel = 0; channel < 3; channel++) {
+            const sharpened =
+              src[center + channel] * centerWeight +
+              src[left + channel] * sideWeight +
+              src[right + channel] * sideWeight +
+              src[up + channel] * sideWeight +
+              src[down + channel] * sideWeight;
+
+            dst[index + channel] = clamp(Math.round(sharpened), 0, 255);
+          }
+
+          dst[index + 3] = src[index + 3];
+        }
+      }
+
+      sharpnessCtx.putImageData(outputImage, 0, 0);
     }
 
     function applyRgbDisplacement(canvasElement) {
@@ -2674,6 +2747,7 @@
       vintageEffectSelect.disabled = disabled;
       vintageIntensityInput.disabled = disabled;
       exposureAdjustInput.disabled = disabled;
+      sharpnessAdjustInput.disabled = disabled;
       rgbDisplacementInput.disabled = disabled;
       watermarkEnabledInput.disabled = disabled;
       watermarkTextInput.disabled = disabled || !watermarkEnabledInput.checked;
