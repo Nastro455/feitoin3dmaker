@@ -476,6 +476,8 @@
 
     canvas { max-width: 100%; max-height: 76vh; border-radius: 14px; }
     canvas.keypoint-mode { cursor: crosshair; outline: 2px solid var(--blue); }
+    canvas.framing-ready { cursor: grab; }
+    canvas.framing-dragging { cursor: grabbing; }
 
     .keypoint-hint-overlay {
       position: absolute;
@@ -1280,7 +1282,7 @@
               </div>
 
               <div class="field">
-                <label for="vintageIntensity">Ajustar intensidade do efeito</label>
+                <label for="vintageIntensity">Ajustar intensidade do efeito / LUT</label>
                 <div class="range-row">
                   <input id="vintageIntensity" type="range" min="0" max="100" value="70" step="5" />
                   <output id="vintageIntensityValue">70%</output>
@@ -1563,6 +1565,15 @@
     let currentExportLabel = 'GIF Padrão';
     let customLut = null;
     let manualFrameOffsets = [];
+    let framingOffsetX = 0;
+    let framingOffsetY = 0;
+    let framingZoom = 1;
+    let isFramingDragActive = false;
+    let framingDragStartX = 0;
+    let framingDragStartY = 0;
+    let framingStartOffsetX = 0;
+    let framingStartOffsetY = 0;
+    let framingRefreshPending = false;
     let selectedAdjustFrame = 0;
     let previewMode = 'animated';
     let fineAdjustMinimized = true;
@@ -1663,7 +1674,7 @@
       if (!rawFrameCanvases.length || selectingKeypoints) return;
       rebuildFinalFrames();
       startPreview();
-      setStatus(`Intensidade do efeito ajustada para ${vintageIntensityInput.value}%.`);
+      setStatus(`Intensidade do efeito / LUT ajustada para ${vintageIntensityInput.value}%.`);
     });
 
     customLutInput.addEventListener('change', async (event) => {
@@ -1839,6 +1850,10 @@
     exportJpgBtn.addEventListener('click', exportHighJpg);
     resetBtn.addEventListener('click', resetAll);
     canvas.addEventListener('click', handleCanvasClick);
+    canvas.addEventListener('mousedown', beginFramingDrag);
+    canvas.addEventListener('wheel', handleFramingWheel, { passive: false });
+    window.addEventListener('mousemove', continueFramingDrag);
+    window.addEventListener('mouseup', endFramingDrag);
     previewBox.addEventListener('mouseenter', hideKeypointHint);
     previewBox.addEventListener('touchstart', hideKeypointHint, { passive: true });
 
@@ -1906,6 +1921,7 @@
       manualFrameOffsets = Array.from({ length: count }, () => ({ dx: 0, dy: 0 }));
       selectedAdjustFrame = 0;
       previewMode = 'animated';
+      resetManualFraming();
 
       for (let i = 0; i < count; i++) {
         const frameCanvas = document.createElement('canvas');
@@ -1956,23 +1972,10 @@
       const exportWidth = preset.width;
       const exportHeight = preset.height;
       const exportAspect = exportWidth / exportHeight;
-      const w = rawFrameCanvases[0].width;
-      const h = rawFrameCanvases[0].height;
-      const hasCompleteKeypoints = keypoints.length === rawFrameCanvases.length && keypoints.every(Boolean);
-      const anchor = hasCompleteKeypoints ? keypoints[0] : { x: w / 2, y: h / 2 };
-      const shifts = rawFrameCanvases.map((_, index) => {
-        const manualOffset = manualFrameOffsets[index] || { dx: 0, dy: 0 };
-        if (!hasCompleteKeypoints) {
-          return { dx: manualOffset.dx, dy: manualOffset.dy };
-        }
-        return {
-          dx: anchor.x - keypoints[index].x + manualOffset.dx,
-          dy: anchor.y - keypoints[index].y + manualOffset.dy
-        };
-      });
+      const alignmentData = getAlignmentData(exportAspect);
+      if (!alignmentData) return [];
 
-      const commonRect = getCommonVisibleRect(w, h, shifts);
-      const verticalRect = cropRectToAspect(commonRect, exportAspect, anchor);
+      const framedRect = getFramedCropRect(exportAspect);
 
       return rawFrameCanvases.map((frame, index) => {
         const output = document.createElement('canvas');
@@ -1982,14 +1985,14 @@
         outputCtx.imageSmoothingEnabled = true;
         outputCtx.imageSmoothingQuality = 'high';
 
-        const sourceX = verticalRect.x - shifts[index].dx;
-        const sourceY = verticalRect.y - shifts[index].dy;
+        const sourceX = framedRect.x - alignmentData.shifts[index].dx;
+        const sourceY = framedRect.y - alignmentData.shifts[index].dy;
         outputCtx.drawImage(
           frame,
           sourceX,
           sourceY,
-          verticalRect.width,
-          verticalRect.height,
+          framedRect.width,
+          framedRect.height,
           0,
           0,
           exportWidth,
@@ -2240,6 +2243,9 @@
     function applyCustomLut(canvasElement) {
       if (!customLut) return;
 
+      const intensity = Number(vintageIntensityInput.value || 0) / 100;
+      if (intensity <= 0) return;
+
       const lutCtx = canvasElement.getContext('2d');
       const image = lutCtx.getImageData(0, 0, canvasElement.width, canvasElement.height);
       const data = image.data;
@@ -2266,9 +2272,13 @@
       }
 
       for (let i = 0; i < data.length; i += 4) {
-        const r = normalizeChannel(data[i], 0) * maxIndex;
-        const g = normalizeChannel(data[i + 1], 1) * maxIndex;
-        const b = normalizeChannel(data[i + 2], 2) * maxIndex;
+        const originalR = data[i];
+        const originalG = data[i + 1];
+        const originalB = data[i + 2];
+
+        const r = normalizeChannel(originalR, 0) * maxIndex;
+        const g = normalizeChannel(originalG, 1) * maxIndex;
+        const b = normalizeChannel(originalB, 2) * maxIndex;
 
         const r0 = Math.floor(r);
         const g0 = Math.floor(g);
@@ -2280,6 +2290,8 @@
         const rf = r - r0;
         const gf = g - g0;
         const bf = b - b0;
+
+        const originals = [originalR, originalG, originalB];
 
         for (let channel = 0; channel < 3; channel++) {
           const c000 = sample(r0, g0, b0, channel);
@@ -2297,9 +2309,11 @@
           const c11 = c011 * (1 - rf) + c111 * rf;
           const c0 = c00 * (1 - gf) + c10 * gf;
           const c1 = c01 * (1 - gf) + c11 * gf;
-          const finalValue = c0 * (1 - bf) + c1 * bf;
+          const lutValue = c0 * (1 - bf) + c1 * bf;
+          const lutPixel = clamp(Math.round(lutValue * 255), 0, 255);
+          const blended = originals[channel] * (1 - intensity) + lutPixel * intensity;
 
-          data[i + channel] = clamp(Math.round(finalValue * 255), 0, 255);
+          data[i + channel] = clamp(Math.round(blended), 0, 255);
         }
       }
 
@@ -2523,6 +2537,144 @@
       watermarkCtx.restore();
 
       watermarkCtx.restore();
+    }
+
+    function resetManualFraming() {
+      framingOffsetX = 0;
+      framingOffsetY = 0;
+      framingZoom = 1;
+      isFramingDragActive = false;
+      updateFramingCursorState();
+    }
+
+    function hasCompleteKeypointAlignment() {
+      return rawFrameCanvases.length > 0 && keypoints.length === rawFrameCanvases.length && keypoints.every(Boolean);
+    }
+
+    function canUseManualFraming() {
+      return hasCompleteKeypointAlignment() && !selectingKeypoints && finalFrameCanvases.length > 0;
+    }
+
+    function updateFramingCursorState() {
+      canvas.classList.remove('framing-ready', 'framing-dragging');
+      if (!canUseManualFraming()) return;
+      canvas.classList.add(isFramingDragActive ? 'framing-dragging' : 'framing-ready');
+    }
+
+    function scheduleFramingRefresh() {
+      if (framingRefreshPending) return;
+      framingRefreshPending = true;
+      requestAnimationFrame(() => {
+        framingRefreshPending = false;
+        rebuildFinalFrames();
+        startPreview();
+        updateFramingCursorState();
+      });
+    }
+
+    function getAlignmentData(aspect = getExportPreset().aspectRatio) {
+      if (!rawFrameCanvases.length) return null;
+
+      const w = rawFrameCanvases[0].width;
+      const h = rawFrameCanvases[0].height;
+      const hasCompleteKeypoints = hasCompleteKeypointAlignment();
+      const anchor = hasCompleteKeypoints ? keypoints[0] : { x: w / 2, y: h / 2 };
+      const shifts = rawFrameCanvases.map((_, index) => {
+        const manualOffset = manualFrameOffsets[index] || { dx: 0, dy: 0 };
+        if (!hasCompleteKeypoints) {
+          return { dx: manualOffset.dx, dy: manualOffset.dy };
+        }
+        return {
+          dx: anchor.x - keypoints[index].x + manualOffset.dx,
+          dy: anchor.y - keypoints[index].y + manualOffset.dy
+        };
+      });
+
+      const commonRect = getCommonVisibleRect(w, h, shifts);
+      const baseCropRect = cropRectToAspect(commonRect, aspect, anchor);
+      return { w, h, anchor, shifts, commonRect, baseCropRect, hasCompleteKeypoints };
+    }
+
+    function applyManualFramingToRect(baseRect, boundsRect) {
+      const zoom = clamp(framingZoom || 1, 1, 4);
+      const cropWidth = baseRect.width / zoom;
+      const cropHeight = baseRect.height / zoom;
+      const centerX = baseRect.x + baseRect.width / 2 + framingOffsetX;
+      const centerY = baseRect.y + baseRect.height / 2 + framingOffsetY;
+      const x = clamp(centerX - cropWidth / 2, boundsRect.x, boundsRect.x + boundsRect.width - cropWidth);
+      const y = clamp(centerY - cropHeight / 2, boundsRect.y, boundsRect.y + boundsRect.height - cropHeight);
+      return { x, y, width: cropWidth, height: cropHeight };
+    }
+
+    function getFramedCropRect(aspect = getExportPreset().aspectRatio) {
+      const alignmentData = getAlignmentData(aspect);
+      if (!alignmentData) return null;
+      return applyManualFramingToRect(alignmentData.baseCropRect, alignmentData.commonRect);
+    }
+
+    function getCanvasClientScale() {
+      const rect = canvas.getBoundingClientRect();
+      return {
+        rect,
+        scaleX: rect.width ? canvas.width / rect.width : 1,
+        scaleY: rect.height ? canvas.height / rect.height : 1
+      };
+    }
+
+    function beginFramingDrag(event) {
+      if (!canUseManualFraming() || event.button !== 0) return;
+      isFramingDragActive = true;
+      framingDragStartX = event.clientX;
+      framingDragStartY = event.clientY;
+      framingStartOffsetX = framingOffsetX;
+      framingStartOffsetY = framingOffsetY;
+      updateFramingCursorState();
+      event.preventDefault();
+    }
+
+    function continueFramingDrag(event) {
+      if (!isFramingDragActive || !canUseManualFraming()) return;
+      const cropRect = getFramedCropRect();
+      if (!cropRect) return;
+      const { rect } = getCanvasClientScale();
+      const scaleX = rect.width ? cropRect.width / rect.width : 1;
+      const scaleY = rect.height ? cropRect.height / rect.height : 1;
+      const dx = event.clientX - framingDragStartX;
+      const dy = event.clientY - framingDragStartY;
+      framingOffsetX = framingStartOffsetX - dx * scaleX;
+      framingOffsetY = framingStartOffsetY - dy * scaleY;
+      scheduleFramingRefresh();
+    }
+
+    function endFramingDrag() {
+      if (!isFramingDragActive) return;
+      isFramingDragActive = false;
+      updateFramingCursorState();
+    }
+
+    function handleFramingWheel(event) {
+      if (!canUseManualFraming()) return;
+      event.preventDefault();
+      const previousRect = getFramedCropRect();
+      if (!previousRect) return;
+
+      const rect = canvas.getBoundingClientRect();
+      const pointerX = rect.width ? (event.clientX - rect.left) / rect.width : 0.5;
+      const pointerY = rect.height ? (event.clientY - rect.top) / rect.height : 0.5;
+      const sourceX = previousRect.x + previousRect.width * pointerX;
+      const sourceY = previousRect.y + previousRect.height * pointerY;
+
+      const zoomFactor = event.deltaY < 0 ? 1.1 : 0.9;
+      framingZoom = clamp(framingZoom * zoomFactor, 1, 4);
+
+      const alignmentData = getAlignmentData();
+      const nextRect = applyManualFramingToRect(alignmentData.baseCropRect, alignmentData.commonRect);
+      const nextCenterX = sourceX - nextRect.width * pointerX;
+      const nextCenterY = sourceY - nextRect.height * pointerY;
+      framingOffsetX += nextCenterX - nextRect.x;
+      framingOffsetY += nextCenterY - nextRect.y;
+
+      scheduleFramingRefresh();
     }
 
     function getCommonVisibleRect(w, h, shifts) {
@@ -2863,11 +3015,13 @@
       applyKeypointsBtn.disabled = true;
       clearKeypointsBtn.disabled = false;
       generateBtn.disabled = false;
+      resetManualFraming();
       rebuildFinalFrames();
       renderFramesList();
       updateFineAdjustControls();
       startPreview();
-      setStatus('Pontos aplicados. O preview e a exportação agora usam alinhamento e crop vertical Full HD sem bordas pretas.');
+      updateFramingCursorState();
+      setStatus('Pontos aplicados. Se quiser ajustar o enquadramento, mova a imagem no preview com o mouse e use o scroll para dar zoom ou tirar zoom.');
     }
 
     function clearKeypoints(shouldRestartPreview) {
@@ -2880,6 +3034,7 @@
       selectedAdjustFrame = 0;
       previewMode = 'animated';
       fineAdjustMinimized = true;
+      resetManualFraming();
       canvas.classList.remove('keypoint-mode');
       keypointPanel.classList.remove('active');
       applyKeypointsBtn.disabled = true;
@@ -3002,6 +3157,7 @@
       emptyState.style.display = 'none';
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.drawImage(frameCanvas, 0, 0);
+      updateFramingCursorState();
     }
 
     function startPreview() {
@@ -3376,6 +3532,7 @@
       selectedAdjustFrame = 0;
       previewMode = 'animated';
       fineAdjustMinimized = true;
+      resetManualFraming();
       fileInput.value = '';
       customLut = null;
       customLutInput.value = '';

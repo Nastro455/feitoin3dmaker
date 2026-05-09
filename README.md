@@ -97,3 +97,13 @@ Adicionada a opção "Glow / luz dos sonhos" na aba Ajustes criativos. A barra v
 ## Atualização — LUT personalizado
 
 Adicionada a opção de carregar LUT personalizado na aba Ajustes criativos. O usuário pode carregar arquivos .CUBE ou .3DL e o LUT é aplicado no preview e nos arquivos exportados em GIF, MP4, MOV e JPG alto.
+
+
+## Atualização — Intensidade do LUT
+
+O controle de intensidade do efeito agora também atua sobre o LUT personalizado, permitindo misturar o visual original com o LUT carregado de forma mais suave ou mais intensa.
+
+
+## Atualização — Controle manual de enquadramento
+
+Depois que os pontos são aplicados, o usuário pode ajustar o enquadramento diretamente no preview: arrastando com o mouse para reposicionar a imagem e usando o scroll para dar zoom ou tirar zoom. Esse ajuste afeta o preview e também a exportação final.
