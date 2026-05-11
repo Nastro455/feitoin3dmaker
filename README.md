@@ -115,3 +115,12 @@ O controle manual de enquadramento agora também funciona no mobile:
 - 2 dedos em pinça para dar zoom ou tirar zoom.
 
 A versão desktop continua usando mouse para mover e scroll para zoom.
+
+## Atualização — Botões de download
+
+Adicionados botões de destaque no rodapé para baixar a versão desktop:
+
+- Windows: https://drive.google.com/uc?export=download&id=1oNmfnYf6lIPkR9rqdCOs4RryNkkGTEJN
+- Mac: https://drive.google.com/uc?export=download&id=1pRM95UF7akYCbUZcQTYI8BoHcodnYIG4
+
+Os botões aparecem acima do crédito do desenvolvedor e usam ícones SVG desenhados para cada sistema.

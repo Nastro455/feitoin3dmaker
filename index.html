@@ -882,6 +882,92 @@
       margin-top: 12px;
     }
 
+    .app-download-box {
+      margin: 30px auto 18px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: rgba(11, 31, 56, 0.88);
+      box-shadow: 0 20px 70px rgba(0,0,0,.28);
+      text-align: center;
+    }
+
+    .app-download-box h2 {
+      margin: 0 0 6px;
+      font-size: clamp(22px, 3vw, 34px);
+      letter-spacing: -0.04em;
+      color: var(--text);
+    }
+
+    .app-download-box p {
+      margin: 0 auto 16px;
+      max-width: 720px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .app-download-actions {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    .system-download-link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      min-height: 64px;
+      padding: 14px 18px;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,.18);
+      background: linear-gradient(135deg, rgba(30,155,255,.92), rgba(8,73,135,.92));
+      color: #fff;
+      text-decoration: none;
+      font-weight: 900;
+      box-shadow: 0 14px 36px rgba(0,0,0,.26);
+      transition: .2s ease;
+    }
+
+    .system-download-link:hover {
+      transform: translateY(-2px);
+      filter: brightness(1.06);
+      border-color: rgba(255,255,255,.42);
+    }
+
+    .system-download-link.mac {
+      background: linear-gradient(135deg, rgba(255,255,255,.95), rgba(190,205,222,.92));
+      color: #061426;
+    }
+
+    .system-download-link svg {
+      width: 32px;
+      height: 32px;
+      flex: 0 0 auto;
+    }
+
+    .system-download-link span {
+      display: block;
+      line-height: 1.2;
+    }
+
+    .system-download-link small {
+      display: block;
+      font-weight: 700;
+      opacity: .78;
+      font-size: 12px;
+      margin-top: 2px;
+    }
+
+    .download-note {
+      margin-top: 12px !important;
+      font-size: 12px !important;
+      color: var(--muted) !important;
+    }
+
     .site-footer {
       margin: 26px auto 0;
       text-align: center;
@@ -926,6 +1012,27 @@
       .social-link {
         font-size: 12px;
         padding: 7px 10px;
+      }
+
+      .app-download-box {
+        margin-top: 22px;
+        padding: 14px;
+        border-radius: 20px;
+      }
+
+      .app-download-actions {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+
+      .system-download-link {
+        min-height: 58px;
+        padding: 12px 14px;
+      }
+
+      .system-download-link svg {
+        width: 28px;
+        height: 28px;
       }
 
       header h1 {
@@ -1430,6 +1537,29 @@
     </section>
 
     <footer class="site-footer">
+      <section class="app-download-box" aria-label="Baixar Feitoin3d Maker">
+        <h2>Baixe o Feitoin3d Maker</h2>
+        <p>Use a versão desktop para editar, ajustar e exportar suas fotos 3D direto no computador.</p>
+
+        <div class="app-download-actions">
+          <a class="system-download-link windows" href="https://drive.google.com/uc?export=download&id=1oNmfnYf6lIPkR9rqdCOs4RryNkkGTEJN" target="_blank" rel="noopener noreferrer">
+            <svg viewBox="0 0 64 64" aria-hidden="true">
+              <path fill="currentColor" d="M6 10.5 29 7v24H6V10.5Zm27-4 25-3.8V31H33V6.5ZM6 35h23v22L6 53.6V35Zm27 0h25v25.3L33 56.5V35Z"/>
+            </svg>
+            <span>Baixar para Windows<small>Instalador .exe</small></span>
+          </a>
+
+          <a class="system-download-link mac" href="https://drive.google.com/uc?export=download&id=1pRM95UF7akYCbUZcQTYI8BoHcodnYIG4" target="_blank" rel="noopener noreferrer">
+            <svg viewBox="0 0 64 64" aria-hidden="true">
+              <path fill="currentColor" d="M41.7 8.5c-2.3 1.3-4.1 3.3-5.2 5.7-1 2.1-.9 4.1-.8 4.8 2.4.1 4.9-1.4 6.3-3.2 1.5-1.9 2.5-4.6 2.2-7.2-.8-.1-1.6-.1-2.5-.1ZM49.6 43.1c-1.2 2.8-1.8 4.1-3.4 6.5-2.2 3.4-5.2 7.7-9 7.7-3.3 0-4.2-2.2-8.7-2.2-4.5 0-5.5 2.1-8.8 2.2-3.8.1-6.7-3.9-8.9-7.3-6.1-9.5-6.8-20.6-3-26.5 2.7-4.2 6.9-6.7 10.9-6.7 4.1 0 6.6 2.2 10 2.2 3.3 0 5.2-2.2 9.9-2.2 3.5 0 7.3 1.9 10 5.3-8.8 4.8-7.4 17.4 1 21Z"/>
+            </svg>
+            <span>Baixar para Mac<small>Arquivo .dmg</small></span>
+          </a>
+        </div>
+
+        <p class="download-note">Se o Google Drive exibir uma confirmação de segurança, clique em “Fazer download mesmo assim”.</p>
+      </section>
+
       Desenvolvido por <a href="https://www.instagram.com/omateusmorales/" target="_blank" rel="noopener noreferrer">Mateus Morales - @omateusmorales</a>
     </footer>
   </main>
