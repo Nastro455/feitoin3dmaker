@@ -121,6 +121,13 @@ A versão desktop continua usando mouse para mover e scroll para zoom.
 Adicionados botões de destaque no rodapé para baixar a versão desktop:
 
 - Windows: https://drive.google.com/uc?export=download&id=1oNmfnYf6lIPkR9rqdCOs4RryNkkGTEJN
-- Mac: https://drive.google.com/uc?export=download&id=1pRM95UF7akYCbUZcQTYI8BoHcodnYIG4
+- Mac: https://drive.google.com/uc?export=download&id=1ToLK8iyH-6f2GxnzdFk3xFON8Mcpg4bO
 
 Os botões aparecem acima do crédito do desenvolvedor e usam ícones SVG desenhados para cada sistema.
+
+
+## Atualização — Link Mac
+
+Link direto atualizado para Mac:
+
+https://drive.google.com/uc?export=download&id=1ToLK8iyH-6f2GxnzdFk3xFON8Mcpg4bO
