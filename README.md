@@ -1,133 +1,139 @@
-# Feito In 3D Maker
+# Feitoin3d Video Maker
 
-Versão pronta para GitHub Pages.
+Ferramenta experimental dedicada para montagem de vídeos 3D gravados com a lente Feito In 3D.
 
-## Arquivos
+## Recursos principais
 
-- `index.html`: ferramenta completa em HTML, CSS e JavaScript.
+- Upload de vídeo MP4, MOV ou WebM;
+- Suporte para 2, 3 ou 4 quadros;
+- Quadros lado a lado ou empilhados;
+- Seleção de ponto de referência;
+- Alinhamento e enquadramento manual;
+- Controle de velocidade do efeito 3D;
+- Exportação em WebM ou MP4 quando suportado pelo navegador;
+- Ajustes criativos: efeito de cor, exposição, glow e RGB displaced.
 
-## Atualizações desta versão
+## Como publicar no GitHub Pages
 
-- Exportação em GIF, MP4 e MOV.
-- Opção de formato da tela:
-  - Vertical Full HD 9:16
-  - 4:3 clássico
-- Controle separado entre velocidade do movimento e duração final do arquivo.
-- Três opções de qualidade de exportação:
-  - Leve / rápido
-  - Padrão
-  - Alta qualidade
-- Resoluções por formato:
-  - Vertical: 540×960, 720×1280 ou 1080×1920
-  - 4:3: 640×480, 960×720 ou 1440×1080
-- Correção no carregamento do GIF usando worker em Blob para evitar travamento comum com worker externo.
-- Botão de download na lateral e sobre o preview após exportar.
+1. Crie um novo repositório no GitHub.
+2. Envie o arquivo `index.html` para a raiz do repositório.
+3. Vá em Settings > Pages.
+4. Selecione a branch principal e a pasta raiz.
+5. Aguarde o link do GitHub Pages.
 
-## Publicação no GitHub Pages
+## Observações
 
-1. Suba o `index.html` na raiz do repositório.
-2. Vá em Settings > Pages.
-3. Escolha Deploy from a branch.
-4. Selecione a branch `main` e a pasta `/root`.
-5. Salve e aguarde o link do GitHub Pages.
-
-## Observação
-
-GIF em alta qualidade pode gerar arquivos muito pesados. Para vídeos longos, MP4 costuma ser mais leve e mais estável.
+Esta é uma versão MVP. Para melhor performance, comece com vídeos curtos de 5 a 10 segundos.
 
 
-## Atualização de navegação
+## Atualização — Play/Pause no preview
 
-Os botões Exportar, Limpar alinhamento, Limpar tudo e Baixar arquivo ficam na coluna direita, abaixo do visualizador, para facilitar o fluxo de uso.
-
-
-## Ajuste mobile
-
-Na versão mobile, o preview aparece acima da área de carregamento da foto para facilitar a visualização do resultado antes dos controles.
-
-## Atualização — controle de exposição
-
-Adicionada uma barra de Exposição / luz da imagem logo abaixo da intensidade do efeito de cor. O ajuste aparece no preview e também é aplicado no GIF, MP4 ou MOV exportado.
+- Adicionado botão de play/pause no preview.
+- Ao clicar em selecionar ponto de referência, o preview pausa automaticamente para marcação mais precisa.
 
 
-## Atualização — Foto Horizontal e Foto Vertical
+## Atualização — Correção de pontos por quadro
 
-A ferramenta agora aceita dois tipos de imagem de entrada:
-
-- Foto Horizontal: quadros lado a lado.
-- Foto Vertical: quadros empilhados.
-
-O seletor fica no grupo "Carregamento e ajuste de ponto". O restante da ferramenta continua usando o mesmo fluxo de alinhamento, efeitos, exposição, RGB, marca d'água, ajuste fino e exportação em GIF, MP4 ou MOV.
-
-## Atualização — Exportação horizontal
-
-A ferramenta agora também exporta em:
-
-- Horizontal Full HD — 1920 × 1080
-- Horizontal 4K — 3840 × 2160
-
-Essas opções ficam no seletor "Formato da tela". A orientação da foto de entrada continua independente do formato final exportado.
+- Cada perspectiva agora exibe o ponto marcado no thumbnail.
+- O usuário pode clicar em qualquer quadro para corrigir/definir a posição do ponto naquela perspectiva.
+- O quadro selecionado fica destacado e o alinhamento é recalculado quando necessário.
 
 
-## Atualização — Sinal visual de ponto automático
+## Atualização — Painel minimizado de ajuste fino no preview
 
-Ao clicar em Selecionar pontos automáticos, o preview escurece levemente e exibe uma mira pulsante com instrução para o usuário clicar no ponto principal da imagem. O aviso desaparece quando o mouse entra no preview ou ao tocar/clicar na área.
-
-## Atualização — Ajuste fino e aviso de ponto
-
-- A guia de ajuste fino agora abre minimizada por padrão.
-- O aviso visual para clicar no ponto automático aparece somente na primeira vez que o usuário usa esse recurso no navegador.
-
-## Atualização — JPG alto e botão de compra
-
-- Adicionado botão "Exportar JPG alto" na área de ações do arquivo.
-- O JPG é gerado em alta qualidade, usando o formato de tela selecionado.
-- Adicionado botão "Compre sua lente" no cabeçalho, apontando para a página do produto no Mercado Livre.
-- Depois que o primeiro ponto é marcado e os pontos automáticos são sugeridos, o botão "Aplicar pontos" pisca para indicar a próxima ação.
-
-## Atualização — Nitidez
-
-Adicionada a opção "Nitidez da imagem" na aba Ajustes criativos. A barra vai de 0% a 100% e ajuda a recuperar definição quando a foto está levemente desfocada. O ajuste aparece no preview e também no GIF, MP4, MOV e JPG exportados.
+- Adicionado painel flutuante minimizado no preview para ajuste fino dos pontos.
+- O painel permite escolher Frame 1, 2, 3 ou 4 e mover o ponto com setas.
+- Ao abrir o painel, o ponto selecionado também aparece sobre o preview para conferência.
 
 
-## Atualização — Glow
+## Correção — Upload de vídeo
 
-Adicionada a opção "Glow / luz dos sonhos" na aba Ajustes criativos. A barra vai de 0% a 100% e cria um brilho suave nos pontos de luz da imagem, dando um aspecto mais sonhador. O ajuste aparece no preview e também no GIF, MP4, MOV e JPG exportados.
+- O carregamento agora registra os eventos de leitura antes de definir o arquivo de vídeo.
+- Adicionado aviso de erro quando o navegador não consegue ler o formato/codec do vídeo.
 
-## Atualização — LUT personalizado
+## Atualização — Rastreamento de ponto no vídeo
 
-Adicionada a opção de carregar LUT personalizado na aba Ajustes criativos. O usuário pode carregar arquivos .CUBE ou .3DL e o LUT é aplicado no preview e nos arquivos exportados em GIF, MP4, MOV e JPG alto.
-
-
-## Atualização — Intensidade do LUT
-
-O controle de intensidade do efeito agora também atua sobre o LUT personalizado, permitindo misturar o visual original com o LUT carregado de forma mais suave ou mais intensa.
-
-
-## Atualização — Controle manual de enquadramento
-
-Depois que os pontos são aplicados, o usuário pode ajustar o enquadramento diretamente no preview: arrastando com o mouse para reposicionar a imagem e usando o scroll para dar zoom ou tirar zoom. Esse ajuste afeta o preview e também a exportação final.
-
-## Atualização — Enquadramento manual no mobile
-
-O controle manual de enquadramento agora também funciona no mobile:
-- 1 dedo para mover a imagem;
-- 2 dedos em pinça para dar zoom ou tirar zoom.
-
-A versão desktop continua usando mouse para mover e scroll para zoom.
-
-## Atualização — Botões de download
-
-Adicionados botões de destaque no rodapé para baixar a versão desktop:
-
-- Windows: https://drive.google.com/uc?export=download&id=1oNmfnYf6lIPkR9rqdCOs4RryNkkGTEJN
-- Mac: https://drive.google.com/uc?export=download&id=1ToLK8iyH-6f2GxnzdFk3xFON8Mcpg4bO
-
-Os botões aparecem acima do crédito do desenvolvedor e usam ícones SVG desenhados para cada sistema.
+- Adicionada opção **Rastrear ponto durante a exportação**.
+- A ferramenta cria um pequeno template do ponto marcado e tenta acompanhá-lo em cada perspectiva ao longo do vídeo.
+- Isso melhora a estabilização do efeito 3D quando existe movimento de câmera ou do objeto.
+- Ainda é um tracking experimental: funciona melhor com pontos de alto contraste, bem iluminados e vídeos curtos.
 
 
-## Atualização — Link Mac
+## Correção — Upload após painel minimizado
 
-Link direto atualizado para Mac:
+Corrigido um conflito em que as funções do painel de ajuste de pontos ficavam presas dentro de um evento de slider, impedindo o carregamento correto do vídeo em alguns navegadores.
 
-https://drive.google.com/uc?export=download&id=1ToLK8iyH-6f2GxnzdFk3xFON8Mcpg4bO
+## Atualização — Tracking V2
+
+- O tracking agora usa uma área maior ao redor do ponto marcado.
+- A busca do ponto acontece em múltiplas etapas: ampla, média e ajuste fino.
+- O template do ponto é atualizado dinamicamente durante a exportação, para acompanhar mudanças de luz e movimento.
+- Foi adicionada suavização para reduzir tremidas entre frames.
+
+## Redesign de lógica — Travar objeto principal
+
+Esta versão muda a lógica central da ferramenta:
+
+- O ponto marcado passa a ser tratado como **ponto âncora**.
+- A ferramenta calcula offsets fixos entre as perspectivas.
+- Durante a alternância, o objeto principal permanece travado.
+- O fundo se desloca entre as perspectivas, criando o efeito 3D mais satisfatório.
+- O tracking dinâmico ficou opcional e experimental, para casos em que o assunto muda muito de posição.
+
+Fluxo ideal:
+1. Pausar no melhor frame.
+2. Marcar o ponto âncora no objeto principal.
+3. Corrigir o ponto em cada perspectiva.
+4. Aplicar alinhamento.
+5. Exportar com “Travar objeto principal” ativado.
+
+
+## Correção — Trava do assunto em ponto fixo de tela
+
+A lógica anterior ainda alinhava as perspectivas entre si, mas não mantinha o ponto âncora em uma posição fixa ao longo do tempo.  
+Agora, durante a exportação:
+
+- o ponto âncora vira um alvo fixo de tela;
+- cada perspectiva é deslocada para levar o ponto atual até esse alvo;
+- isso reduz o “samba” do assunto e faz o fundo se mover ao redor dele.
+
+Para melhores resultados:
+- marque um ponto pequeno e contrastado;
+- corrija esse ponto em todas as perspectivas;
+- ative “Travar objeto principal”;
+- ative o tracking experimental apenas se o assunto realmente se mover ao longo do vídeo.
+
+
+## Redesign — Imagem 2 fixa + bordas em movimento
+
+A lógica foi redesenhada novamente:
+
+- A **perspectiva 2** é sempre a imagem principal.
+- A imagem 2 preenche o centro e mantém o assunto fiel.
+- As outras perspectivas entram apenas nas bordas.
+- O movimento 3D acontece nas laterais/fundo, evitando o efeito de “sambar”.
+- Foi adicionado controle de intensidade das bordas 3D.
+
+Essa lógica é mais próxima do resultado desejado: assunto estável e fundo com paralaxe.
+
+
+## Atualização — Match automático entre perspectivas
+
+- Ao marcar o ponto no preview, a ferramenta interpreta o clique como ponto da **perspectiva 2**, que é a imagem principal.
+- A ferramenta tenta encontrar automaticamente o mesmo ponto nas outras perspectivas.
+- Os thumbnails mostram o ponto encontrado em cada quadro.
+- O usuário ainda pode corrigir manualmente pelo painel minimizado ou clicando nos thumbnails.
+
+
+## Atualização — Interpolação de quadros
+
+Foi adicionada uma nova opção na aba **Recursos criativos**:
+
+- **Interpolação de quadros**
+- **Qualidade da interpolação**: Suave, Média e Alta
+
+Como funciona:
+- A ferramenta suaviza a transição entre as perspectivas.
+- Isso deixa o movimento do GIF/vídeo mais fluido.
+- A interpolação vale tanto para o preview quanto para a exportação.
+- O resultado tende a ficar mais profissional, principalmente quando o usuário quer um wiggle menos “duro”.
