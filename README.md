@@ -132,10 +132,9 @@ Link direto atualizado para Mac:
 
 https://drive.google.com/uc?export=download&id=1ToLK8iyH-6f2GxnzdFk3xFON8Mcpg4bO
 
-
 ## Atualização — Interpolação de quadros na ferramenta de imagens
 
-Foi adicionada uma nova opção na aba **Recursos criativos**:
+Foi adicionada uma nova opção na aba **Ajustes criativos**:
 
 - **Interpolação de quadros** com controle em barra (`0%` a `100%`)
 

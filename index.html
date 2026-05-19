@@ -3399,7 +3399,7 @@
     }
 
     function getPlaybackFrames() {
-      const baseFrames = getPlaybackFrames();
+      const baseFrames = getBasePlaybackFrames();
       const interpolationSteps = getInterpolationStepCount();
 
       if (!interpolationSteps || baseFrames.length <= 1) return baseFrames;
@@ -3445,7 +3445,7 @@
     }
 
     function buildGifExportSequence() {
-      const baseFrames = getBasePlaybackFrames();
+      const baseFrames = getPlaybackFrames();
       const frameDelay = getMovementFrameDelay();
       const selectedDuration = getSelectedGifDurationMs();
 
