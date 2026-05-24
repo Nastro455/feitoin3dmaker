@@ -4,6 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Feitoin3d Maker</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="shortcut icon" href="favicon.svg" />
+  <link rel="apple-touch-icon" href="favicon.svg" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.js"></script>
   <style>
     :root {
@@ -1447,15 +1450,6 @@
               </div>
 
               <div class="field">
-                <label for="frameInterpolationAmount">Interpolação de quadros</label>
-                <div class="range-row">
-                  <input id="frameInterpolationAmount" type="range" min="0" max="100" value="0" step="5" />
-                  <output id="frameInterpolationAmountValue">0%</output>
-                </div>
-                <p class="mini-note">Cria quadros intermediários entre as imagens para deixar o GIF ou vídeo mais fluido. Em 0%, a animação mantém o comportamento original.</p>
-              </div>
-
-              <div class="field">
                 <label>Marca d'água personalizada nas bordas</label>
                 <div class="switch-row">
                   <label class="switch-control" for="watermarkEnabled">
@@ -1664,8 +1658,6 @@
     const glowAdjustValue = document.querySelector('#glowAdjustValue');
     const rgbDisplacementInput = document.querySelector('#rgbDisplacement');
     const rgbDisplacementValue = document.querySelector('#rgbDisplacementValue');
-    const frameInterpolationAmountInput = document.querySelector('#frameInterpolationAmount');
-    const frameInterpolationAmountValue = document.querySelector('#frameInterpolationAmountValue');
     const watermarkEnabledInput = document.querySelector('#watermarkEnabled');
     const watermarkTextField = document.querySelector('#watermarkTextField');
     const watermarkTextInput = document.querySelector('#watermarkText');
@@ -1929,17 +1921,6 @@
         setStatus(`Deslocamento RGB 3D ajustado para ${rgbDisplacementInput.value}px.`);
       } else {
         setStatus('Deslocamento RGB 3D desativado.');
-      }
-    });
-
-    frameInterpolationAmountInput.addEventListener('input', () => {
-      frameInterpolationAmountValue.textContent = `${frameInterpolationAmountInput.value}%`;
-      if (!rawFrameCanvases.length || selectingKeypoints) return;
-      startPreview();
-      if (Number(frameInterpolationAmountInput.value) > 0) {
-        setStatus(`Interpolação de quadros ajustada para ${frameInterpolationAmountInput.value}%.`);
-      } else {
-        setStatus('Interpolação de quadros desativada.');
       }
     });
 
@@ -3375,60 +3356,12 @@
       return [...finalFrameCanvases, ...backwards];
     }
 
-    function getInterpolationStepCount() {
-      const value = Number(frameInterpolationAmountInput.value);
-      return Math.max(0, Math.round(value / 20));
-    }
-
-    function easeInterpolation(t) {
-      return t * t * (3 - 2 * t);
-    }
-
-    function createBlendedFrame(frameA, frameB, alpha) {
-      const output = document.createElement('canvas');
-      output.width = frameA.width;
-      output.height = frameA.height;
-      const outputCtx = output.getContext('2d');
-      outputCtx.clearRect(0, 0, output.width, output.height);
-      outputCtx.globalAlpha = 1;
-      outputCtx.drawImage(frameA, 0, 0);
-      outputCtx.globalAlpha = alpha;
-      outputCtx.drawImage(frameB, 0, 0);
-      outputCtx.globalAlpha = 1;
-      return output;
-    }
-
     function getPlaybackFrames() {
-      const baseFrames = getBasePlaybackFrames();
-      const interpolationSteps = getInterpolationStepCount();
-
-      if (!interpolationSteps || baseFrames.length <= 1) return baseFrames;
-
-      const playbackFrames = [];
-
-      for (let index = 0; index < baseFrames.length; index++) {
-        const currentFrame = baseFrames[index];
-        const nextFrame = baseFrames[(index + 1) % baseFrames.length];
-
-        playbackFrames.push(currentFrame);
-
-        if (!nextFrame || nextFrame === currentFrame) continue;
-
-        for (let step = 1; step <= interpolationSteps; step++) {
-          const rawAlpha = step / (interpolationSteps + 1);
-          const alpha = easeInterpolation(rawAlpha);
-          playbackFrames.push(createBlendedFrame(currentFrame, nextFrame, alpha));
-        }
-      }
-
-      return playbackFrames;
+      return getBasePlaybackFrames();
     }
 
     function getMovementFrameDelay() {
-      const baseDelay = Number(delayInput.value);
-      const interpolationSteps = getInterpolationStepCount();
-      const effectiveDelay = baseDelay / (interpolationSteps + 1);
-      return Math.max(20, Math.round(effectiveDelay));
+      return Number(delayInput.value);
     }
 
     function getSelectedGifDurationMs() {
@@ -3445,7 +3378,7 @@
     }
 
     function buildGifExportSequence() {
-      const baseFrames = getPlaybackFrames();
+      const baseFrames = getBasePlaybackFrames();
       const frameDelay = getMovementFrameDelay();
       const selectedDuration = getSelectedGifDurationMs();
 
@@ -3537,7 +3470,7 @@
         return;
       }
 
-      const playbackFrames = getPlaybackFrames();
+      const playbackFrames = getBasePlaybackFrames();
       const frameDelay = getMovementFrameDelay();
       if (!playbackFrames.length) return;
 
@@ -3800,7 +3733,7 @@
         setStatus(`${format.toUpperCase()} ${getExportPreset().aspectLabel} ${getExportPreset().label} pronto! Tempo total de exportação: ${formatElapsed(performance.now() - exportStart)}.`);
       };
 
-      const playbackFrames = getPlaybackFrames();
+      const playbackFrames = getBasePlaybackFrames();
       const movementFrameDelay = getMovementFrameDelay();
       const videoDurationMs = getVideoDurationMs();
       const startedAt = performance.now();

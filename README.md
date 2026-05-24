@@ -132,15 +132,13 @@ Link direto atualizado para Mac:
 
 https://drive.google.com/uc?export=download&id=1ToLK8iyH-6f2GxnzdFk3xFON8Mcpg4bO
 
-## Atualização — Interpolação de quadros na ferramenta de imagens
+## Atualização — Favicon personalizado
 
-Foi adicionada uma nova opção na aba **Ajustes criativos**:
+A página agora inclui um favicon próprio para a guia do navegador.
 
-- **Interpolação de quadros** com controle em barra (`0%` a `100%`)
+- Arquivo adicionado: `favicon.svg`
+- Visual: símbolo com **3 lentes lado a lado**
+- Aplicação: aparece na aba do navegador no lugar do ícone padrão do GitHub Pages
 
-Como funciona:
-- em 0%, a animação usa apenas os frames originais;
-- conforme a barra sobe, a ferramenta cria frames intermediários entre as imagens;
-- isso deixa o preview e a exportação mais fluidos;
-- a lógica vale para GIF, MP4 e MOV;
-- o tempo total do movimento é preservado, mudando apenas a suavidade.
+Para funcionar corretamente no GitHub Pages, mantenha o arquivo `favicon.svg` na mesma raiz do `index.html`.
+
