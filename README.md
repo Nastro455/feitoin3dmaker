@@ -153,3 +153,12 @@ Foi adicionada uma opção chaveada para ajudar o usuário a escolher o melhor p
 
 ### Favicon
 Mantenha também o arquivo `favicon.svg` na raiz do projeto para a guia personalizada com o símbolo de 3 lentes.
+
+## Correção — Preview preto e clique nos pontos sugeridos
+
+- Corrigido um erro na interpolação que fazia o preview ficar preto/travado após carregar a imagem.
+- O preview agora volta a usar corretamente os frames base antes de criar os frames intermediários.
+- No modo **Auxílio inteligente de pontos**, ao clicar em um ponto sugerido:
+  - a ferramenta tenta mapear o ponto nos outros frames;
+  - o preview do GIF já começa a rodar automaticamente;
+  - o botão **Aplicar pontos** fica habilitado para confirmação.

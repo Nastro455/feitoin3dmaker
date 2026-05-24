@@ -1781,6 +1781,7 @@
 
     inputLayoutSelect.addEventListener('change', () => {
       if (sourceImage) {
+        candidateAssistPoints = [];
         clearKeypoints(false);
         processImage();
       }
@@ -3370,10 +3371,24 @@
           clearKeypointsBtn.disabled = false;
 
           if (candidateAssistToggle?.checked) {
-            finishKeypointSelection();
+            selectingKeypoints = false;
+            canvas.classList.remove('keypoint-mode');
+            keypointPanel.classList.remove('active');
+            keypointBtn.disabled = false;
+            applyKeypointsBtn.disabled = false;
+            startApplyKeypointsPulse();
+            clearKeypointsBtn.disabled = false;
+            generateBtn.disabled = false;
+            exportJpgBtn.disabled = false;
+            resetManualFraming();
+            rebuildFinalFrames();
+            renderFramesList();
+            updateFineAdjustControls();
+            startPreview();
+            updateFramingCursorState();
             setStatus(suggestedPoint
-              ? 'Ponto sugerido aplicado. O preview do GIF já está pronto.'
-              : 'Ponto aplicado. O preview do GIF já está pronto.'
+              ? 'Ponto sugerido encontrado. O preview do GIF já está rodando — clique em “Aplicar pontos” para confirmar.'
+              : 'Ponto aplicado. O preview do GIF já está rodando — clique em “Aplicar pontos” para confirmar.'
             );
             return;
           }
@@ -3564,7 +3579,7 @@
     }
 
     function getPlaybackFrames() {
-      const baseFrames = getPlaybackFrames();
+      const baseFrames = getBasePlaybackFrames();
       const interpolationSteps = getInterpolationStepCount();
 
       if (!interpolationSteps || baseFrames.length <= 1) return baseFrames;
@@ -3704,7 +3719,10 @@
 
       const playbackFrames = getPlaybackFrames();
       const frameDelay = getMovementFrameDelay();
-      if (!playbackFrames.length) return;
+      if (!playbackFrames.length) {
+        if (finalFrameCanvases[0]) drawPreviewFrame(finalFrameCanvases[0]);
+        return;
+      }
 
       frameIndex = 0;
       const draw = () => {
