@@ -1275,6 +1275,18 @@
                 </select>
               </div>
 
+              <div class="field">
+                <label>3.1 Auxílio inteligente de pontos</label>
+                <div class="switch-row">
+                  <label class="switch-control" for="candidateAssistToggle">
+                    <input id="candidateAssistToggle" type="checkbox" />
+                    <span class="switch-slider"></span>
+                  </label>
+                  <span class="switch-label-text">Mapear possíveis pontos iguais no 1º frame e permitir clique assistido</span>
+                </div>
+                <p class="mini-note">Quando ativado, o site avalia detalhes fortes no primeiro frame, mostra pontos sugeridos e, ao clicar em um deles, já monta o preview do GIF automaticamente.</p>
+              </div>
+
               <div class="actions">
                 <button class="blue" id="keypointBtn" disabled>4. Selecionar pontos automáticos</button>
                 <button class="green" id="applyKeypointsBtn" type="button" disabled>5. Aplicar pontos</button>
@@ -1447,6 +1459,15 @@
                   <input id="rgbDisplacement" type="range" min="0" max="20" value="0" step="1" />
                   <output id="rgbDisplacementValue">0px</output>
                 </div>
+              </div>
+
+              <div class="field">
+                <label for="frameInterpolationAmount">Interpolação de tempo / quadros</label>
+                <div class="range-row">
+                  <input id="frameInterpolationAmount" type="range" min="0" max="100" value="0" step="5" />
+                  <output id="frameInterpolationAmountValue">0%</output>
+                </div>
+                <p class="mini-note">Cria quadros intermediários entre as imagens para deixar o GIF ou vídeo mais fluido. Em 0%, a animação mantém o comportamento original.</p>
               </div>
 
               <div class="field">
@@ -1633,6 +1654,7 @@
     const dropzone = document.querySelector('#dropzone');
     const inputLayoutSelect = document.querySelector('#inputLayout');
     const frameCountSelect = document.querySelector('#frameCount');
+    const candidateAssistToggle = document.querySelector('#candidateAssistToggle');
     const delayInput = document.querySelector('#delay');
     const delayValue = document.querySelector('#delayValue');
     const boomerangInput = document.querySelector('#boomerang');
@@ -1658,6 +1680,8 @@
     const glowAdjustValue = document.querySelector('#glowAdjustValue');
     const rgbDisplacementInput = document.querySelector('#rgbDisplacement');
     const rgbDisplacementValue = document.querySelector('#rgbDisplacementValue');
+    const frameInterpolationAmountInput = document.querySelector('#frameInterpolationAmount');
+    const frameInterpolationAmountValue = document.querySelector('#frameInterpolationAmountValue');
     const watermarkEnabledInput = document.querySelector('#watermarkEnabled');
     const watermarkTextField = document.querySelector('#watermarkTextField');
     const watermarkTextInput = document.querySelector('#watermarkText');
@@ -1696,6 +1720,7 @@
     let rawFrameCanvases = [];
     let finalFrameCanvases = [];
     let keypoints = [];
+    let candidateAssistPoints = [];
     let selectingKeypoints = false;
     let keypointStep = 0;
     let animationTimer = null;
@@ -1924,8 +1949,34 @@
       }
     });
 
+    frameInterpolationAmountInput.addEventListener('input', () => {
+      frameInterpolationAmountValue.textContent = `${frameInterpolationAmountInput.value}%`;
+      if (!rawFrameCanvases.length || selectingKeypoints) return;
+      startPreview();
+      if (Number(frameInterpolationAmountInput.value) > 0) {
+        setStatus(`Interpolação de tempo ajustada para ${frameInterpolationAmountInput.value}%.`);
+      } else {
+        setStatus('Interpolação de tempo desativada.');
+      }
+    });
+
+    candidateAssistToggle.addEventListener('change', () => {
+      candidateAssistPoints = [];
+      if (selectingKeypoints && keypointStep === 0) {
+        candidateAssistPoints = candidateAssistToggle.checked ? detectCandidateAssistPoints(rawFrameCanvases[0]) : [];
+        renderFramesList();
+        drawKeypointFrame();
+      }
+      setStatus(candidateAssistToggle.checked
+        ? 'Auxílio inteligente de pontos ativado.'
+        : 'Auxílio inteligente de pontos desativado.'
+      );
+    });
+
     watermarkEnabledInput.addEventListener('change', () => {
       watermarkTextField.style.display = watermarkEnabledInput.checked ? 'block' : 'none';
+      frameInterpolationAmountInput.value = '0';
+      frameInterpolationAmountValue.textContent = '0%';
       if (!rawFrameCanvases.length || selectingKeypoints) return;
       rebuildFinalFrames();
       startPreview();
@@ -3058,6 +3109,98 @@
       setStatus(`Ajuste fino do Frame ${selectedAdjustFrame + 1} foi resetado.`);
     }
 
+
+    function getNearestCandidatePoint(point) {
+      if (!candidateAssistPoints.length) return null;
+      const threshold = Math.max(18, rawFrameCanvases[0]?.width ? rawFrameCanvases[0].width * 0.035 : 18);
+      let best = null;
+      let bestDistance = Number.POSITIVE_INFINITY;
+
+      candidateAssistPoints.forEach((candidate) => {
+        const dx = candidate.x - point.x;
+        const dy = candidate.y - point.y;
+        const distance = Math.hypot(dx, dy);
+        if (distance < bestDistance) {
+          bestDistance = distance;
+          best = candidate;
+        }
+      });
+
+      return bestDistance <= threshold ? best : null;
+    }
+
+    function detectCandidateAssistPoints(frameCanvas, maxPoints = 10) {
+      if (!frameCanvas) return [];
+      const { width, height } = frameCanvas;
+      const sampleStep = Math.max(4, Math.round(Math.min(width, height) / 120));
+      const border = Math.max(14, Math.round(Math.min(width, height) * 0.06));
+      const suppressDistance = Math.max(18, Math.round(Math.min(width, height) * 0.09));
+
+      const frameCtx = frameCanvas.getContext('2d');
+      const data = frameCtx.getImageData(0, 0, width, height).data;
+
+      const luminanceAt = (x, y) => {
+        const ix = clamp(Math.round(x), 0, width - 1);
+        const iy = clamp(Math.round(y), 0, height - 1);
+        const index = (iy * width + ix) * 4;
+        return data[index] * 0.299 + data[index + 1] * 0.587 + data[index + 2] * 0.114;
+      };
+
+      const scored = [];
+
+      for (let y = border; y < height - border; y += sampleStep) {
+        for (let x = border; x < width - border; x += sampleStep) {
+          const gx = luminanceAt(x + 2, y) - luminanceAt(x - 2, y);
+          const gy = luminanceAt(x, y + 2) - luminanceAt(x, y - 2);
+          const g1 = luminanceAt(x + 2, y + 2) - luminanceAt(x - 2, y - 2);
+          const g2 = luminanceAt(x + 2, y - 2) - luminanceAt(x - 2, y + 2);
+          const center = luminanceAt(x, y);
+          const contrast = (
+            Math.abs(center - luminanceAt(x + 3, y)) +
+            Math.abs(center - luminanceAt(x - 3, y)) +
+            Math.abs(center - luminanceAt(x, y + 3)) +
+            Math.abs(center - luminanceAt(x, y - 3))
+          ) / 4;
+          const score = Math.abs(gx) + Math.abs(gy) + (Math.abs(g1) + Math.abs(g2)) * 0.5 + contrast * 0.8;
+          if (score > 35) scored.push({ x, y, score });
+        }
+      }
+
+      scored.sort((a, b) => b.score - a.score);
+
+      const selected = [];
+      for (const item of scored) {
+        const tooClose = selected.some((point) => Math.hypot(point.x - item.x, point.y - item.y) < suppressDistance);
+        if (tooClose) continue;
+        selected.push(item);
+        if (selected.length >= maxPoints) break;
+      }
+
+      return selected.map(({ x, y }, index) => ({ x, y, index }));
+    }
+
+    function drawCandidateAssistMarkers(targetCtx) {
+      if (!candidateAssistToggle?.checked || keypointStep !== 0 || keypoints.length || !candidateAssistPoints.length) return;
+
+      candidateAssistPoints.forEach((candidate, index) => {
+        targetCtx.save();
+        targetCtx.fillStyle = 'rgba(79,255,138,0.92)';
+        targetCtx.strokeStyle = '#061426';
+        targetCtx.lineWidth = Math.max(2, targetCtx.canvas.width / 280);
+        targetCtx.beginPath();
+        targetCtx.arc(candidate.x, candidate.y, Math.max(8, targetCtx.canvas.width / 70), 0, Math.PI * 2);
+        targetCtx.fill();
+        targetCtx.stroke();
+
+        targetCtx.fillStyle = '#061426';
+        targetCtx.font = `bold ${Math.max(12, targetCtx.canvas.width / 28)}px Arial`;
+        targetCtx.textAlign = 'center';
+        targetCtx.textBaseline = 'middle';
+        targetCtx.fillText(String(index + 1), candidate.x, candidate.y + 0.5);
+        targetCtx.restore();
+      });
+    }
+
     function renderFramesList() {
       framesList.innerHTML = '';
       rawFrameCanvases.forEach((frame, index) => {
@@ -3070,13 +3213,33 @@
         const thumbCtx = thumb.getContext('2d');
         thumbCtx.drawImage(frame, 0, 0);
 
+        if (candidateAssistToggle?.checked && selectingKeypoints && index === 0 && !keypoints.length && candidateAssistPoints.length) {
+          candidateAssistPoints.forEach((candidate, candidateIndex) => {
+            thumbCtx.save();
+            thumbCtx.fillStyle = 'rgba(79,255,138,0.9)';
+            thumbCtx.strokeStyle = '#061426';
+            thumbCtx.lineWidth = Math.max(2, frame.width / 260);
+            thumbCtx.beginPath();
+            thumbCtx.arc(candidate.x, candidate.y, Math.max(6, frame.width / 80), 0, Math.PI * 2);
+            thumbCtx.fill();
+            thumbCtx.stroke();
+            thumbCtx.fillStyle = '#061426';
+            thumbCtx.font = `bold ${Math.max(10, frame.width / 38)}px Arial`;
+            thumbCtx.textAlign = 'center';
+            thumbCtx.textBaseline = 'middle';
+            thumbCtx.fillText(String(candidateIndex + 1), candidate.x, candidate.y);
+            thumbCtx.restore();
+          });
+        }
+
         if (keypoints[index]) {
           drawCross(thumbCtx, keypoints[index].x, keypoints[index].y, Math.max(2, frame.width / 260));
         }
 
         const label = document.createElement('span');
         const hasPoint = Boolean(keypoints[index]);
-        label.innerHTML = `Frame ${index + 1} ${hasPoint ? '<b class="ok">• ponto registrado</b>' : '• sem ponto'}`;
+        const isAssistPreview = candidateAssistToggle?.checked && selectingKeypoints && index === 0 && !keypoints.length && candidateAssistPoints.length;
+        label.innerHTML = `Frame ${index + 1} ${hasPoint ? '<b class="ok">• ponto registrado</b>' : isAssistPreview ? '• pontos sugeridos' : '• sem ponto'}`;
 
         card.appendChild(thumb);
         card.appendChild(label);
@@ -3116,6 +3279,7 @@
       selectingKeypoints = true;
       keypointStep = 0;
       keypoints = [];
+      candidateAssistPoints = candidateAssistToggle?.checked ? detectCandidateAssistPoints(rawFrameCanvases[0]) : [];
       clearInterval(animationTimer);
       canvas.classList.add('keypoint-mode');
       keypointPanel.classList.add('active');
@@ -3141,13 +3305,19 @@
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.drawImage(current, 0, 0);
 
+      if (keypointStep === 0) drawCandidateAssistMarkers(ctx);
       if (point) drawCross(ctx, point.x, point.y, Math.max(2, canvas.width / 260));
 
       keypointTitle.textContent = `Ponto de referência — frame ${keypointStep + 1} de ${rawFrameCanvases.length}`;
 
       if (keypointStep === 0) {
-        keypointText.textContent = 'Clique em um detalhe do objeto principal. O site vai tentar encontrar esse mesmo ponto automaticamente nos outros frames.';
-        setStatus('Selecione o primeiro ponto de referência.');
+        if (candidateAssistToggle?.checked && candidateAssistPoints.length) {
+          keypointText.textContent = 'Os alvos verdes são pontos sugeridos no 1º frame. Clique em um deles para o site tentar mapear os mesmos pontos e já exibir o preview do GIF. Se preferir, você também pode clicar em qualquer outro detalhe manualmente.';
+          setStatus('Escolha um dos pontos sugeridos ou clique em um detalhe do objeto principal.');
+        } else {
+          keypointText.textContent = 'Clique em um detalhe do objeto principal. O site vai tentar encontrar esse mesmo ponto automaticamente nos outros frames.';
+          setStatus('Selecione o primeiro ponto de referência.');
+        }
       } else {
         keypointText.textContent = 'O ponto azul/rosa foi sugerido automaticamente. Se estiver certo, clique em “Aplicar pontos sugeridos”. Se estiver errado, clique no ponto correto desta foto.';
         setStatus(`Confira o ponto sugerido no frame ${keypointStep + 1}.`);
@@ -3177,10 +3347,14 @@
       const rect = canvas.getBoundingClientRect();
       const scaleX = canvas.width / rect.width;
       const scaleY = canvas.height / rect.height;
-      const point = {
+      const rawPoint = {
         x: (event.clientX - rect.left) * scaleX,
         y: (event.clientY - rect.top) * scaleY
       };
+      const suggestedPoint = (candidateAssistToggle?.checked && keypointStep === 0 && !keypoints.length)
+        ? getNearestCandidatePoint(rawPoint)
+        : null;
+      const point = suggestedPoint || rawPoint;
 
       if (keypointStep === 0 && keypoints.length === 0) {
         hideKeypointHint();
@@ -3193,9 +3367,18 @@
           autoFillKeypointsFromFirst(point);
           renderFramesList();
           applyKeypointsBtn.disabled = false;
-          startApplyKeypointsPulse();
           clearKeypointsBtn.disabled = false;
 
+          if (candidateAssistToggle?.checked) {
+            finishKeypointSelection();
+            setStatus(suggestedPoint
+              ? 'Ponto sugerido aplicado. O preview do GIF já está pronto.'
+              : 'Ponto aplicado. O preview do GIF já está pronto.'
+            );
+            return;
+          }
+
+          startApplyKeypointsPulse();
           if (rawFrameCanvases.length > 1) {
             keypointStep = 1;
             drawKeypointFrame();
@@ -3323,6 +3506,7 @@
 
     function clearKeypoints(shouldRestartPreview) {
       keypoints = [];
+      candidateAssistPoints = [];
       hideKeypointHint();
       stopApplyKeypointsPulse();
       selectingKeypoints = false;
@@ -3356,12 +3540,60 @@
       return [...finalFrameCanvases, ...backwards];
     }
 
+    function getInterpolationStepCount() {
+      const value = Number(frameInterpolationAmountInput.value);
+      return Math.max(0, Math.round(value / 20));
+    }
+
+    function easeInterpolation(t) {
+      return t * t * (3 - 2 * t);
+    }
+
+    function createBlendedFrame(frameA, frameB, alpha) {
+      const output = document.createElement('canvas');
+      output.width = frameA.width;
+      output.height = frameA.height;
+      const outputCtx = output.getContext('2d');
+      outputCtx.clearRect(0, 0, output.width, output.height);
+      outputCtx.globalAlpha = 1;
+      outputCtx.drawImage(frameA, 0, 0);
+      outputCtx.globalAlpha = alpha;
+      outputCtx.drawImage(frameB, 0, 0);
+      outputCtx.globalAlpha = 1;
+      return output;
+    }
+
     function getPlaybackFrames() {
-      return getBasePlaybackFrames();
+      const baseFrames = getPlaybackFrames();
+      const interpolationSteps = getInterpolationStepCount();
+
+      if (!interpolationSteps || baseFrames.length <= 1) return baseFrames;
+
+      const playbackFrames = [];
+
+      for (let index = 0; index < baseFrames.length; index++) {
+        const currentFrame = baseFrames[index];
+        const nextFrame = baseFrames[(index + 1) % baseFrames.length];
+
+        playbackFrames.push(currentFrame);
+
+        if (!nextFrame || nextFrame === currentFrame) continue;
+
+        for (let step = 1; step <= interpolationSteps; step++) {
+          const rawAlpha = step / (interpolationSteps + 1);
+          const alpha = easeInterpolation(rawAlpha);
+          playbackFrames.push(createBlendedFrame(currentFrame, nextFrame, alpha));
+        }
+      }
+
+      return playbackFrames;
     }
 
     function getMovementFrameDelay() {
-      return Number(delayInput.value);
+      const baseDelay = Number(delayInput.value);
+      const interpolationSteps = getInterpolationStepCount();
+      const effectiveDelay = baseDelay / (interpolationSteps + 1);
+      return Math.max(20, Math.round(effectiveDelay));
     }
 
     function getSelectedGifDurationMs() {
@@ -3378,7 +3610,7 @@
     }
 
     function buildGifExportSequence() {
-      const baseFrames = getBasePlaybackFrames();
+      const baseFrames = getPlaybackFrames();
       const frameDelay = getMovementFrameDelay();
       const selectedDuration = getSelectedGifDurationMs();
 
@@ -3470,7 +3702,7 @@
         return;
       }
 
-      const playbackFrames = getBasePlaybackFrames();
+      const playbackFrames = getPlaybackFrames();
       const frameDelay = getMovementFrameDelay();
       if (!playbackFrames.length) return;
 
@@ -3733,7 +3965,7 @@
         setStatus(`${format.toUpperCase()} ${getExportPreset().aspectLabel} ${getExportPreset().label} pronto! Tempo total de exportação: ${formatElapsed(performance.now() - exportStart)}.`);
       };
 
-      const playbackFrames = getBasePlaybackFrames();
+      const playbackFrames = getPlaybackFrames();
       const movementFrameDelay = getMovementFrameDelay();
       const videoDurationMs = getVideoDurationMs();
       const startedAt = performance.now();
@@ -3823,6 +4055,7 @@
       rawFrameCanvases = [];
       finalFrameCanvases = [];
       keypoints = [];
+      candidateAssistPoints = [];
       selectingKeypoints = false;
       keypointStep = 0;
       manualFrameOffsets = [];

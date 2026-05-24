@@ -132,13 +132,24 @@ Link direto atualizado para Mac:
 
 https://drive.google.com/uc?export=download&id=1ToLK8iyH-6f2GxnzdFk3xFON8Mcpg4bO
 
-## Atualização — Favicon personalizado
+## Atualização — Interpolação de tempo e auxílio inteligente de pontos
 
-A página agora inclui um favicon próprio para a guia do navegador.
+### 1) Interpolação de tempo / quadros
+Foi restaurado o recurso de interpolação na ferramenta de imagens.
 
-- Arquivo adicionado: `favicon.svg`
-- Visual: símbolo com **3 lentes lado a lado**
-- Aplicação: aparece na aba do navegador no lugar do ícone padrão do GitHub Pages
+- Controle em barra (`0%` a `100%`)
+- Atua no preview e na exportação
+- Funciona com GIF, MP4 e MOV
+- Mantém o tempo total, alterando a suavidade com quadros intermediários
 
-Para funcionar corretamente no GitHub Pages, mantenha o arquivo `favicon.svg` na mesma raiz do `index.html`.
+### 2) Auxílio inteligente de pontos
+Foi adicionada uma opção chaveada para ajudar o usuário a escolher o melhor ponto inicial.
 
+- Quando ativada, a ferramenta avalia o **1º frame**
+- Mostra **pontos sugeridos** com base em detalhes fortes e fáceis de rastrear
+- O usuário pode clicar em um dos pontos sugeridos
+- Depois do clique, a ferramenta tenta mapear esse ponto nos outros frames e **já exibe o preview do GIF automaticamente**
+- Se preferir, o usuário ainda pode clicar manualmente em qualquer detalhe da imagem
+
+### Favicon
+Mantenha também o arquivo `favicon.svg` na raiz do projeto para a guia personalizada com o símbolo de 3 lentes.
