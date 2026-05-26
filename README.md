@@ -163,12 +163,10 @@ Mantenha também o arquivo `favicon.svg` na raiz do projeto para a guia personal
   - o preview do GIF já começa a rodar automaticamente;
   - o botão **Aplicar pontos** fica habilitado para confirmação.
 
-## Atualização — Tutorial guiado sem desfocar o site
+## Atualização — Remoção do tutorial e vídeo incorporado
 
-Esta versão mantém a base mais completa do Feitoin3d Maker e adiciona um tutorial visível sem escurecer/desfocar a página.
-
-- O site permanece visível durante o tutorial.
-- O elemento do passo atual recebe contorno e brilho.
-- Uma seta aponta para onde o usuário deve olhar/clicar.
-- O tutorial inclui botões de avançar, voltar e fechar.
-- A versão mantém interpolação, auxílio inteligente de pontos, favicon e correção do preview.
+- Removido o botão e o sistema de **Tutorial**.
+- Adicionado um bloco lateral com vídeo incorporado via Instagram Embed.
+- O vídeo aparece na lateral/área de preview do site.
+- O som pode ser habilitado pelo próprio player do Instagram.
+- Mantidas as atualizações principais da versão completa: preview corrigido, interpolação, auxílio inteligente de pontos, favicon e exportações.
