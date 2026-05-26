@@ -30,3 +30,24 @@ O tutorial abre um guia passo a passo com destaque visual e seta indicando onde 
 8. Exportar arquivo
 
 O usuário pode avançar, voltar, fechar com ESC ou clicar fora do card.
+
+## Atualização — Tutorial guiado corrigido
+
+Esta versão usa o arquivo `index.html` de referência enviado e corrige o tutorial para funcionar com a estrutura real da página.
+
+O que foi feito:
+- adicionado botão **Tutorial** no cabeçalho;
+- adicionados estilos do tutorial;
+- corrigidos os seletores do passo a passo para elementos que existem nesta versão;
+- removida a dependência de opções que não existem nesta versão, como `inputLayout`, `candidateAssistToggle` e `frameInterpolationAmount`;
+- mantido o favicon personalizado via `favicon.svg`.
+
+Passos do tutorial:
+1. Carregar foto 3D
+2. Selecionar quantidade de fotos
+3. Marcar pontos de referência
+4. Aplicar pontos
+5. Definir duração
+6. Ajustar velocidade
+7. Escolher efeito
+8. Exportar arquivo
