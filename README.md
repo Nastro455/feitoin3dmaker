@@ -171,3 +171,12 @@ Mantenha também o arquivo `favicon.svg` na raiz do projeto para a guia personal
 - O vídeo roda em loop, autoplay e sem som por padrão.
 - O usuário pode ativar/desativar o som pelo botão abaixo do vídeo.
 - Na versão mobile, o vídeo lateral continua oculto.
+
+
+## Atualização — UI refinada
+- Reorganização visual da interface em fluxo de produção.
+- Adicionado painel de status das 4 etapas: importar, alinhar, estilizar e exportar.
+- Ajuste fino movido para acionamento por botão no painel esquerdo, evitando competição visual sobre o preview.
+- Adicionado botão de resetar enquadramento.
+- Bloco de exportação com resumo do resultado final.
+- Adicionada a resolução Retrato 3:4.
