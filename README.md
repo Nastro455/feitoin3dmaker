@@ -163,11 +163,11 @@ Mantenha também o arquivo `favicon.svg` na raiz do projeto para a guia personal
   - o preview do GIF já começa a rodar automaticamente;
   - o botão **Aplicar pontos** fica habilitado para confirmação.
 
-## Atualização — Vídeo lateral direito
+## Atualização — Vídeo lateral direito com arquivo local leve
 
-- Removido o embed do Instagram da área do preview.
-- Adicionado vídeo local em MP4 na lateral direita do preview.
-- O vídeo fica em loop, autoplay e sem som por padrão.
+- Removido completamente o bloco incorporado do Instagram.
+- Mantido apenas o vídeo local na lateral direita do preview.
+- Substituído o vídeo anterior pelo arquivo mais leve: `assets/feitoin3d-kenji-lente-3d.mp4`.
+- O vídeo roda em loop, autoplay e sem som por padrão.
 - O usuário pode ativar/desativar o som pelo botão abaixo do vídeo.
-- Na versão mobile, o vídeo lateral fica oculto para não atrapalhar o uso da ferramenta.
-- Arquivo usado: `assets/feitoin3d-kenji-lente-3d.mp4`.
+- Na versão mobile, o vídeo lateral continua oculto.
