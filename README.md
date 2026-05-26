@@ -180,3 +180,11 @@ Mantenha também o arquivo `favicon.svg` na raiz do projeto para a guia personal
 - Adicionado botão de resetar enquadramento.
 - Bloco de exportação com resumo do resultado final.
 - Adicionada a resolução Retrato 3:4.
+
+
+## Atualização — Layout reestruturado
+- Painel de ajustes permanece à esquerda e ocupa a primeira coluna.
+- Fluxo de produção movido para a lateral direita, abaixo do vídeo demonstrativo.
+- Vídeo lateral simplificado: sem textos, apenas vídeo em loop e botão de som.
+- Exportar e baixar foi movido para dentro da aba recolhível de Exportar arquivo.
+- Resolução 3:4 mantida.

@@ -34,7 +34,7 @@
       padding: 32px 16px;
     }
 
-    .app { width: min(1160px, 100%); }
+    .app { width: min(1440px, 100%); }
 
     header { text-align: center; margin-bottom: 28px; }
 
@@ -147,7 +147,7 @@
 
     .grid {
       display: grid;
-      grid-template-columns: 410px 1fr;
+      grid-template-columns: 390px minmax(0, 1fr);
       gap: 18px;
       align-items: start;
     }
@@ -464,7 +464,7 @@
     .keypoint-panel p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.45; }
     .preview-wrap {
       display: grid;
-      grid-template-columns: minmax(260px, 29%) minmax(0, 1fr) 300px;
+      grid-template-columns: minmax(0, 1fr) 360px;
       gap: 18px;
       align-items: start;
     }
@@ -1073,8 +1073,7 @@
 
 
     .visualizer-actions-card {
-      position: sticky;
-      top: 16px;
+      position: static;
       z-index: 2;
     }
 
@@ -1095,6 +1094,89 @@
 
       .visualizer-actions {
         grid-template-columns: 1fr;
+      }
+    }
+
+    .export-action-panel {
+      margin-top: 18px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(255,255,255,.10);
+    }
+
+    .export-action-panel > label {
+      margin-bottom: 10px;
+    }
+
+    .demo-side-column {
+      display: grid;
+      gap: 14px;
+      position: sticky;
+      top: 16px;
+      align-self: start;
+      min-width: 0;
+    }
+
+    .demo-side-column .workflow-card {
+      margin-bottom: 0;
+    }
+
+    .demo-side-panel {
+      position: static;
+      overflow: hidden;
+      padding: 12px;
+    }
+
+    .demo-side-panel label,
+    .demo-side-panel p,
+    .demo-video-note {
+      display: none !important;
+    }
+
+    .demo-video-frame {
+      border-radius: 20px;
+      aspect-ratio: 9 / 16;
+      min-height: 520px;
+    }
+
+    .demo-video-frame video {
+      object-fit: cover;
+    }
+
+    .demo-sound-btn {
+      width: 100%;
+      margin-top: 10px;
+    }
+
+    .visualizer-actions {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .visualizer-actions .download {
+      grid-column: 1 / -1;
+    }
+
+    @media (max-width: 1240px) {
+      .grid {
+        grid-template-columns: 360px minmax(0, 1fr);
+      }
+
+      .preview-wrap {
+        grid-template-columns: minmax(0, 1fr) 300px;
+      }
+
+      .demo-video-frame {
+        min-height: 440px;
+      }
+    }
+
+    @media (max-width: 980px) {
+      .grid,
+      .preview-wrap {
+        grid-template-columns: 1fr;
+      }
+
+      .demo-side-column {
+        display: none;
       }
     }
 
@@ -1454,24 +1536,13 @@
         <a class="social-link buy-link" href="https://www.mercadolivre.com.br/lente-3d-para-producao-de-gifs-canon-sony-nikon-fuji/up/MLBU3825732714" target="_blank" rel="noopener noreferrer">Compre sua lente</a>
       </div>
       <h1>Feitoin3d <span>Maker <i class="br-flag" aria-label="Brasil" title="Brasil"></i></span></h1>
-      <p>Carregue uma imagem 3D horizontal ou vertical, escolha se ela tem 2, 3 ou 4 fotos, alinhe por ponto de referência e exporte em GIF, MP4 ou MOV nos formatos vertical, 4:3, Full HD horizontal ou 4K horizontal.</p>
+      <p>Carregue uma imagem 3D horizontal ou vertical, escolha se ela tem 2, 3 ou 4 fotos, alinhe por ponto de referência e exporte em GIF, MP4 ou MOV nos formatos vertical, 3:4, 4:3, Full HD horizontal ou 4K horizontal.</p>
     </header>
 
     <section class="grid">
       <aside class="card">
         <div class="tool-groups">
-          <div class="workflow-card card-lite">
-            <label>Fluxo de produção</label>
-            <div class="workflow-list">
-              <div class="workflow-item" id="workflowImport"><span>1</span><div><strong>Importar foto</strong><small>Carregue a foto 3D e escolha o layout.</small></div></div>
-              <div class="workflow-item" id="workflowAlign"><span>2</span><div><strong>Alinhar imagem</strong><small>Marque e aplique os pontos de referência.</small></div></div>
-              <div class="workflow-item" id="workflowStyle"><span>3</span><div><strong>Estilo e acabamento</strong><small>Ajuste exposição, LUT, nitidez, glow e RGB 3D.</small></div></div>
-              <div class="workflow-item" id="workflowExport"><span>4</span><div><strong>Pronto para exportar</strong><small>Defina resolução, formato e gere o arquivo final.</small></div></div>
-            </div>
-          </div>
-
-
-          <details class="tool-group" id="stepImportGroup" open>
+<details class="tool-group" id="stepImportGroup" open>
             <summary>
               <div class="tool-group-title">
                 <span class="tool-group-badge">1</span>
@@ -1535,90 +1606,6 @@
                   <button class="secondary" id="resetFramingBtn" type="button" disabled>Resetar enquadramento</button>
                 </div>
                 <p class="mini-note">Use o ajuste fino apenas se quiser corrigir tremidos sutis frame a frame.</p>
-              </div>
-            </div>
-          </details>
-
-          <details class="tool-group" id="stepExportGroup">
-            <summary>
-              <div class="tool-group-title">
-                <span class="tool-group-badge">2</span>
-                <div>
-                  <strong>Exportar arquivo</strong>
-                  <span>Defina resolução, formato, duração e qualidade do arquivo final.</span>
-                </div>
-              </div>
-              <span class="tool-group-arrow">⌄</span>
-            </summary>
-            <div class="tool-group-content">
-              <div class="field">
-                <label for="totalDuration">6. Definir duração final do GIF</label>
-                <select id="totalDuration">
-                  <option value="auto" selected>Automático pela velocidade</option>
-                  <option value="1000">1 segundo</option>
-                  <option value="1500">1,5 segundo</option>
-                  <option value="2000">2 segundos</option>
-                  <option value="3000">3 segundos</option>
-                  <option value="5000">5 segundos</option>
-                  <option value="10000">10 segundos</option>
-                  <option value="custom">Personalizado em segundos</option>
-                </select>
-              </div>
-
-              <div class="field" id="customDurationField" style="display: none;">
-                <label for="customDurationSeconds">Tempo total personalizado do GIF</label>
-                <input id="customDurationSeconds" type="number" min="0.2" max="60" step="0.1" value="3" placeholder="Ex: 3" />
-              </div>
-
-              <div class="field">
-                <label for="exportFormat">Formato do arquivo exportado</label>
-                <select id="exportFormat">
-                  <option value="gif" selected>GIF</option>
-                  <option value="mp4">MP4</option>
-                  <option value="mov">MOV</option>
-                </select>
-              </div>
-
-              <div class="field">
-                <label for="exportAspect">Resolução / formato da tela</label>
-                <select id="exportAspect">
-                  <option value="vertical" selected>Vertical Full HD — 9:16</option>
-                  <option value="portrait3x4">Retrato 3:4</option>
-                  <option value="classic4x3">4:3 clássico</option>
-                  <option value="horizontalFullHd">Horizontal Full HD — 16:9</option>
-                  <option value="horizontal4k">Horizontal 4K — 16:9</option>
-                </select>
-              </div>
-
-              <div class="field">
-                <label for="exportQuality">Qualidade do arquivo final</label>
-                <select id="exportQuality">
-                  <option value="light">Leve / mais rápido</option>
-                  <option value="standard" selected>Padrão</option>
-                  <option value="high">Alta qualidade</option>
-                </select>
-              </div>
-
-              <div class="field" id="videoDurationField" style="display: none;">
-                <label for="videoDurationSeconds">Tempo total do vídeo</label>
-                <input id="videoDurationSeconds" type="number" min="0.5" max="60" step="0.1" value="3" placeholder="Ex: 3" />
-              </div>
-
-              <div class="field">
-                <label for="delay">Velocidade do movimento</label>
-                <div class="range-row">
-                  <input id="delay" type="range" min="60" max="500" value="130" step="10" />
-                  <output id="delayValue">130ms</output>
-                </div>
-              </div>
-
-              <div class="field toggle">
-                <input id="boomerang" type="checkbox" checked />
-                <span>Movimento ida e volta em loop</span>
-              </div>
-
-              <div class="export-box" id="exportBox">
-                <strong>Exportação:</strong> escolha entre Vertical Full HD 9:16, 4:3 clássico, Horizontal Full HD 16:9 ou Horizontal 4K 16:9. O enquadramento usa crop automático para preencher a tela sem bordas pretas. Você também pode ajustar exposição, nitidez, LUT personalizado, glow, deslocamento RGB 3D e marca d'água no preview e no arquivo final.
               </div>
             </div>
           </details>
@@ -1728,6 +1715,107 @@
               </div>
             </div>
           </details>
+
+<details class="tool-group" id="stepExportGroup">
+            <summary>
+              <div class="tool-group-title">
+                <span class="tool-group-badge">2</span>
+                <div>
+                  <strong>Exportar arquivo</strong>
+                  <span>Defina resolução, formato, duração e qualidade do arquivo final.</span>
+                </div>
+              </div>
+              <span class="tool-group-arrow">⌄</span>
+            </summary>
+            <div class="tool-group-content">
+              <div class="field">
+                <label for="totalDuration">6. Definir duração final do GIF</label>
+                <select id="totalDuration">
+                  <option value="auto" selected>Automático pela velocidade</option>
+                  <option value="1000">1 segundo</option>
+                  <option value="1500">1,5 segundo</option>
+                  <option value="2000">2 segundos</option>
+                  <option value="3000">3 segundos</option>
+                  <option value="5000">5 segundos</option>
+                  <option value="10000">10 segundos</option>
+                  <option value="custom">Personalizado em segundos</option>
+                </select>
+              </div>
+
+              <div class="field" id="customDurationField" style="display: none;">
+                <label for="customDurationSeconds">Tempo total personalizado do GIF</label>
+                <input id="customDurationSeconds" type="number" min="0.2" max="60" step="0.1" value="3" placeholder="Ex: 3" />
+              </div>
+
+              <div class="field">
+                <label for="exportFormat">Formato do arquivo exportado</label>
+                <select id="exportFormat">
+                  <option value="gif" selected>GIF</option>
+                  <option value="mp4">MP4</option>
+                  <option value="mov">MOV</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="exportAspect">Resolução / formato da tela</label>
+                <select id="exportAspect">
+                  <option value="vertical" selected>Vertical Full HD — 9:16</option>
+                  <option value="portrait3x4">Retrato 3:4</option>
+                  <option value="classic4x3">4:3 clássico</option>
+                  <option value="horizontalFullHd">Horizontal Full HD — 16:9</option>
+                  <option value="horizontal4k">Horizontal 4K — 16:9</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="exportQuality">Qualidade do arquivo final</label>
+                <select id="exportQuality">
+                  <option value="light">Leve / mais rápido</option>
+                  <option value="standard" selected>Padrão</option>
+                  <option value="high">Alta qualidade</option>
+                </select>
+              </div>
+
+              <div class="field" id="videoDurationField" style="display: none;">
+                <label for="videoDurationSeconds">Tempo total do vídeo</label>
+                <input id="videoDurationSeconds" type="number" min="0.5" max="60" step="0.1" value="3" placeholder="Ex: 3" />
+              </div>
+
+              <div class="field">
+                <label for="delay">Velocidade do movimento</label>
+                <div class="range-row">
+                  <input id="delay" type="range" min="60" max="500" value="130" step="10" />
+                  <output id="delayValue">130ms</output>
+                </div>
+              </div>
+
+              <div class="field toggle">
+                <input id="boomerang" type="checkbox" checked />
+                <span>Movimento ida e volta em loop</span>
+              </div>
+
+              
+              <div class="export-action-panel">
+                <label>4. Exportar e baixar</label>
+                <div class="export-result-box" id="exportResultBox">
+                  <strong>Resultado final</strong>
+                  <span id="exportResultMeta">GIF • Vertical Full HD • Padrão</span>
+                  <p>Quando estiver satisfeito com o preview, exporte no formato desejado e baixe o arquivo final.</p>
+                </div>
+                <div class="actions visualizer-actions">
+                  <button id="generateBtn" disabled>Exportar arquivo</button>
+                  <button class="secondary" id="exportJpgBtn" type="button" disabled>Exportar JPG alto</button>
+                  <button class="secondary" id="clearKeypointsBtn" type="button" disabled>Limpar alinhamento</button>
+                  <button class="secondary" id="resetBtn" type="button">Limpar tudo</button>
+                  <a class="download" id="downloadLink" download="feitoin3d-maker-padrao.gif">Baixar arquivo</a>
+                </div>
+              </div>
+
+<div class="export-box" id="exportBox">
+                <strong>Exportação:</strong> escolha entre Vertical Full HD 9:16, 4:3 clássico, Horizontal Full HD 16:9 ou Horizontal 4K 16:9. O enquadramento usa crop automático para preencher a tela sem bordas pretas. Você também pode ajustar exposição, nitidez, LUT personalizado, glow, deslocamento RGB 3D e marca d'água no preview e no arquivo final.
+              </div>
+            </div>
+          </details>
         </div>
 
         <p class="status" id="status">Aguardando imagem.</p>
@@ -1788,38 +1876,30 @@
           </div>
         </div>
 
-        <div class="card visualizer-actions-card">
-          <label>4. Exportar e baixar</label>
-          <div class="export-result-box" id="exportResultBox">
-            <strong>Resultado final</strong>
-            <span id="exportResultMeta">GIF • Vertical Full HD • Padrão</span>
-            <p>Quando estiver satisfeito com o preview, exporte no formato desejado e baixe o arquivo final.</p>
-          </div>
-          <div class="actions visualizer-actions">
-            <button id="generateBtn" disabled>Exportar arquivo</button>
-            <button class="secondary" id="exportJpgBtn" type="button" disabled>Exportar JPG alto</button>
-            <button class="secondary" id="clearKeypointsBtn" type="button" disabled>Limpar alinhamento</button>
-            <button class="secondary" id="resetBtn" type="button">Limpar tudo</button>
-            <a class="download" id="downloadLink" download="feitoin3d-maker-padrao.gif">Baixar arquivo</a>
-          </div>
-        </div>
-
         <div class="card">
           <label>Frames originais com pontos registrados</label>
           <div class="frames" id="framesList"></div>
         </div>
         </div>
 
-        <aside class="card demo-side-panel" aria-label="Vídeo demonstrativo Feitoin3d">
-          <label>Vídeo demonstrativo <span>Loop</span></label>
-          <p>Veja um exemplo real criado com a lente Feito in 3D. O vídeo roda em loop sem som por padrão; ative o áudio quando quiser.</p>
-          <div class="demo-video-frame">
-            <video id="demoSideVideo" src="assets/feitoin3d-kenji-lente-3d.mp4" autoplay muted loop playsinline preload="metadata"></video>
-          </div>
-          <div class="demo-video-controls">
+        <aside class="demo-side-column" aria-label="Demonstração e fluxo Feitoin3d">
+          <div class="card demo-side-panel">
+            <div class="demo-video-frame">
+              <video id="demoSideVideo" src="assets/feitoin3d-kenji-lente-3d.mp4" autoplay muted loop playsinline preload="metadata"></video>
+            </div>
             <button class="secondary demo-sound-btn" id="demoSoundToggle" type="button">Ativar som</button>
           </div>
-          <p class="demo-video-note">Na versão mobile, este vídeo fica oculto para não atrapalhar o uso da ferramenta.</p>
+
+          <div class="workflow-card card-lite sidebar-workflow-card">
+            <label>Fluxo de produção</label>
+            <div class="workflow-list">
+              <div class="workflow-item" id="workflowImport"><span>1</span><div><strong>Importar foto</strong><small>Carregue a foto 3D e escolha o layout.</small></div></div>
+              <div class="workflow-item" id="workflowAlign"><span>2</span><div><strong>Alinhar imagem</strong><small>Marque e aplique os pontos de referência.</small></div></div>
+              <div class="workflow-item" id="workflowStyle"><span>3</span><div><strong>Estilo e acabamento</strong><small>Ajuste exposição, LUT, nitidez, glow e RGB 3D.</small></div></div>
+              <div class="workflow-item" id="workflowExport"><span>4</span><div><strong>Pronto para exportar</strong><small>Defina resolução, formato e gere o arquivo final.</small></div></div>
+            </div>
+          </div>
+
         </aside>
       </section>
     </section>
