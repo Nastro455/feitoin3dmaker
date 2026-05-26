@@ -463,7 +463,94 @@
     .keypoint-panel strong { display: block; margin-bottom: 6px; }
     .keypoint-panel p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.45; }
 
-    .preview-wrap { display: grid; gap: 14px; }
+    .preview-wrap {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 310px;
+      gap: 14px;
+      align-items: start;
+    }
+
+    .preview-main-column {
+      display: grid;
+      gap: 14px;
+      min-width: 0;
+    }
+
+    .demo-side-panel {
+      position: sticky;
+      top: 16px;
+      align-self: start;
+      overflow: hidden;
+    }
+
+    .demo-side-panel label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .demo-side-panel label span {
+      color: var(--success);
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+
+    .demo-side-panel p {
+      color: var(--muted);
+      margin: 0 0 14px;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .demo-video-frame {
+      position: relative;
+      overflow: hidden;
+      border-radius: 18px;
+      background: #030b14;
+      border: 1px solid var(--line);
+      aspect-ratio: 9 / 16;
+    }
+
+    .demo-video-frame video {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      background: #030b14;
+    }
+
+    .demo-video-controls {
+      display: grid;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .demo-sound-btn {
+      width: 100%;
+      border-radius: 14px;
+      padding: 12px 14px;
+      font-size: 13px;
+      min-height: auto;
+    }
+
+    .demo-video-note {
+      margin-top: 10px !important;
+      font-size: 12px !important;
+    }
+
+    @media (max-width: 1180px) {
+      .preview-wrap {
+        grid-template-columns: 1fr;
+      }
+
+      .demo-side-panel {
+        display: none;
+      }
+    }
+
 
     .canvas-box {
       background: #030b14;
@@ -851,51 +938,6 @@
 
     .preview-download.show { display: inline-flex; align-items: center; justify-content: center; }
 
-
-    .demo-video-card {
-      overflow: hidden;
-    }
-
-    .demo-video-card label {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-    }
-
-    .demo-video-card label span {
-      color: var(--success);
-      font-size: 12px;
-      font-weight: 900;
-      letter-spacing: .04em;
-      text-transform: uppercase;
-    }
-
-    .demo-video-card p {
-      color: var(--muted);
-      margin: 0 0 14px;
-      font-size: 13px;
-      line-height: 1.45;
-    }
-
-    .instagram-demo-wrap {
-      width: 100%;
-      display: grid;
-      place-items: center;
-      overflow: hidden;
-      border-radius: 18px;
-      background: #030b14;
-      border: 1px solid var(--line);
-      padding: 8px;
-    }
-
-    .instagram-demo-wrap .instagram-media {
-      min-width: 0 !important;
-      max-width: 100% !important;
-      width: 100% !important;
-      margin: 0 auto !important;
-      border-radius: 16px !important;
-    }
 
     .visualizer-actions-card {
       position: sticky;
@@ -1539,6 +1581,7 @@
       </aside>
 
       <section class="preview-wrap">
+        <div class="preview-main-column">
 
         <div class="card demo-video-card">
           <label>Vídeo demonstrativo <span>Referência</span></label>
@@ -1611,6 +1654,19 @@
           <label>Frames originais com pontos registrados</label>
           <div class="frames" id="framesList"></div>
         </div>
+        </div>
+
+        <aside class="card demo-side-panel" aria-label="Vídeo demonstrativo Feitoin3d">
+          <label>Vídeo demonstrativo <span>Loop</span></label>
+          <p>Exemplo do efeito usando a lente 3D. O vídeo roda sem som por padrão; ative o áudio quando quiser.</p>
+          <div class="demo-video-frame">
+            <video id="demoSideVideo" src="assets/feitoin3d-kenji-lente-3d.mp4" autoplay muted loop playsinline preload="metadata"></video>
+          </div>
+          <div class="demo-video-controls">
+            <button class="secondary demo-sound-btn" id="demoSoundToggle" type="button">Ativar som</button>
+          </div>
+          <p class="demo-video-note">Na versão mobile, este vídeo fica oculto para não atrapalhar o uso da ferramenta.</p>
+        </aside>
       </section>
     </section>
 
@@ -1641,9 +1697,7 @@
       Desenvolvido por <a href="https://www.instagram.com/omateusmorales/" target="_blank" rel="noopener noreferrer">Mateus Morales - @omateusmorales</a>
     </footer>
   </main>
-  <script async src="//www.instagram.com/embed.js"></script>
-
-  <script>
+<script>
     const EXPORT_PRESETS = {
       light: {
         label: 'Leve',
@@ -4163,6 +4217,23 @@
       setStatus('Aguardando imagem.');
     }
 
+
+
+    const demoSideVideo = document.querySelector('#demoSideVideo');
+    const demoSoundToggle = document.querySelector('#demoSoundToggle');
+
+    if (demoSideVideo && demoSoundToggle) {
+      demoSoundToggle.addEventListener('click', async () => {
+        demoSideVideo.muted = !demoSideVideo.muted;
+        demoSoundToggle.textContent = demoSideVideo.muted ? 'Ativar som' : 'Desativar som';
+
+        try {
+          await demoSideVideo.play();
+        } catch (error) {
+          setStatus('Clique novamente no vídeo caso o navegador bloqueie a reprodução automática.');
+        }
+      });
+    }
 
     updateExportControls();
     updateFineAdjustControls();

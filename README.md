@@ -163,10 +163,11 @@ Mantenha também o arquivo `favicon.svg` na raiz do projeto para a guia personal
   - o preview do GIF já começa a rodar automaticamente;
   - o botão **Aplicar pontos** fica habilitado para confirmação.
 
-## Atualização — Remoção do tutorial e vídeo incorporado
+## Atualização — Vídeo lateral direito
 
-- Removido o botão e o sistema de **Tutorial**.
-- Adicionado um bloco lateral com vídeo incorporado via Instagram Embed.
-- O vídeo aparece na lateral/área de preview do site.
-- O som pode ser habilitado pelo próprio player do Instagram.
-- Mantidas as atualizações principais da versão completa: preview corrigido, interpolação, auxílio inteligente de pontos, favicon e exportações.
+- Removido o embed do Instagram da área do preview.
+- Adicionado vídeo local em MP4 na lateral direita do preview.
+- O vídeo fica em loop, autoplay e sem som por padrão.
+- O usuário pode ativar/desativar o som pelo botão abaixo do vídeo.
+- Na versão mobile, o vídeo lateral fica oculto para não atrapalhar o uso da ferramenta.
+- Arquivo usado: `assets/feitoin3d-kenji-lente-3d.mp4`.
