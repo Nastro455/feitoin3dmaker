@@ -208,3 +208,16 @@ Mantenha também o arquivo `favicon.svg` na raiz do projeto para a guia personal
 - Os painéis laterais permanecem recolhidos mesmo após o carregamento da imagem.
 - Apenas o primeiro painel fica aberto por padrão, até que o usuário decida minimizar ou abrir outro manualmente.
 - Removida a abertura automática das abas de exportação e estilo após processar ou alinhar a imagem.
+
+
+## Atualização — Otimização mobile
+
+A versão mobile recebeu ajustes específicos de interface:
+- cabeçalho mais compacto;
+- cards e painéis mais enxutos;
+- descrições longas dos painéis ocultas no mobile;
+- botões maiores para toque;
+- ações de pontos fixadas no topo da área de preview;
+- preview com melhor aproveitamento vertical da tela;
+- vídeo lateral continua oculto no mobile;
+- área de exportação e frames adaptada para telas pequenas.

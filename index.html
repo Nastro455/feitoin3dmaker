@@ -1562,6 +1562,291 @@
       }
     }
 
+    /* MOBILE UX — otimização específica para celular */
+    @media (max-width: 680px) {
+      body {
+        padding: 14px 8px 28px;
+        overflow-x: hidden;
+      }
+
+      .app {
+        width: 100%;
+      }
+
+      header {
+        margin-bottom: 18px;
+      }
+
+      .badge-row {
+        gap: 8px;
+        margin-bottom: 10px;
+      }
+
+      .badge,
+      .social-link {
+        font-size: 12px;
+        padding: 8px 10px;
+        margin-bottom: 4px;
+      }
+
+      .badge {
+        width: fit-content;
+        max-width: calc(100vw - 32px);
+      }
+
+      header h1 {
+        font-size: clamp(39px, 12vw, 54px);
+        line-height: .96;
+        letter-spacing: -0.075em;
+        margin-top: 8px;
+      }
+
+      .br-flag {
+        width: .82em;
+        height: .58em;
+        margin-left: .06em;
+      }
+
+      header p {
+        max-width: 95%;
+        font-size: 16px;
+        line-height: 1.38;
+        margin-top: 14px;
+      }
+
+      .grid {
+        gap: 12px;
+      }
+
+      .card {
+        border-radius: 20px;
+        padding: 14px;
+        box-shadow: 0 14px 45px rgba(0,0,0,.28);
+        backdrop-filter: none;
+      }
+
+      .tool-groups {
+        gap: 10px;
+      }
+
+      .tool-group {
+        border-radius: 18px;
+      }
+
+      .tool-group summary {
+        min-height: 74px;
+        padding: 12px;
+        align-items: center;
+      }
+
+      .tool-group-title {
+        gap: 10px;
+      }
+
+      .tool-group-title strong {
+        font-size: 17px;
+        line-height: 1.12;
+      }
+
+      .tool-group-title span {
+        display: none;
+      }
+
+      .tool-group-badge {
+        min-width: 34px;
+        height: 34px;
+        font-size: 14px;
+      }
+
+      .tool-group-content {
+        padding: 12px;
+      }
+
+      .dropzone {
+        padding: 24px 14px;
+      }
+
+      .dropzone strong {
+        font-size: 18px;
+      }
+
+      .field {
+        margin-top: 14px;
+      }
+
+      label {
+        font-size: 13px;
+      }
+
+      select,
+      input[type="number"],
+      input[type="text"] {
+        min-height: 52px;
+        font-size: 16px;
+        border-radius: 15px;
+      }
+
+      button,
+      .download,
+      .preview-download,
+      .system-download-link {
+        min-height: 52px;
+        border-radius: 16px;
+        font-size: 15px;
+      }
+
+      .switch-row {
+        align-items: flex-start;
+      }
+
+      .switch-label-text {
+        font-size: 14px;
+        line-height: 1.35;
+      }
+
+      .status {
+        margin-top: 12px;
+        padding: 12px;
+        border: 1px solid rgba(255,255,255,.08);
+        border-radius: 16px;
+        background: rgba(255,255,255,.03);
+        font-size: 14px;
+      }
+
+      aside.card > .mini-note {
+        display: none;
+      }
+
+      .preview-wrap {
+        gap: 12px;
+      }
+
+      .preview-point-actions-card {
+        padding: 12px;
+        position: sticky;
+        top: 8px;
+        z-index: 20;
+        border-color: rgba(30,155,255,.34);
+      }
+
+      .preview-point-actions-card label {
+        font-size: 12px;
+        margin-bottom: 8px;
+      }
+
+      .preview-point-actions-card .mini-note {
+        display: none;
+      }
+
+      .preview-point-actions {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+        margin-top: 0;
+      }
+
+      .preview-point-actions button {
+        font-size: 14px;
+        padding: 12px 10px;
+      }
+
+      .canvas-box {
+        min-height: 58vh;
+        padding: 8px;
+        border-radius: 22px;
+      }
+
+      .canvas-box canvas {
+        max-height: 72vh;
+        border-radius: 18px;
+      }
+
+      .empty {
+        padding: 38px 16px;
+        font-size: 15px;
+      }
+
+      .fine-adjust-overlay {
+        top: 12px;
+        left: 12px;
+        right: 12px;
+        max-width: none;
+      }
+
+      .fine-adjust-panel {
+        max-width: none;
+      }
+
+      .fine-adjust-panel.minimized {
+        width: auto;
+      }
+
+      .frame-jump-buttons {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .nudge-grid {
+        max-width: 260px;
+        margin: 10px auto 0;
+      }
+
+      .visualizer-actions {
+        grid-template-columns: 1fr;
+      }
+
+      .export-result-box {
+        padding: 12px;
+      }
+
+      .frames {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .frame-thumb span {
+        font-size: 11px;
+      }
+
+      .app-download-box {
+        margin-top: 18px;
+        padding: 14px;
+      }
+
+      .app-download-actions {
+        grid-template-columns: 1fr;
+      }
+
+      .app-download-box p {
+        font-size: 13px;
+      }
+
+      footer {
+        font-size: 12px;
+        padding-bottom: 18px;
+      }
+    }
+
+    @media (max-width: 420px) {
+      header h1 {
+        font-size: clamp(36px, 11.5vw, 48px);
+      }
+
+      header p {
+        font-size: 15px;
+      }
+
+      .social-link,
+      .badge {
+        font-size: 11px;
+      }
+
+      .preview-point-actions button {
+        font-size: 13px;
+      }
+
+      .card {
+        padding: 12px;
+      }
+    }
+
   </style>
 </head>
 <body>
