@@ -1847,6 +1847,39 @@
       }
     }
 
+    /* MOBILE UX — preview e alinhamento no topo */
+    @media (max-width: 680px) {
+      .grid {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .preview-wrap {
+        order: -1;
+      }
+
+      .preview-main-column {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .preview-point-actions-card {
+        order: -2;
+      }
+
+      .canvas-box {
+        order: -1;
+      }
+
+      .preview-point-actions-card + .canvas-box {
+        margin-top: 0;
+      }
+
+      aside.card {
+        order: 1;
+      }
+    }
+
   </style>
 </head>
 <body>

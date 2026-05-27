@@ -221,3 +221,11 @@ A versão mobile recebeu ajustes específicos de interface:
 - preview com melhor aproveitamento vertical da tela;
 - vídeo lateral continua oculto no mobile;
 - área de exportação e frames adaptada para telas pequenas.
+
+
+## Ajuste mobile — Preview e alinhamento no topo
+
+Na versão mobile, a ordem visual foi ajustada para priorizar o uso prático:
+- a área de preview aparece no topo;
+- os botões **Selecionar pontos** e **Aplicar pontos** aparecem acima do preview;
+- os painéis de configuração ficam abaixo, mantendo a versão desktop inalterada.
