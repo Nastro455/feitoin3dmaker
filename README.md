@@ -188,3 +188,15 @@ Mantenha também o arquivo `favicon.svg` na raiz do projeto para a guia personal
 - Vídeo lateral simplificado: sem textos, apenas vídeo em loop e botão de som.
 - Exportar e baixar foi movido para dentro da aba recolhível de Exportar arquivo.
 - Resolução 3:4 mantida.
+
+
+## Ajustes finais de layout e padrão de exportação
+
+- Vídeo lateral com opacidade reduzida por padrão e opacidade total no hover.
+- Auxílio inteligente de pontos ativado por padrão.
+- Botões “Selecionar pontos” e “Aplicar pontos” movidos para cima do preview.
+- Ajuste fino voltou a ficar minimizado dentro do preview.
+- “Resolução / formato da tela” movido para a primeira aba.
+- Formato padrão alterado para MP4.
+- Duração padrão de vídeo alterada para 10 segundos.
+- Qualidade padrão alterada para Alta qualidade.

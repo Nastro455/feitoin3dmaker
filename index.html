@@ -1180,6 +1180,43 @@
       }
     }
 
+    .preview-point-actions-card {
+      padding: 14px;
+    }
+
+    .preview-point-actions {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      margin-top: 10px;
+    }
+
+    .demo-video-frame video {
+      opacity: .5;
+      transition: opacity .25s ease, filter .25s ease, transform .25s ease;
+      filter: saturate(.78) contrast(.9);
+    }
+
+    .demo-video-frame:hover video,
+    .demo-side-panel:hover .demo-video-frame video {
+      opacity: 1;
+      filter: saturate(1) contrast(1);
+      transform: scale(1.01);
+    }
+
+    .demo-side-panel {
+      opacity: .92;
+      transition: opacity .25s ease;
+    }
+
+    .demo-side-panel:hover {
+      opacity: 1;
+    }
+
+    @media (max-width: 680px) {
+      .preview-point-actions {
+        grid-template-columns: 1fr;
+      }
+    }
+
     .mini-note {
       color: var(--muted);
       font-size: 12px;
@@ -1577,21 +1614,28 @@
                 </select>
               </div>
 
+
               <div class="field">
-                <label>3.1 Auxílio inteligente de pontos</label>
+                <label for="exportAspect">3.1 Resolução / formato da tela</label>
+                <select id="exportAspect">
+                  <option value="vertical" selected>Vertical Full HD — 9:16</option>
+                  <option value="portrait3x4">Retrato 3:4</option>
+                  <option value="classic4x3">4:3 clássico</option>
+                  <option value="horizontalFullHd">Horizontal Full HD — 16:9</option>
+                  <option value="horizontal4k">Horizontal 4K — 16:9</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label>3.2 Auxílio inteligente de pontos</label>
                 <div class="switch-row">
                   <label class="switch-control" for="candidateAssistToggle">
-                    <input id="candidateAssistToggle" type="checkbox" />
+                    <input id="candidateAssistToggle" type="checkbox" checked />
                     <span class="switch-slider"></span>
                   </label>
                   <span class="switch-label-text">Mapear possíveis pontos iguais no 1º frame e permitir clique assistido</span>
                 </div>
                 <p class="mini-note">Quando ativado, o site avalia detalhes fortes no primeiro frame, mostra pontos sugeridos e, ao clicar em um deles, já monta o preview do GIF automaticamente.</p>
-              </div>
-
-              <div class="actions">
-                <button class="blue" id="keypointBtn" disabled>4. Selecionar pontos automáticos</button>
-                <button class="green" id="applyKeypointsBtn" type="button" disabled>5. Aplicar pontos</button>
               </div>
 
               <div class="keypoint-panel" id="keypointPanel">
@@ -1600,12 +1644,11 @@
               </div>
 
               <div class="field align-tools-field">
-                <label>6. Ajuste fino e enquadramento</label>
+                <label>4. Enquadramento manual</label>
                 <div class="actions compact-actions">
-                  <button class="secondary" id="openFineAdjustBtn" type="button" disabled>Abrir ajuste fino</button>
                   <button class="secondary" id="resetFramingBtn" type="button" disabled>Resetar enquadramento</button>
                 </div>
-                <p class="mini-note">Use o ajuste fino apenas se quiser corrigir tremidos sutis frame a frame.</p>
+                <p class="mini-note">O ajuste fino fica minimizado dentro do preview. Use esta opção apenas para resetar o enquadramento.</p>
               </div>
             </div>
           </details>
@@ -1744,26 +1787,15 @@
 
               <div class="field" id="customDurationField" style="display: none;">
                 <label for="customDurationSeconds">Tempo total personalizado do GIF</label>
-                <input id="customDurationSeconds" type="number" min="0.2" max="60" step="0.1" value="3" placeholder="Ex: 3" />
+                <input id="customDurationSeconds" type="number" min="0.2" max="60" step="0.1" value="10" placeholder="Ex: 10" />
               </div>
 
               <div class="field">
                 <label for="exportFormat">Formato do arquivo exportado</label>
                 <select id="exportFormat">
-                  <option value="gif" selected>GIF</option>
-                  <option value="mp4">MP4</option>
+                  <option value="gif">GIF</option>
+                  <option value="mp4" selected>MP4</option>
                   <option value="mov">MOV</option>
-                </select>
-              </div>
-
-              <div class="field">
-                <label for="exportAspect">Resolução / formato da tela</label>
-                <select id="exportAspect">
-                  <option value="vertical" selected>Vertical Full HD — 9:16</option>
-                  <option value="portrait3x4">Retrato 3:4</option>
-                  <option value="classic4x3">4:3 clássico</option>
-                  <option value="horizontalFullHd">Horizontal Full HD — 16:9</option>
-                  <option value="horizontal4k">Horizontal 4K — 16:9</option>
                 </select>
               </div>
 
@@ -1771,14 +1803,14 @@
                 <label for="exportQuality">Qualidade do arquivo final</label>
                 <select id="exportQuality">
                   <option value="light">Leve / mais rápido</option>
-                  <option value="standard" selected>Padrão</option>
-                  <option value="high">Alta qualidade</option>
+                  <option value="standard">Padrão</option>
+                  <option value="high" selected>Alta qualidade</option>
                 </select>
               </div>
 
               <div class="field" id="videoDurationField" style="display: none;">
                 <label for="videoDurationSeconds">Tempo total do vídeo</label>
-                <input id="videoDurationSeconds" type="number" min="0.5" max="60" step="0.1" value="3" placeholder="Ex: 3" />
+                <input id="videoDurationSeconds" type="number" min="0.5" max="60" step="0.1" value="10" placeholder="Ex: 10" />
               </div>
 
               <div class="field">
@@ -1799,7 +1831,7 @@
                 <label>4. Exportar e baixar</label>
                 <div class="export-result-box" id="exportResultBox">
                   <strong>Resultado final</strong>
-                  <span id="exportResultMeta">GIF • Vertical Full HD • Padrão</span>
+                  <span id="exportResultMeta">MP4 • Vertical Full HD • Alta qualidade</span>
                   <p>Quando estiver satisfeito com o preview, exporte no formato desejado e baixe o arquivo final.</p>
                 </div>
                 <div class="actions visualizer-actions">
@@ -1812,7 +1844,7 @@
               </div>
 
 <div class="export-box" id="exportBox">
-                <strong>Exportação:</strong> escolha entre Vertical Full HD 9:16, 4:3 clássico, Horizontal Full HD 16:9 ou Horizontal 4K 16:9. O enquadramento usa crop automático para preencher a tela sem bordas pretas. Você também pode ajustar exposição, nitidez, LUT personalizado, glow, deslocamento RGB 3D e marca d'água no preview e no arquivo final.
+                <strong>Exportação:</strong> escolha entre Vertical Full HD 9:16, Retrato 3:4, 4:3 clássico, Horizontal Full HD 16:9 ou Horizontal 4K 16:9. O enquadramento usa crop automático para preencher a tela sem bordas pretas. Você também pode ajustar exposição, nitidez, LUT personalizado, glow, deslocamento RGB 3D e marca d'água no preview e no arquivo final.
               </div>
             </div>
           </details>
@@ -1824,6 +1856,15 @@
 
       <section class="preview-wrap">
         <div class="preview-main-column">
+
+        <div class="card preview-point-actions-card">
+          <label>Alinhamento do GIF 3D</label>
+          <div class="actions preview-point-actions">
+            <button class="blue" id="keypointBtn" disabled>Selecionar pontos</button>
+            <button class="green" id="applyKeypointsBtn" type="button" disabled>Aplicar pontos</button>
+          </div>
+          <p class="mini-note">Use primeiro “Selecionar pontos” para marcar o objeto principal. Depois confirme em “Aplicar pontos”.</p>
+        </div>
 
         <div class="card canvas-box" id="previewBox">
           <div class="empty" id="emptyState">Seu resultado vai aparecer aqui assim que a imagem for carregada.</div>
@@ -1842,10 +1883,7 @@
             <div class="fine-adjust-panel">
               <div class="fine-adjust-head">
                 <strong>Ajuste fino por frame</strong>
-                <div class="fine-adjust-head-actions">
-                  <button class="fine-adjust-toggle" id="fineAdjustToggleBtn" type="button">Minimizar</button>
-                  <button class="fine-adjust-close" id="fineAdjustCloseBtn" type="button">Fechar</button>
-                </div>
+                <button class="fine-adjust-toggle" id="fineAdjustToggleBtn" type="button">Mostrar</button>
               </div>
               <p class="fine-adjust-mini">Escolha um frame para ajuste rápido e use as setas para corrigir tremidos finos sobre o preview.</p>
               <div class="frame-jump-buttons" id="frameJumpButtons"></div>
@@ -2115,7 +2153,7 @@
     let selectedAdjustFrame = 0;
     let previewMode = 'animated';
     let fineAdjustMinimized = true;
-    let fineAdjustVisible = false;
+    let fineAdjustVisible = true;
 
     const KEYPOINT_HINT_SEEN_KEY = 'feitoin3d-keypoint-hint-seen';
 
@@ -2172,7 +2210,7 @@
     }
 
     function closeFineAdjustPanel() {
-      fineAdjustVisible = false;
+      fineAdjustMinimized = true;
       updateFineAdjustControls();
     }
 
@@ -3510,7 +3548,7 @@
 
     function updateFineAdjustControls() {
       const hasFrames = rawFrameCanvases.length > 0;
-      fineAdjustOverlay.hidden = !hasFrames || selectingKeypoints || !fineAdjustVisible;
+      fineAdjustOverlay.hidden = !hasFrames || selectingKeypoints;
       if (!hasFrames) {
         frameJumpButtons.innerHTML = '';
         return;
@@ -3982,7 +4020,7 @@
       selectedAdjustFrame = 0;
       previewMode = 'animated';
       fineAdjustMinimized = true;
-      fineAdjustVisible = false;
+      fineAdjustVisible = true;
       resetManualFraming();
       canvas.classList.remove('keypoint-mode');
       keypointPanel.classList.remove('active');
