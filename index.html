@@ -1921,13 +1921,6 @@
         </div>
 
         <aside class="demo-side-column" aria-label="Demonstração e fluxo Feitoin3d">
-          <div class="card demo-side-panel">
-            <div class="demo-video-frame">
-              <video id="demoSideVideo" src="assets/feitoin3d-kenji-lente-3d.mp4" autoplay muted loop playsinline preload="metadata"></video>
-            </div>
-            <button class="secondary demo-sound-btn" id="demoSoundToggle" type="button">Ativar som</button>
-          </div>
-
           <div class="workflow-card card-lite sidebar-workflow-card">
             <label>Fluxo de produção</label>
             <div class="workflow-list">
@@ -1937,7 +1930,12 @@
               <div class="workflow-item" id="workflowExport"><span>4</span><div><strong>Pronto para exportar</strong><small>Defina resolução, formato e gere o arquivo final.</small></div></div>
             </div>
           </div>
-
+          <div class="card demo-side-panel">
+            <div class="demo-video-frame">
+              <video id="demoSideVideo" src="assets/feitoin3d-kenji-lente-3d.mp4" autoplay muted loop playsinline preload="metadata"></video>
+            </div>
+            <button class="secondary demo-sound-btn" id="demoSoundToggle" type="button">Ativar som</button>
+          </div>
         </aside>
       </section>
     </section>
@@ -2647,7 +2645,6 @@
       updateFineAdjustControls();
       startPreview();
 
-      if (stepExportGroup) stepExportGroup.open = true;
       const layoutText = isVerticalInput ? 'foto vertical com quadros empilhados' : 'foto horizontal com quadros lado a lado';
       setStatus(`${count} frames recortados a partir de ${layoutText}. Para alinhar melhor, clique em “Selecionar pontos automáticos”.`);
       updateExportControls();
@@ -3997,7 +3994,6 @@
       rebuildFinalFrames();
       renderFramesList();
       updateFineAdjustControls();
-      if (stepCreativeGroup) stepCreativeGroup.open = true;
       startPreview();
       updateFramingCursorState();
       updateWorkflowStatus();

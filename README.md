@@ -200,3 +200,11 @@ Mantenha também o arquivo `favicon.svg` na raiz do projeto para a guia personal
 - Formato padrão alterado para MP4.
 - Duração padrão de vídeo alterada para 10 segundos.
 - Qualidade padrão alterada para Alta qualidade.
+
+
+## Ajuste — Fluxo acima do vídeo e painéis recolhidos
+
+- O painel **Fluxo de produção** foi movido para cima do vídeo na lateral direita.
+- Os painéis laterais permanecem recolhidos mesmo após o carregamento da imagem.
+- Apenas o primeiro painel fica aberto por padrão, até que o usuário decida minimizar ou abrir outro manualmente.
+- Removida a abertura automática das abas de exportação e estilo após processar ou alinhar a imagem.
