@@ -229,3 +229,12 @@ Na versão mobile, a ordem visual foi ajustada para priorizar o uso prático:
 - a área de preview aparece no topo;
 - os botões **Selecionar pontos** e **Aplicar pontos** aparecem acima do preview;
 - os painéis de configuração ficam abaixo, mantendo a versão desktop inalterada.
+
+## Atualização — Links dos aplicativos desktop
+
+Links atualizados no site:
+
+- Windows: `https://drive.google.com/uc?export=download&id=1m9eM4IkeAane2aPNA4x5D2hir-yTX3a5`
+- Mac: `https://drive.google.com/uc?export=download&id=1k7tsYe1P8lTQfpWx4LE553hIZwCY4vYQ`
+
+Os links foram convertidos para formato de download direto do Google Drive.
