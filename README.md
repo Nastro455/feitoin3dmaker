@@ -238,3 +238,11 @@ Links atualizados no site:
 - Mac: `https://drive.google.com/uc?export=download&id=1k7tsYe1P8lTQfpWx4LE553hIZwCY4vYQ`
 
 Os links foram convertidos para formato de download direto do Google Drive.
+
+## Atualização — Link Mac ZIP e aviso de instalação
+
+- Link Mac atualizado para: `https://drive.google.com/uc?export=download&id=1K9m28_unAxTvaVusPPDWLBuzc0uiTtbY`
+- Botão de Mac atualizado para **Baixar ZIP para Mac**.
+- Adicionado pop-up antes do download do Mac.
+- O pop-up informa que o macOS pode acusar arquivo danificado/corrompido por falta de assinatura Apple.
+- O usuário precisa confirmar que leu o aviso antes de baixar o ZIP.

@@ -1880,6 +1880,145 @@
       }
     }
 
+  
+    .mac-install-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      background: rgba(3, 11, 20, .72);
+      backdrop-filter: blur(6px);
+    }
+
+    .mac-install-modal.active {
+      display: flex;
+    }
+
+    .mac-install-dialog {
+      position: relative;
+      width: min(560px, 100%);
+      border: 1px solid rgba(255,255,255,.16);
+      border-radius: 26px;
+      padding: 24px;
+      background: linear-gradient(180deg, rgba(11,31,56,.98), rgba(6,20,38,.98));
+      box-shadow: 0 30px 110px rgba(0,0,0,.52);
+      color: var(--text);
+    }
+
+    .mac-install-close {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 38px;
+      height: 38px;
+      min-height: 0;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      font-size: 24px;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .mac-install-badge {
+      display: inline-flex;
+      border: 1px solid rgba(255,209,102,.35);
+      border-radius: 999px;
+      padding: 7px 10px;
+      color: var(--warning);
+      background: rgba(255,209,102,.08);
+      font-size: 12px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      margin-bottom: 12px;
+    }
+
+    .mac-install-dialog h2 {
+      margin: 0 0 10px;
+      font-size: clamp(24px, 4vw, 34px);
+      letter-spacing: -.04em;
+    }
+
+    .mac-install-dialog p,
+    .mac-install-dialog li,
+    .mac-install-check span {
+      color: var(--muted);
+      line-height: 1.48;
+      font-size: 14px;
+    }
+
+    .mac-install-steps {
+      margin: 16px 0;
+      padding: 14px;
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: 18px;
+      background: rgba(255,255,255,.035);
+    }
+
+    .mac-install-steps strong {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--text);
+      font-size: 14px;
+    }
+
+    .mac-install-steps ol {
+      margin: 0 0 0 18px;
+      padding: 0;
+    }
+
+    .mac-install-steps code {
+      color: var(--success);
+      font-weight: 800;
+    }
+
+    .mac-install-check {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin: 16px 0;
+      padding: 12px;
+      border-radius: 16px;
+      background: rgba(79,255,138,.055);
+      border: 1px solid rgba(79,255,138,.14);
+    }
+
+    .mac-install-check input {
+      margin-top: 3px;
+      width: 18px;
+      height: 18px;
+      flex: 0 0 auto;
+    }
+
+    .mac-install-actions {
+      display: grid;
+      grid-template-columns: 1fr 1.4fr;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .mac-install-actions button[disabled] {
+      opacity: .45;
+      cursor: not-allowed;
+      filter: grayscale(.4);
+    }
+
+    @media (max-width: 560px) {
+      .mac-install-dialog {
+        padding: 20px;
+        border-radius: 22px;
+      }
+
+      .mac-install-actions {
+        grid-template-columns: 1fr;
+      }
+    }
+
   </style>
 </head>
 <body>
@@ -2271,11 +2410,11 @@
             <span>Baixar para Windows<small>Instalador .exe</small></span>
           </a>
 
-          <a class="system-download-link mac" href="https://drive.google.com/uc?export=download&id=1k7tsYe1P8lTQfpWx4LE553hIZwCY4vYQ" target="_blank" rel="noopener noreferrer">
+          <a data-mac-download="true" id="macDownloadLink" class="system-download-link mac" href="https://drive.google.com/uc?export=download&id=1K9m28_unAxTvaVusPPDWLBuzc0uiTtbY" target="_blank" rel="noopener noreferrer">
             <svg viewBox="0 0 64 64" aria-hidden="true">
               <path fill="currentColor" d="M41.7 8.5c-2.3 1.3-4.1 3.3-5.2 5.7-1 2.1-.9 4.1-.8 4.8 2.4.1 4.9-1.4 6.3-3.2 1.5-1.9 2.5-4.6 2.2-7.2-.8-.1-1.6-.1-2.5-.1ZM49.6 43.1c-1.2 2.8-1.8 4.1-3.4 6.5-2.2 3.4-5.2 7.7-9 7.7-3.3 0-4.2-2.2-8.7-2.2-4.5 0-5.5 2.1-8.8 2.2-3.8.1-6.7-3.9-8.9-7.3-6.1-9.5-6.8-20.6-3-26.5 2.7-4.2 6.9-6.7 10.9-6.7 4.1 0 6.6 2.2 10 2.2 3.3 0 5.2-2.2 9.9-2.2 3.5 0 7.3 1.9 10 5.3-8.8 4.8-7.4 17.4 1 21Z"/>
             </svg>
-            <span>Baixar para Mac<small>Arquivo .dmg</small></span>
+            <span>Baixar ZIP para Mac<small>Arquivo .dmg</small></span>
           </a>
         </div>
 
@@ -4939,9 +5078,101 @@
       });
     }
 
+
+    const macDownloadLink = document.querySelector('[data-mac-download="true"], #macDownloadLink');
+    const macInstallModal = document.querySelector('#macInstallModal');
+    const macInstallClose = document.querySelector('#macInstallClose');
+    const macInstallCancel = document.querySelector('#macInstallCancel');
+    const macInstallConfirm = document.querySelector('#macInstallConfirm');
+    const macInstallProceed = document.querySelector('#macInstallProceed');
+    const macDownloadUrl = "https://drive.google.com/uc?export=download&id=1K9m28_unAxTvaVusPPDWLBuzc0uiTtbY";
+
+    function openMacInstallModal(event) {
+      if (!macInstallModal) return;
+      if (event) event.preventDefault();
+      macInstallModal.classList.add('active');
+      macInstallModal.setAttribute('aria-hidden', 'false');
+      if (macInstallConfirm) macInstallConfirm.checked = false;
+      if (macInstallProceed) macInstallProceed.disabled = true;
+    }
+
+    function closeMacInstallModal() {
+      if (!macInstallModal) return;
+      macInstallModal.classList.remove('active');
+      macInstallModal.setAttribute('aria-hidden', 'true');
+    }
+
+    if (macDownloadLink) {
+      macDownloadLink.setAttribute('href', macDownloadUrl);
+      macDownloadLink.addEventListener('click', openMacInstallModal);
+    }
+
+    if (macInstallConfirm && macInstallProceed) {
+      macInstallConfirm.addEventListener('change', () => {
+        macInstallProceed.disabled = !macInstallConfirm.checked;
+      });
+    }
+
+    if (macInstallProceed) {
+      macInstallProceed.addEventListener('click', () => {
+        window.open(macDownloadUrl, '_blank', 'noopener,noreferrer');
+        closeMacInstallModal();
+      });
+    }
+
+    if (macInstallClose) macInstallClose.addEventListener('click', closeMacInstallModal);
+    if (macInstallCancel) macInstallCancel.addEventListener('click', closeMacInstallModal);
+
+    if (macInstallModal) {
+      macInstallModal.addEventListener('click', (event) => {
+        if (event.target === macInstallModal) closeMacInstallModal();
+      });
+    }
+
+    window.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && macInstallModal?.classList.contains('active')) {
+        closeMacInstallModal();
+      }
+    });
+
+
     updateExportControls();
     updateFineAdjustControls();
     canvas.style.display = 'none';
   </script>
+
+  <div class="mac-install-modal" id="macInstallModal" aria-hidden="true">
+    <div class="mac-install-dialog" role="dialog" aria-modal="true" aria-labelledby="macInstallTitle">
+      <button class="mac-install-close" id="macInstallClose" type="button" aria-label="Fechar aviso">×</button>
+      <div class="mac-install-badge">Atenção usuários Mac</div>
+      <h2 id="macInstallTitle">Leia antes de instalar no Mac</h2>
+      <p>
+        O macOS pode exibir a mensagem de que o arquivo está “danificado” ou “corrompido”.
+        Isso acontece porque o aplicativo ainda não possui assinatura oficial da Apple.
+      </p>
+      <p>
+        O app é seguro, mas você precisa seguir o passo a passo incluso no ZIP para liberar a abertura no Mac.
+      </p>
+      <div class="mac-install-steps">
+        <strong>Resumo rápido:</strong>
+        <ol>
+          <li>Baixe e extraia o arquivo ZIP.</li>
+          <li>Coloque o app na Área de Trabalho.</li>
+          <li>Abra o Terminal.</li>
+          <li>Digite <code>xattr -cr </code>, com espaço no final.</li>
+          <li>Arraste o app para o Terminal e aperte Enter.</li>
+        </ol>
+      </div>
+      <label class="mac-install-check">
+        <input id="macInstallConfirm" type="checkbox">
+        <span>Entendi que preciso ler o passo a passo incluso no ZIP antes de instalar.</span>
+      </label>
+      <div class="mac-install-actions">
+        <button class="secondary" id="macInstallCancel" type="button">Cancelar</button>
+        <button id="macInstallProceed" type="button" disabled>Baixar ZIP para Mac</button>
+      </div>
+    </div>
+  </div>
+
 </body>
 </html>
