@@ -147,7 +147,7 @@
 
     .grid {
       display: grid;
-      grid-template-columns: 390px minmax(0, 1fr);
+      grid-template-columns: 410px minmax(0, 1fr);
       gap: 18px;
       align-items: start;
     }
@@ -1881,6 +1881,292 @@
     }
 
   
+    .lens-change-btn {
+      font-family: inherit;
+      border: 1px solid var(--line);
+    }
+
+    body.lens-gate-active .grid,
+    body.lens-gate-active .app-download-box,
+    body.lens-gate-active .site-footer {
+      display: none !important;
+    }
+
+    body.lens-gate-active #changeLensBtn {
+      display: none !important;
+    }
+
+    body:not(.lens-gate-active) .lens-mode-gate {
+      display: none !important;
+    }
+
+    .lens-mode-gate {
+      width: min(980px, 100%);
+      margin: 0 auto 28px;
+    }
+
+    .lens-mode-card {
+      border: 1px solid var(--line);
+      border-radius: 30px;
+      padding: clamp(22px, 4vw, 40px);
+      background: rgba(11,31,56,.88);
+      box-shadow: 0 24px 90px rgba(0,0,0,.35);
+      text-align: center;
+    }
+
+    .lens-mode-kicker {
+      display: inline-flex;
+      border: 1px solid rgba(142,203,255,.35);
+      border-radius: 999px;
+      padding: 8px 12px;
+      color: var(--warning);
+      background: rgba(255,255,255,.06);
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    .lens-mode-card h2 {
+      margin: 0;
+      font-size: clamp(32px, 6vw, 64px);
+      letter-spacing: -.07em;
+      line-height: .98;
+    }
+
+    .lens-mode-card p {
+      color: var(--muted);
+      max-width: 680px;
+      margin: 14px auto 0;
+      line-height: 1.5;
+    }
+
+    .lens-mode-options {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 26px;
+    }
+
+    .lens-option-card {
+      display: grid;
+      gap: 10px;
+      text-align: left;
+      min-height: 190px;
+      border: 1px solid rgba(255,255,255,.14);
+      border-radius: 26px;
+      padding: 22px;
+      background: linear-gradient(180deg, rgba(30,155,255,.18), rgba(7,24,43,.86));
+      color: var(--text);
+      cursor: pointer;
+      transition: .22s ease;
+    }
+
+    .lens-option-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--accent);
+      box-shadow: 0 20px 60px rgba(0,0,0,.30);
+    }
+
+    .lens-option-card.retro {
+      background: linear-gradient(180deg, rgba(255,209,102,.18), rgba(68,35,16,.30), rgba(7,24,43,.86));
+    }
+
+    .lens-option-icon {
+      font-size: 34px;
+      letter-spacing: -.18em;
+      color: var(--accent);
+    }
+
+    .lens-option-card.retro .lens-option-icon {
+      letter-spacing: 0;
+      color: #ffd166;
+    }
+
+    .lens-option-card strong {
+      font-size: 24px;
+      letter-spacing: -.04em;
+    }
+
+    .lens-option-card small {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .retro-mode-note {
+      display: none;
+      border: 1px solid rgba(255,209,102,.25);
+      border-radius: 18px;
+      padding: 14px;
+      margin-bottom: 14px;
+      background: rgba(255,209,102,.075);
+    }
+
+    .retro-mode-note strong {
+      display: block;
+      color: var(--warning);
+      margin-bottom: 5px;
+    }
+
+    .retro-mode-note p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    body.lens-retro .retro-mode-note {
+      display: block;
+    }
+
+    body.lens-retro #inputLayout,
+    body.lens-retro #frameCount,
+    body.lens-retro #candidateAssistToggle,
+    body.lens-retro #resetFramingBtn,
+    body.lens-retro #keypointPanel,
+    body.lens-retro #fineAdjustOverlay,
+    body.lens-retro #framesList,
+    body.lens-retro #exportFormat,
+    body.lens-retro #delay,
+    body.lens-retro #boomerang,
+    body.lens-retro #totalDuration,
+    body.lens-retro #customDurationSeconds,
+    body.lens-retro #videoDurationSeconds,
+    body.lens-retro #frameInterpolationAmount {
+      pointer-events: none;
+    }
+
+    body.lens-retro #inputLayout.closest-hidden,
+    body.lens-retro #frameCount.closest-hidden {
+      display: none;
+    }
+
+    body.lens-retro .field:has(#inputLayout),
+    body.lens-retro .field:has(#frameCount),
+    body.lens-retro .field:has(#candidateAssistToggle),
+        body.lens-retro .field:has(#exportFormat),
+    body.lens-retro .field:has(#delay),
+    body.lens-retro .field:has(#boomerang),
+    body.lens-retro .field:has(#totalDuration),
+    body.lens-retro .field:has(#customDurationSeconds),
+    body.lens-retro .field:has(#videoDurationSeconds),
+    body.lens-retro .field:has(#frameInterpolationAmount),
+    body.lens-retro .preview-point-actions-card,
+    body.lens-retro .fine-adjust-overlay,
+    body.lens-retro .frame-thumb,
+    body.lens-retro .demo-side-column {
+      display: none !important;
+    }
+
+    body.lens-retro #clearKeypointsBtn,
+    body.lens-retro #exportJpgBtn {
+      display: none !important;
+    }
+
+    body.lens-retro .preview-wrap {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    body.lens-retro .canvas-box {
+      min-height: 640px;
+    }
+
+    body.lens-retro .tool-group-badge {
+      background: rgba(255,209,102,.16);
+    }
+
+    body.lens-retro .dropzone strong::after {
+      content: ' Retro';
+    }
+
+    body.lens-retro .dropzone span {
+      font-size: 0;
+    }
+
+    body.lens-retro .dropzone span::after {
+      content: 'JPG, PNG, WEBP, HEIC/HEIF, TIFF e arquivos de câmera quando suportados pelo navegador';
+      font-size: 14px;
+    }
+
+    @media (max-width: 780px) {
+      .lens-mode-options {
+        grid-template-columns: 1fr;
+      }
+
+      .lens-option-card {
+        min-height: 150px;
+      }
+    }
+
+    .retro-presets-field,
+    .retro-secondary-control {
+      display: block;
+    }
+
+    body:not(.lens-retro) .retro-presets-field,
+    body:not(.lens-retro) .retro-secondary-control,
+    body:not(.lens-retro) .retro-look-note {
+      display: none !important;
+    }
+
+    .retro-preset-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .retro-preset-btn {
+      min-height: 74px;
+      justify-content: flex-start;
+      text-align: left;
+      padding: 12px 14px;
+      border-radius: 18px;
+      border: 1px solid rgba(255, 209, 102, .16);
+      background: linear-gradient(180deg, rgba(255,209,102,.09), rgba(255,255,255,.03));
+      color: var(--text);
+      font-size: 13px;
+      line-height: 1.35;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.05);
+    }
+
+    .retro-preset-btn strong {
+      display: block;
+      font-size: 14px;
+      margin-bottom: 3px;
+      color: #ffd166;
+    }
+
+    .retro-preset-btn.active {
+      border-color: rgba(255, 209, 102, .45);
+      box-shadow: 0 0 0 1px rgba(255,209,102,.28), 0 18px 36px rgba(0,0,0,.18);
+      transform: translateY(-1px);
+    }
+
+    .retro-look-note {
+      margin-top: 10px;
+      padding: 11px 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,209,102,.16);
+      background: rgba(255,209,102,.07);
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .retro-look-note strong {
+      color: #ffd166;
+    }
+
+    @media (max-width: 780px) {
+      .retro-preset-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+
     .mac-install-modal {
       position: fixed;
       inset: 0;
@@ -2019,19 +2305,930 @@
       }
     }
 
+  
+    /* Correção — proporção dos painéis recolhíveis */
+    .tool-groups {
+      align-content: start;
+    }
+
+    .tool-group {
+      min-height: 0 !important;
+      height: auto !important;
+    }
+
+    .tool-group:not([open]) {
+      min-height: 0 !important;
+      height: auto !important;
+    }
+
+    .tool-group:not([open]) .tool-group-content {
+      display: none !important;
+    }
+
+    .tool-group summary {
+      min-height: 0 !important;
+      height: auto !important;
+      padding: 12px 14px !important;
+      align-items: center !important;
+    }
+
+    .tool-group-title,
+    .tool-group-title > div {
+      min-width: 0;
+      max-width: 100%;
+    }
+
+    .tool-group-title strong,
+    .tool-group-title span {
+      white-space: normal;
+      overflow: visible;
+      text-overflow: initial;
+    }
+
+    .tool-group-title span {
+      line-height: 1.35;
+    }
+
+    @media (min-width: 681px) {
+      .tool-group summary {
+        min-height: 66px !important;
+      }
+
+      .tool-group:not([open]) summary {
+        min-height: 62px !important;
+      }
+    }
+
+    @media (max-width: 680px) {
+      .tool-group summary {
+        min-height: 64px !important;
+      }
+    }
+
+  
+
+    /* Correção visual — caixas do modo Retro seguindo a identidade azul */
+    .retro-mode-note,
+    .retro-look-note {
+      border-color: var(--line) !important;
+      background: rgba(30,155,255,.08) !important;
+    }
+
+    .retro-mode-note strong,
+    .retro-look-note strong {
+      color: var(--warning) !important;
+    }
+
+    .lens-option-card.retro {
+      background: linear-gradient(180deg, rgba(30,155,255,.18), rgba(7,24,43,.86)) !important;
+      border-color: rgba(30,155,255,.18) !important;
+    }
+
+    .lens-option-card.retro .lens-option-icon {
+      color: var(--accent) !important;
+    }
+
+
+    /* Correção forte — proporção dos painéis recolhíveis */
+    .tool-groups {
+      align-content: start !important;
+      grid-auto-rows: auto !important;
+    }
+
+    .tool-group {
+      min-height: 0 !important;
+      height: auto !important;
+      max-height: none !important;
+    }
+
+    .tool-group summary {
+      min-height: 64px !important;
+      height: auto !important;
+      padding: 12px 14px !important;
+      align-items: center !important;
+    }
+
+    .tool-group:not([open]) {
+      min-height: 0 !important;
+      height: auto !important;
+      overflow: hidden !important;
+    }
+
+    .tool-group:not([open]) .tool-group-content {
+      display: none !important;
+      height: 0 !important;
+      max-height: 0 !important;
+      padding: 0 !important;
+      border: 0 !important;
+      overflow: hidden !important;
+    }
+
+    .tool-group:not([open]) summary {
+      min-height: 62px !important;
+    }
+
+    .tool-group-title {
+      min-width: 0 !important;
+      max-width: calc(100% - 28px) !important;
+    }
+
+    .tool-group-title > div {
+      min-width: 0 !important;
+      max-width: 100% !important;
+    }
+
+    .tool-group-title strong,
+    .tool-group-title span {
+      display: block !important;
+      white-space: normal !important;
+      overflow: hidden !important;
+      text-overflow: ellipsis !important;
+    }
+
+    .tool-group-title span {
+      display: -webkit-box !important;
+      -webkit-line-clamp: 2 !important;
+      -webkit-box-orient: vertical !important;
+      line-height: 1.32 !important;
+      max-height: 2.7em !important;
+    }
+
+    @media (min-width: 981px) {
+      .grid {
+        grid-template-columns: 390px minmax(0, 1fr) !important;
+      }
+
+      aside.card {
+        position: sticky;
+        top: 16px;
+        max-height: calc(100vh - 32px);
+        overflow-y: auto;
+      }
+
+      aside.card::-webkit-scrollbar {
+        width: 8px;
+      }
+
+      aside.card::-webkit-scrollbar-thumb {
+        background: rgba(255,255,255,.16);
+        border-radius: 999px;
+      }
+    }
+
+
+    /* Preview acompanha a rolagem no desktop */
+    @media (min-width: 981px) {
+      .preview-main-column {
+        position: sticky;
+        top: 16px;
+        align-self: start;
+      }
+
+      .canvas-box {
+        min-height: min(640px, calc(100vh - 260px));
+      }
+
+      body.lens-retro .canvas-box {
+        min-height: min(680px, calc(100vh - 190px));
+      }
+    }
+
+
+    /* Estrutura: mantém o desktop como o site 3D anterior e reorganiza só no mobile */
+    @media (min-width: 681px) {
+      .grid {
+        display: grid !important;
+      }
+
+      .preview-wrap {
+        display: grid !important;
+      }
+
+      .canvas-box,
+      aside.card,
+      .visualizer-actions-card {
+        order: initial !important;
+      }
+    }
+
+
+  
+    /* REPAGINAÇÃO — layout limpo para Lente 3D e Lente Retro */
+    body {
+      align-items: flex-start;
+    }
+
+    .app {
+      width: min(1480px, 100%);
+    }
+
+    header {
+      margin-bottom: 22px;
+    }
+
+    header p {
+      max-width: 920px;
+    }
+
+    .lens-mode-toolbar {
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin: 0 0 16px;
+      padding: 14px 16px;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: rgba(11,31,56,.78);
+      box-shadow: 0 16px 50px rgba(0,0,0,.22);
+      backdrop-filter: blur(12px);
+    }
+
+    body:not(.lens-gate-active) .lens-mode-toolbar {
+      display: flex;
+    }
+
+    .lens-mode-toolbar-text {
+      display: grid;
+      gap: 2px;
+      min-width: 0;
+    }
+
+    .lens-mode-toolbar-text span {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+
+    .lens-mode-toolbar-text strong {
+      font-size: 18px;
+      letter-spacing: -.03em;
+      color: var(--text);
+    }
+
+    .lens-mode-toolbar-actions {
+      display: inline-flex;
+      gap: 8px;
+      flex: 0 0 auto;
+    }
+
+    .lens-toolbar-btn {
+      min-height: 42px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.05);
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .lens-toolbar-btn.active {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+
+    .grid {
+      grid-template-columns: 380px minmax(0, 1fr) !important;
+      gap: 16px !important;
+      align-items: start !important;
+    }
+
+    .grid > aside.card {
+      padding: 0 !important;
+      overflow: hidden !important;
+      position: sticky;
+      top: 16px;
+      max-height: calc(100vh - 32px);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .grid > aside.card::before {
+      content: "Painel de edição";
+      display: block;
+      padding: 16px 16px 12px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      color: var(--text);
+      font-weight: 900;
+      letter-spacing: -.03em;
+      font-size: 18px;
+      background: rgba(255,255,255,.035);
+    }
+
+    body.lens-retro .grid > aside.card::before {
+      content: "Editor da Lente Retro";
+    }
+
+    body.lens-3d .grid > aside.card::before {
+      content: "Montagem da Lente 3D";
+    }
+
+    .tool-groups {
+      padding: 12px;
+      overflow-y: auto;
+      display: grid !important;
+      gap: 10px !important;
+      align-content: start !important;
+    }
+
+    .tool-groups::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .tool-groups::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,.16);
+      border-radius: 999px;
+    }
+
+    .tool-group {
+      height: auto !important;
+      min-height: 0 !important;
+      border-radius: 18px !important;
+      background: rgba(255,255,255,.035) !important;
+      border-color: rgba(142,203,255,.16) !important;
+      overflow: hidden !important;
+    }
+
+    .tool-group summary {
+      min-height: 58px !important;
+      padding: 12px !important;
+      display: grid !important;
+      grid-template-columns: 1fr 18px !important;
+      gap: 10px !important;
+      align-items: center !important;
+      background: rgba(255,255,255,.045) !important;
+    }
+
+    .tool-group:not([open]) summary {
+      min-height: 58px !important;
+    }
+
+    .tool-group:not([open]) .tool-group-content {
+      display: none !important;
+    }
+
+    .tool-group-title {
+      min-width: 0 !important;
+      display: grid !important;
+      grid-template-columns: 34px minmax(0, 1fr) !important;
+      gap: 10px !important;
+      align-items: center !important;
+    }
+
+    .tool-group-badge {
+      min-width: 34px !important;
+      width: 34px !important;
+      height: 34px !important;
+      font-size: 13px !important;
+    }
+
+    .tool-group-title strong {
+      display: block !important;
+      font-size: 14px !important;
+      line-height: 1.15 !important;
+      white-space: nowrap !important;
+      overflow: hidden !important;
+      text-overflow: ellipsis !important;
+    }
+
+    .tool-group-title span {
+      display: none !important;
+    }
+
+    .tool-group-arrow {
+      font-size: 13px !important;
+      justify-self: end;
+    }
+
+    .tool-group-content {
+      padding: 14px !important;
+      background: rgba(3,11,20,.18) !important;
+    }
+
+    .field {
+      margin-top: 14px !important;
+    }
+
+    .field:first-child {
+      margin-top: 0 !important;
+    }
+
+    .retro-mode-note,
+    .retro-look-note {
+      border-color: rgba(30,155,255,.25) !important;
+      background: rgba(30,155,255,.08) !important;
+      border-radius: 16px !important;
+    }
+
+    .retro-mode-note strong,
+    .retro-look-note strong {
+      color: var(--warning) !important;
+    }
+
+    .retro-preset-grid {
+      grid-template-columns: 1fr !important;
+      gap: 8px !important;
+    }
+
+    .retro-preset-btn {
+      min-height: 62px !important;
+      padding: 11px 12px !important;
+      border-radius: 16px !important;
+      background: rgba(30,155,255,.06) !important;
+      border-color: rgba(30,155,255,.18) !important;
+    }
+
+    .retro-preset-btn strong {
+      color: var(--warning) !important;
+    }
+
+    .preview-wrap {
+      grid-template-columns: minmax(0, 1fr) 330px !important;
+      gap: 16px !important;
+      align-items: start !important;
+    }
+
+    .preview-main-column {
+      position: sticky;
+      top: 16px;
+      align-self: start;
+      display: grid !important;
+      gap: 12px !important;
+    }
+
+    .preview-point-actions-card {
+      padding: 14px !important;
+      border-radius: 20px !important;
+      background: rgba(11,31,56,.82) !important;
+    }
+
+    .preview-point-actions {
+      grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+
+    .canvas-box {
+      min-height: clamp(520px, calc(100vh - 260px), 720px) !important;
+      border-radius: 22px !important;
+    }
+
+    body.lens-retro .preview-wrap {
+      grid-template-columns: minmax(0, 1fr) !important;
+    }
+
+    body.lens-retro .preview-main-column {
+      max-width: 900px;
+    }
+
+    body.lens-retro .canvas-box {
+      min-height: clamp(560px, calc(100vh - 210px), 780px) !important;
+    }
+
+    body.lens-retro .preview-point-actions-card,
+    body.lens-retro .demo-side-column,
+    body.lens-retro #framesList {
+      display: none !important;
+    }
+
+    .demo-side-column {
+      position: sticky;
+      top: 16px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .workflow-card {
+      margin: 0 !important;
+      padding: 14px !important;
+      border-radius: 20px !important;
+    }
+
+    .workflow-list {
+      gap: 8px !important;
+    }
+
+    .workflow-item {
+      grid-template-columns: 32px 1fr !important;
+      padding: 10px !important;
+      border-radius: 15px !important;
+    }
+
+    .workflow-item span {
+      width: 32px !important;
+      height: 32px !important;
+    }
+
+    .workflow-item small {
+      font-size: 12px !important;
+    }
+
+    .lens-mode-card {
+      max-width: 980px;
+      margin: 0 auto;
+    }
+
+    .lens-option-card.retro {
+      background: linear-gradient(180deg, rgba(30,155,255,.18), rgba(7,24,43,.86)) !important;
+    }
+
+    .lens-option-card.retro .lens-option-icon {
+      color: var(--accent) !important;
+    }
+
+    @media (max-width: 1180px) {
+      .grid {
+        grid-template-columns: 360px minmax(0, 1fr) !important;
+      }
+
+      .preview-wrap {
+        grid-template-columns: minmax(0, 1fr) !important;
+      }
+
+      .demo-side-column {
+        display: none !important;
+      }
+    }
+
+    @media (max-width: 980px) {
+      .lens-mode-toolbar {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .lens-mode-toolbar-actions {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .grid {
+        display: flex !important;
+        flex-direction: column !important;
+      }
+
+      .grid > aside.card {
+        position: static !important;
+        max-height: none !important;
+        width: 100% !important;
+      }
+
+      .preview-main-column {
+        position: static !important;
+      }
+
+      .preview-wrap {
+        display: flex !important;
+        flex-direction: column !important;
+        width: 100%;
+      }
+
+      .preview-point-actions-card {
+        order: -2;
+      }
+
+      .canvas-box {
+        order: -1;
+        min-height: 56vh !important;
+      }
+    }
+
+    @media (max-width: 680px) {
+      .tool-groups {
+        padding: 10px;
+      }
+
+      .tool-group summary {
+        min-height: 56px !important;
+      }
+
+      .tool-group-title strong {
+        font-size: 15px !important;
+      }
+
+      .canvas-box {
+        min-height: 58vh !important;
+      }
+    }
+
+  
+    /* Refinamento visual — painéis recolhíveis no estilo do mock enviado */
+    .grid {
+      grid-template-columns: 400px minmax(0, 1fr) !important;
+      gap: 18px !important;
+    }
+
+    .grid > aside.card {
+      border-radius: 26px !important;
+      background:
+        linear-gradient(180deg, rgba(20,54,92,.72), rgba(8,27,49,.86)) !important;
+      border: 1px solid rgba(100,170,235,.18) !important;
+      box-shadow: 0 18px 50px rgba(0,0,0,.22) !important;
+    }
+
+    .grid > aside.card::before {
+      padding: 16px 18px 10px !important;
+      background: transparent !important;
+      border-bottom: 0 !important;
+      font-size: 17px !important;
+      color: rgba(255,255,255,.96) !important;
+    }
+
+    .tool-groups {
+      padding: 14px !important;
+      gap: 14px !important;
+      background: transparent !important;
+    }
+
+    .tool-group {
+      border-radius: 22px !important;
+      border: 1px solid rgba(119,184,240,.16) !important;
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.035)) !important;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.03) !important;
+      overflow: hidden !important;
+    }
+
+    .tool-group summary {
+      min-height: 94px !important;
+      padding: 16px 16px !important;
+      display: grid !important;
+      grid-template-columns: minmax(0, 1fr) 18px !important;
+      gap: 12px !important;
+      align-items: center !important;
+      background: transparent !important;
+      cursor: pointer;
+      list-style: none;
+    }
+
+    .tool-group summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .tool-group:not([open]) summary {
+      min-height: 94px !important;
+    }
+
+    .tool-group[open] summary {
+      border-bottom: 1px solid rgba(255,255,255,.07);
+      background: linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.01)) !important;
+    }
+
+    .tool-group-title {
+      display: grid !important;
+      grid-template-columns: 42px minmax(0, 1fr) !important;
+      gap: 14px !important;
+      align-items: center !important;
+      max-width: 100% !important;
+    }
+
+    .tool-group-badge {
+      width: 42px !important;
+      height: 42px !important;
+      min-width: 42px !important;
+      border-radius: 999px !important;
+      background: linear-gradient(180deg, rgba(63,140,220,.95), rgba(46,107,183,.95)) !important;
+      border: 1px solid rgba(255,255,255,.08) !important;
+      color: #eaf5ff !important;
+      font-weight: 900 !important;
+      font-size: 15px !important;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.12) !important;
+    }
+
+    .tool-group-title > div {
+      min-width: 0 !important;
+      display: grid !important;
+      gap: 4px !important;
+      align-content: center !important;
+    }
+
+    .tool-group-title strong {
+      display: block !important;
+      white-space: normal !important;
+      overflow: visible !important;
+      text-overflow: initial !important;
+      font-size: 17px !important;
+      line-height: 1.14 !important;
+      letter-spacing: -.02em !important;
+      color: #ffffff !important;
+      font-weight: 900 !important;
+    }
+
+    .tool-group-title span {
+      display: block !important;
+      white-space: normal !important;
+      overflow: hidden !important;
+      text-overflow: ellipsis !important;
+      color: rgba(226,236,248,.86) !important;
+      font-size: 13px !important;
+      line-height: 1.32 !important;
+      max-width: 100% !important;
+    }
+
+    .tool-group-arrow {
+      width: 18px !important;
+      min-width: 18px !important;
+      color: rgba(224,236,249,.9) !important;
+      font-size: 14px !important;
+      font-weight: 700 !important;
+      justify-self: end !important;
+      transition: transform .18s ease;
+    }
+
+    .tool-group[open] .tool-group-arrow {
+      transform: rotate(180deg);
+    }
+
+    .tool-group-content {
+      padding: 16px !important;
+      background: rgba(2,10,18,.14) !important;
+    }
+
+    .tool-group-content .field:first-child {
+      margin-top: 0 !important;
+    }
+
+    @media (max-width: 980px) {
+      .grid {
+        grid-template-columns: 1fr !important;
+      }
+
+      .grid > aside.card {
+        border-radius: 24px !important;
+      }
+
+      .tool-group summary,
+      .tool-group:not([open]) summary {
+        min-height: 90px !important;
+      }
+
+      .tool-group-title strong {
+        font-size: 16px !important;
+      }
+    }
+
+    @media (max-width: 680px) {
+      .tool-groups {
+        padding: 12px !important;
+        gap: 12px !important;
+      }
+
+      .tool-group {
+        border-radius: 20px !important;
+      }
+
+      .tool-group summary,
+      .tool-group:not([open]) summary {
+        min-height: 88px !important;
+        padding: 14px !important;
+      }
+
+      .tool-group-title {
+        grid-template-columns: 40px minmax(0, 1fr) !important;
+        gap: 12px !important;
+      }
+
+      .tool-group-badge {
+        width: 40px !important;
+        height: 40px !important;
+        min-width: 40px !important;
+      }
+
+      .tool-group-title strong {
+        font-size: 15px !important;
+      }
+
+      .tool-group-title span {
+        font-size: 12px !important;
+      }
+    }
+
+  
+    /* Rolagem interna dentro de cada painel aberto */
+    .tool-group[open] {
+      display: grid !important;
+      grid-template-rows: auto minmax(0, 1fr) !important;
+    }
+
+    .tool-group[open] .tool-group-content {
+      display: block !important;
+      max-height: min(46vh, 430px) !important;
+      overflow-y: auto !important;
+      overflow-x: hidden !important;
+      overscroll-behavior: contain;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(173, 214, 255, .42) rgba(255,255,255,.04);
+      padding-right: 10px !important;
+    }
+
+    .tool-group[open] .tool-group-content::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .tool-group[open] .tool-group-content::-webkit-scrollbar-track {
+      background: rgba(255,255,255,.04);
+      border-radius: 999px;
+    }
+
+    .tool-group[open] .tool-group-content::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, rgba(142,203,255,.72), rgba(78,146,223,.82));
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.06);
+    }
+
+    .tool-group[open] .tool-group-content::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(180deg, rgba(176,220,255,.88), rgba(89,159,238,.92));
+    }
+
+    .tool-group[open] .tool-group-content > *:last-child {
+      margin-bottom: 0 !important;
+    }
+
+    @media (max-width: 980px) {
+      .tool-group[open] .tool-group-content {
+        max-height: 42vh !important;
+      }
+    }
+
+    @media (max-width: 680px) {
+      .tool-group[open] .tool-group-content {
+        max-height: 38vh !important;
+        padding-right: 6px !important;
+      }
+    }
+
+  
+    /* Correção — clique das receitas Retro */
+    .retro-preset-btn {
+      position: relative;
+      cursor: pointer !important;
+      pointer-events: auto !important;
+    }
+
+    .retro-preset-btn.active::after {
+      content: "Aplicado";
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      padding: 4px 7px;
+      border-radius: 999px;
+      background: rgba(30,155,255,.18);
+      border: 1px solid rgba(142,203,255,.32);
+      color: var(--warning);
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: .03em;
+      text-transform: uppercase;
+    }
+
   </style>
 </head>
-<body>
+<body class="lens-gate-active">
   <main class="app">
     <header>
       <div class="badge-row">
         <div class="badge">Feito In 3D • ferramenta experimental</div>
         <a class="social-link" href="https://www.instagram.com/feitoin3d/" target="_blank" rel="noopener noreferrer">Instagram Feito In 3D</a>
         <a class="social-link buy-link" href="https://www.mercadolivre.com.br/lente-3d-para-producao-de-gifs-canon-sony-nikon-fuji/up/MLBU3825732714" target="_blank" rel="noopener noreferrer">Compre sua lente</a>
+        <button class="social-link lens-change-btn" id="changeLensBtn" type="button">Trocar lente</button>
       </div>
       <h1>Feitoin3d <span>Maker <i class="br-flag" aria-label="Brasil" title="Brasil"></i></span></h1>
-      <p>Carregue uma imagem 3D horizontal ou vertical, escolha se ela tem 2, 3 ou 4 fotos, alinhe por ponto de referência e exporte em GIF, MP4 ou MOV nos formatos vertical, 3:4, 4:3, Full HD horizontal ou 4K horizontal.</p>
+      <p>Escolha entre Lente 3D ou Lente Retro. Monte GIFs e vídeos 3D com alinhamento inteligente ou trate fotos retrô com estética analógica, LUT, glow, nitidez e exportação em alta qualidade.</p>
     </header>
+
+
+    <section class="lens-mode-gate" id="lensModeGate" aria-label="Escolha sua lente">
+      <div class="lens-mode-card">
+        <span class="lens-mode-kicker">Escolha como deseja editar</span>
+        <h2>Qual lente você usou?</h2>
+        <p>Selecione o fluxo correto para abrir as ferramentas ideais de montagem e finalização.</p>
+        <div class="lens-mode-options">
+          <button class="lens-option-card" id="select3dMode" type="button">
+            <span class="lens-option-icon">◉◉◉</span>
+            <strong>Lente 3D</strong>
+            <small>Montagem com múltiplos quadros, alinhamento, movimento, GIF, MP4 e MOV.</small>
+          </button>
+          <button class="lens-option-card retro" id="selectRetroMode" type="button">
+            <span class="lens-option-icon">◌</span>
+            <strong>Lente Retro</strong>
+            <small>Editor de foto com ajustes de imagem, filtros, LUT, glow, nitidez, granulado e estética analógica.</small>
+          </button>
+        </div>
+      </div>
+    </section>
+
+
+
+    <section class="lens-mode-toolbar" id="lensModeToolbar" aria-label="Modo de edição">
+      <div class="lens-mode-toolbar-text">
+        <span>Modo de edição</span>
+        <strong id="activeLensModeTitle">Escolha uma lente</strong>
+      </div>
+      <div class="lens-mode-toolbar-actions">
+        <button id="toolbar3dMode" type="button" class="lens-toolbar-btn">Lente 3D</button>
+        <button id="toolbarRetroMode" type="button" class="lens-toolbar-btn">Lente Retro</button>
+      </div>
+    </section>
+
 
     <section class="grid">
       <aside class="card">
@@ -2048,6 +3245,17 @@
               <span class="tool-group-arrow">⌄</span>
             </summary>
             <div class="tool-group-content">
+
+              <div class="retro-mode-note">
+                <strong>Editor da Lente Retro</strong>
+                <p>Use este modo para tratar fotos da Lente Retro com estética analógica. Carregue a imagem, ajuste luz, nitidez, glow, LUT, cor e exporte em JPG alto.</p>
+              </div>
+
+              <div class="retro-look-note">
+                <strong>Looks recomendados da Lente Retro</strong>
+                Use receitas prontas como ponto de partida e refine luz, cor, grão e vinheta.
+              </div>
+
               <label class="dropzone" id="dropzone">
                 <strong>1. Carregar foto 3D</strong>
                 <span>PNG, JPG ou JPEG com fotos lado a lado ou empilhadas</span>
@@ -2180,6 +3388,58 @@
                   <output id="glowAdjustValue">0%</output>
                 </div>
               </div>
+
+              <div class="field retro-presets-field">
+                <label>Receitas prontas da Lente Retro</label>
+                <div class="retro-preset-grid">
+                  <button class="secondary retro-preset-btn" type="button" data-retro-preset="greenroom">
+                    <span><strong>01 — Low light verde</strong>Sombras profundas, clima de quarto e tom frio/esverdeado.</span>
+                  </button>
+                  <button class="secondary retro-preset-btn" type="button" data-retro-preset="flashparty">
+                    <span><strong>02 — Flash de festa</strong>Contraste mais alto, pele viva e impacto de flash direto.</span>
+                  </button>
+                  <button class="secondary retro-preset-btn" type="button" data-retro-preset="goldenhour">
+                    <span><strong>03 — Golden retrô</strong>Luz quente, brilho solar e nostalgia suave ao ar livre.</span>
+                  </button>
+                  <button class="secondary retro-preset-btn" type="button" data-retro-preset="nostalgicroom">
+                    <span><strong>04 — Quarto nostálgico</strong>Desbotado quente, granulado e sensação analógica íntima.</span>
+                  </button>
+                </div>
+                <p class="mini-note">Essas receitas usam os seus ajustes da Lente Retro como base. Depois, você ainda pode refinar manualmente cada controle.</p>
+              </div>
+
+              <div class="field retro-secondary-control">
+                <label for="retroWarmthAdjust">Temperatura / tom quente-frio</label>
+                <div class="range-row">
+                  <input id="retroWarmthAdjust" type="range" min="-100" max="100" value="0" step="5" />
+                  <output id="retroWarmthAdjustValue">0</output>
+                </div>
+              </div>
+
+              <div class="field retro-secondary-control">
+                <label for="retroFadeAdjust">Pretos desbotados / matte</label>
+                <div class="range-row">
+                  <input id="retroFadeAdjust" type="range" min="0" max="100" value="0" step="5" />
+                  <output id="retroFadeAdjustValue">0%</output>
+                </div>
+              </div>
+
+              <div class="field retro-secondary-control">
+                <label for="retroGrainAdjust">Granulado extra</label>
+                <div class="range-row">
+                  <input id="retroGrainAdjust" type="range" min="0" max="100" value="0" step="5" />
+                  <output id="retroGrainAdjustValue">0%</output>
+                </div>
+              </div>
+
+              <div class="field retro-secondary-control">
+                <label for="retroVignetteAdjust">Vinheta / escurecer bordas</label>
+                <div class="range-row">
+                  <input id="retroVignetteAdjust" type="range" min="0" max="100" value="0" step="5" />
+                  <output id="retroVignetteAdjustValue">0%</output>
+                </div>
+              </div>
+
 
               <div class="field">
                 <label for="rgbDisplacement">Deslocamento RGB 3D</label>
@@ -2414,7 +3674,7 @@
             <svg viewBox="0 0 64 64" aria-hidden="true">
               <path fill="currentColor" d="M41.7 8.5c-2.3 1.3-4.1 3.3-5.2 5.7-1 2.1-.9 4.1-.8 4.8 2.4.1 4.9-1.4 6.3-3.2 1.5-1.9 2.5-4.6 2.2-7.2-.8-.1-1.6-.1-2.5-.1ZM49.6 43.1c-1.2 2.8-1.8 4.1-3.4 6.5-2.2 3.4-5.2 7.7-9 7.7-3.3 0-4.2-2.2-8.7-2.2-4.5 0-5.5 2.1-8.8 2.2-3.8.1-6.7-3.9-8.9-7.3-6.1-9.5-6.8-20.6-3-26.5 2.7-4.2 6.9-6.7 10.9-6.7 4.1 0 6.6 2.2 10 2.2 3.3 0 5.2-2.2 9.9-2.2 3.5 0 7.3 1.9 10 5.3-8.8 4.8-7.4 17.4 1 21Z"/>
             </svg>
-            <span>Baixar ZIP para Mac<small>Arquivo .dmg</small></span>
+            <span>Baixar ZIP para Mac<small>Arquivo .zip + manual</small></span>
           </a>
         </div>
 
@@ -2495,6 +3755,14 @@
       'importScripts("https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.worker.js");'
     ], { type: 'application/javascript' }));
 
+    const lensModeToolbar = document.querySelector('#lensModeToolbar');
+    const activeLensModeTitle = document.querySelector('#activeLensModeTitle');
+    const toolbar3dModeBtn = document.querySelector('#toolbar3dMode');
+    const toolbarRetroModeBtn = document.querySelector('#toolbarRetroMode');
+    const lensModeGate = document.querySelector('#lensModeGate');
+    const select3dModeBtn = document.querySelector('#select3dMode');
+    const selectRetroModeBtn = document.querySelector('#selectRetroMode');
+    const changeLensBtn = document.querySelector('#changeLensBtn');
     const fileInput = document.querySelector('#fileInput');
     const dropzone = document.querySelector('#dropzone');
     const inputLayoutSelect = document.querySelector('#inputLayout');
@@ -2523,6 +3791,15 @@
     const sharpnessAdjustValue = document.querySelector('#sharpnessAdjustValue');
     const glowAdjustInput = document.querySelector('#glowAdjust');
     const glowAdjustValue = document.querySelector('#glowAdjustValue');
+    const retroWarmthAdjustInput = document.querySelector('#retroWarmthAdjust');
+    const retroWarmthAdjustValue = document.querySelector('#retroWarmthAdjustValue');
+    const retroFadeAdjustInput = document.querySelector('#retroFadeAdjust');
+    const retroFadeAdjustValue = document.querySelector('#retroFadeAdjustValue');
+    const retroGrainAdjustInput = document.querySelector('#retroGrainAdjust');
+    const retroGrainAdjustValue = document.querySelector('#retroGrainAdjustValue');
+    const retroVignetteAdjustInput = document.querySelector('#retroVignetteAdjust');
+    const retroVignetteAdjustValue = document.querySelector('#retroVignetteAdjustValue');
+    const retroPresetButtons = Array.from(document.querySelectorAll('[data-retro-preset]'));
     const rgbDisplacementInput = document.querySelector('#rgbDisplacement');
     const rgbDisplacementValue = document.querySelector('#rgbDisplacementValue');
     const frameInterpolationAmountInput = document.querySelector('#frameInterpolationAmount');
@@ -2572,6 +3849,7 @@
     const workflowExport = document.querySelector('#workflowExport');
     const exportResultMeta = document.querySelector('#exportResultMeta');
 
+    let currentLensMode = null;
     let sourceImage = null;
     let rawFrameCanvases = [];
     let finalFrameCanvases = [];
@@ -2610,14 +3888,257 @@
     let fineAdjustMinimized = true;
     let fineAdjustVisible = true;
 
+    let activeRetroPreset = null;
+
+    function setRetroPresetButtonState(presetName) {
+      activeRetroPreset = presetName || null;
+      retroPresetButtons.forEach((button) => {
+        button.classList.toggle('active', button.dataset.retroPreset === activeRetroPreset);
+      });
+    }
+
+    function updateRetroControlLabels() {
+      const warmth = Number(retroWarmthAdjustInput.value || 0);
+      retroWarmthAdjustValue.textContent = warmth > 0 ? `+${warmth}` : `${warmth}`;
+      retroFadeAdjustValue.textContent = `${Number(retroFadeAdjustInput.value || 0)}%`;
+      retroGrainAdjustValue.textContent = `${Number(retroGrainAdjustInput.value || 0)}%`;
+      retroVignetteAdjustValue.textContent = `${Number(retroVignetteAdjustInput.value || 0)}%`;
+    }
+
+
+    function forceRetroLiveUpdate(message = '') {
+      if (!rawFrameCanvases.length || selectingKeypoints) {
+        if (message) setStatus(message);
+        return;
+      }
+
+      clearInterval(animationTimer);
+      rebuildFinalFrames();
+
+      if (currentLensMode === 'retro') {
+        previewMode = 'frame';
+        selectedAdjustFrame = 0;
+      }
+
+      const frame = finalFrameCanvases[selectedAdjustFrame] || finalFrameCanvases[0];
+      if (frame) {
+        drawPreviewFrame(frame);
+      } else {
+        startPreview();
+      }
+
+      updateWorkflowStatus();
+      updateExportResultMeta();
+      if (message) setStatus(message);
+    }
+
+
+    function applyRetroRecipe(presetName, announce = true) {
+      const recipes = {
+        greenroom: {
+          vintageEffect: 'fuji', vintageIntensity: 75, exposure: -10, sharpness: 5, glow: 0,
+          warmth: -20, fade: 18, grain: 40, vignette: 28, rgb: 0,
+          message: 'Receita “Low light verde” aplicada. Ótima para quarto escuro com tom frio e climão analógico.'
+        },
+        flashparty: {
+          vintageEffect: 'slide', vintageIntensity: 80, exposure: 8, sharpness: 20, glow: 6,
+          warmth: 8, fade: 6, grain: 28, vignette: 12, rgb: 0,
+          message: 'Receita “Flash de festa” aplicada. Ideal para retratos com flash direto, contraste forte e pele destacada.'
+        },
+        goldenhour: {
+          vintageEffect: 'kodak', vintageIntensity: 72, exposure: 10, sharpness: 8, glow: 42,
+          warmth: 35, fade: 18, grain: 22, vignette: 22, rgb: 0,
+          message: 'Receita “Golden retrô” aplicada. Excelente para luz do pôr do sol e brilho nostálgico.'
+        },
+        nostalgicroom: {
+          vintageEffect: 'faded', vintageIntensity: 78, exposure: 5, sharpness: 0, glow: 12,
+          warmth: 22, fade: 30, grain: 48, vignette: 18, rgb: 0,
+          message: 'Receita “Quarto nostálgico” aplicada. Entrega desfoque suave, matte quente e granulado retrô.'
+        }
+      };
+
+      const config = recipes[presetName];
+      if (!config) return;
+
+      vintageEffectSelect.value = config.vintageEffect;
+      vintageIntensityInput.value = String(config.vintageIntensity);
+      vintageIntensityValue.textContent = `${config.vintageIntensity}%`;
+      exposureAdjustInput.value = String(config.exposure);
+      exposureAdjustValue.textContent = config.exposure > 0 ? `+${config.exposure}` : `${config.exposure}`;
+      sharpnessAdjustInput.value = String(config.sharpness);
+      sharpnessAdjustValue.textContent = `${config.sharpness}%`;
+      glowAdjustInput.value = String(config.glow);
+      glowAdjustValue.textContent = `${config.glow}%`;
+      retroWarmthAdjustInput.value = String(config.warmth);
+      retroFadeAdjustInput.value = String(config.fade);
+      retroGrainAdjustInput.value = String(config.grain);
+      retroVignetteAdjustInput.value = String(config.vignette);
+      rgbDisplacementInput.value = String(config.rgb);
+      rgbDisplacementValue.textContent = `${config.rgb}px`;
+      updateRetroControlLabels();
+      setRetroPresetButtonState(presetName);
+
+      forceRetroLiveUpdate(announce ? config.message : 'Receita Retro aplicada no preview.');
+      setRetroPresetButtonState(presetName);
+    }
+
+
     const KEYPOINT_HINT_SEEN_KEY = 'feitoin3d-keypoint-hint-seen';
 
     const setStatus = (text) => statusEl.textContent = text;
     const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
 
+    const THREE_D_FILE_ACCEPT = 'image/png,image/jpeg';
+    const RETRO_FILE_ACCEPT = 'image/png,image/jpeg,image/webp,image/heic,image/heif,image/tiff,.jpg,.jpeg,.png,.webp,.heic,.heif,.tif,.tiff,.dng,.cr2,.cr3,.nef,.arw,.raf,.orf,.rw2';
+
+    function setFieldVisibleByControl(control, visible) {
+      if (!control) return;
+      const field = control.closest('.field');
+      if (field) field.style.display = visible ? '' : 'none';
+    }
+
+    function updateLensModeInterface() {
+      const isRetro = currentLensMode === 'retro';
+      document.body.classList.toggle('lens-retro', isRetro);
+      document.body.classList.toggle('lens-3d', currentLensMode === '3d');
+      document.body.classList.toggle('lens-gate-active', !currentLensMode);
+
+      if (toolbar3dModeBtn) toolbar3dModeBtn.classList.toggle('active', currentLensMode === '3d');
+      if (toolbarRetroModeBtn) toolbarRetroModeBtn.classList.toggle('active', currentLensMode === 'retro');
+      if (activeLensModeTitle) activeLensModeTitle.textContent = isRetro ? 'Lente Retro — editor de foto' : (currentLensMode === '3d' ? 'Lente 3D — montagem de GIF e vídeo' : 'Escolha uma lente');
+
+      if (!currentLensMode) return;
+
+      fileInput.accept = isRetro ? RETRO_FILE_ACCEPT : THREE_D_FILE_ACCEPT;
+
+      const importTitle = document.querySelector('#stepImportGroup .tool-group-title strong');
+      const importDescription = document.querySelector('#stepImportGroup .tool-group-title span');
+      const creativeTitle = document.querySelector('#stepCreativeGroup .tool-group-title strong');
+      const creativeDescription = document.querySelector('#stepCreativeGroup .tool-group-title span');
+      const exportTitle = document.querySelector('#stepExportGroup .tool-group-title strong');
+      const exportDescription = document.querySelector('#stepExportGroup .tool-group-title span');
+      const dropzoneStrong = document.querySelector('#dropzone strong');
+      const dropzoneSpan = document.querySelector('#dropzone span');
+      const emptyText = document.querySelector('#emptyState');
+
+      if (isRetro) {
+        if (importTitle) importTitle.textContent = 'Upload e ajustes da Lente Retro';
+        if (importDescription) importDescription.textContent = 'Carregue a foto e escolha o formato final.';
+        if (creativeTitle) creativeTitle.textContent = 'Ajustes de imagem e recursos criativos';
+        if (creativeDescription) creativeDescription.textContent = 'Receitas, luz, cor, grão, matte e glow.';
+        if (exportTitle) exportTitle.textContent = 'Exportar foto final';
+        if (exportDescription) exportDescription.textContent = 'Exporte a foto final em JPG alto.';
+        if (dropzoneStrong) dropzoneStrong.textContent = '1. Carregar foto da Lente';
+        if (dropzoneSpan) dropzoneSpan.textContent = 'JPG, PNG, WEBP, HEIC/HEIF, TIFF e arquivos de câmera quando suportados pelo navegador';
+        if (emptyText) emptyText.textContent = 'Carregue uma foto da Lente Retro para começar o tratamento.';
+        exportFormatSelect.value = 'mp4';
+        exportJpgBtn.style.display = 'none';
+        generateBtn.textContent = 'Exportar JPG alto';
+        setRetroPresetButtonState(activeRetroPreset);
+        updateRetroControlLabels();
+      } else {
+        if (importTitle) importTitle.textContent = 'Importar e alinhar imagem';
+        if (importDescription) importDescription.textContent = 'Carregue a foto 3D, escolha o layout, alinhe o objeto principal e prepare a base da montagem.';
+        if (creativeTitle) creativeTitle.textContent = 'Estilo e acabamento';
+        if (creativeDescription) creativeDescription.textContent = "Aplique filtros, LUT, exposição, nitidez, glow, RGB 3D e marca d'água.";
+        if (exportTitle) exportTitle.textContent = 'Exportar arquivo';
+        if (exportDescription) exportDescription.textContent = 'Defina resolução, formato, duração e qualidade do arquivo final.';
+        if (dropzoneStrong) dropzoneStrong.textContent = '1. Carregar foto 3D';
+        if (dropzoneSpan) dropzoneSpan.textContent = 'PNG, JPG ou JPEG com fotos lado a lado ou empilhadas';
+        if (emptyText) emptyText.textContent = 'Seu resultado vai aparecer aqui assim que a imagem for carregada.';
+        exportJpgBtn.style.display = '';
+      }
+
+      setFieldVisibleByControl(inputLayoutSelect, !isRetro);
+      setFieldVisibleByControl(frameCountSelect, !isRetro);
+      setFieldVisibleByControl(candidateAssistToggle, !isRetro);
+      setFieldVisibleByControl(resetFramingBtn, true);
+      setFieldVisibleByControl(exportFormatSelect, !isRetro);
+      setFieldVisibleByControl(delayInput, !isRetro);
+      setFieldVisibleByControl(boomerangInput, !isRetro);
+      setFieldVisibleByControl(totalDurationSelect, !isRetro);
+      setFieldVisibleByControl(videoDurationSeconds, !isRetro);
+      setFieldVisibleByControl(frameInterpolationAmountInput, !isRetro);
+
+      if (keypointBtn) keypointBtn.style.display = isRetro ? 'none' : '';
+      if (applyKeypointsBtn) applyKeypointsBtn.style.display = isRetro ? 'none' : '';
+      if (clearKeypointsBtn) clearKeypointsBtn.style.display = isRetro ? 'none' : '';
+      if (fineAdjustOverlay) fineAdjustOverlay.style.display = isRetro ? 'none' : '';
+
+      updateExportControls();
+      updateWorkflowStatus();
+    }
+
+    function selectLensMode(mode) {
+      currentLensMode = mode;
+      resetAll();
+      currentLensMode = mode;
+      updateLensModeInterface();
+      [stepImportGroup, stepCreativeGroup, stepExportGroup].forEach((group) => {
+        if (!group) return;
+        group.open = group === stepImportGroup;
+      });
+
+      if (mode === 'retro') {
+        setStatus('Modo Lente Retro ativo. Carregue uma foto, arraste no preview para mover e use o scroll para zoom.');
+      } else {
+        setStatus('Modo Lente 3D ativo. Carregue uma composição com 2, 3 ou 4 fotos.');
+      }
+    }
+
+    function openLensGate() {
+      currentLensMode = null;
+      document.body.classList.add('lens-gate-active');
+      document.body.classList.remove('lens-3d', 'lens-retro');
+      clearInterval(animationTimer);
+    }
+
+    function processRetroImage() {
+      if (!sourceImage) return;
+
+      rawFrameCanvases = [];
+      finalFrameCanvases = [];
+      keypoints = [];
+      candidateAssistPoints = [];
+      manualFrameOffsets = [{ dx: 0, dy: 0 }];
+      selectedAdjustFrame = 0;
+      previewMode = 'frame';
+      resetManualFraming();
+
+      const frameCanvas = document.createElement('canvas');
+      frameCanvas.width = sourceImage.width;
+      frameCanvas.height = sourceImage.height;
+      const frameCtx = frameCanvas.getContext('2d');
+      frameCtx.imageSmoothingEnabled = true;
+      frameCtx.imageSmoothingQuality = 'high';
+      frameCtx.drawImage(sourceImage, 0, 0);
+
+      rawFrameCanvases.push(frameCanvas);
+      rebuildFinalFrames();
+
+      canvas.style.display = 'block';
+      emptyState.style.display = 'none';
+      generateBtn.disabled = false;
+      exportJpgBtn.disabled = true;
+      keypointBtn.disabled = true;
+      applyKeypointsBtn.disabled = true;
+      clearKeypointsBtn.disabled = true;
+
+      renderFramesList();
+      updateFineAdjustControls();
+      startPreview();
+
+      setStatus('Foto da Lente Retro carregada. Ajuste luz, cor, nitidez, LUT, glow e exporte em JPG alto.');
+      updateExportControls();
+      updateWorkflowStatus();
+      updateExportResultMeta();
+    }
+
+
+
     function updateWorkflowStatus() {
       const imported = rawFrameCanvases.length > 0;
-      const aligned = imported && keypoints.length === rawFrameCanvases.length && rawFrameCanvases.length > 0 && !selectingKeypoints;
+      const aligned = currentLensMode === 'retro' ? imported : (imported && keypoints.length === rawFrameCanvases.length && rawFrameCanvases.length > 0 && !selectingKeypoints);
       const styled = imported && (
         vintageEffectSelect.value !== 'none' ||
         Number(vintageIntensityInput.value) > 0 ||
@@ -2626,7 +4147,7 @@
         Number(sharpnessAdjustInput.value) > 0 ||
         Number(glowAdjustInput.value) > 0 ||
         Number(rgbDisplacementInput.value) > 0 ||
-        Number(frameInterpolationAmountInput.value) > 0 ||
+        (currentLensMode !== 'retro' && Number(frameInterpolationAmountInput.value) > 0) ||
         watermarkEnabledInput.checked
       );
       const exportReady = finalFrameCanvases.length > 0 && imported;
@@ -2648,8 +4169,12 @@
 
     function updateExportResultMeta() {
       if (!exportResultMeta) return;
-      const format = (exportFormatSelect.value || 'gif').toUpperCase();
       const preset = getExportPreset();
+      if (currentLensMode === 'retro') {
+        exportResultMeta.textContent = `JPG • ${preset.aspectLabel} • Alta qualidade`;
+        return;
+      }
+      const format = (exportFormatSelect.value || 'gif').toUpperCase();
       exportResultMeta.textContent = `${format} • ${preset.aspectLabel} • ${preset.label}`;
     }
 
@@ -2751,6 +4276,7 @@
     });
 
     vintageEffectSelect.addEventListener('change', () => {
+      if (currentLensMode === 'retro') setRetroPresetButtonState(null);
       if (!rawFrameCanvases.length || selectingKeypoints) return;
       rebuildFinalFrames();
       startPreview();
@@ -2761,6 +4287,7 @@
 
     vintageIntensityInput.addEventListener('input', () => {
       vintageIntensityValue.textContent = `${vintageIntensityInput.value}%`;
+      if (currentLensMode === 'retro') setRetroPresetButtonState(null);
       if (!rawFrameCanvases.length || selectingKeypoints) return;
       rebuildFinalFrames();
       startPreview();
@@ -2816,6 +4343,7 @@
     exposureAdjustInput.addEventListener('input', () => {
       const exposure = Number(exposureAdjustInput.value);
       exposureAdjustValue.textContent = exposure > 0 ? `+${exposure}` : `${exposure}`;
+      if (currentLensMode === 'retro') setRetroPresetButtonState(null);
       if (!rawFrameCanvases.length || selectingKeypoints) return;
       rebuildFinalFrames();
       startPreview();
@@ -2831,6 +4359,7 @@
     sharpnessAdjustInput.addEventListener('input', () => {
       const sharpness = Number(sharpnessAdjustInput.value);
       sharpnessAdjustValue.textContent = `${sharpness}%`;
+      if (currentLensMode === 'retro') setRetroPresetButtonState(null);
       if (!rawFrameCanvases.length || selectingKeypoints) return;
       rebuildFinalFrames();
       startPreview();
@@ -2844,6 +4373,7 @@
     glowAdjustInput.addEventListener('input', () => {
       const glow = Number(glowAdjustInput.value);
       glowAdjustValue.textContent = `${glow}%`;
+      if (currentLensMode === 'retro') setRetroPresetButtonState(null);
       if (!rawFrameCanvases.length || selectingKeypoints) return;
       rebuildFinalFrames();
       startPreview();
@@ -2856,6 +4386,7 @@
 
     rgbDisplacementInput.addEventListener('input', () => {
       rgbDisplacementValue.textContent = `${rgbDisplacementInput.value}px`;
+      if (currentLensMode === 'retro') setRetroPresetButtonState(null);
       if (!rawFrameCanvases.length || selectingKeypoints) return;
       rebuildFinalFrames();
       startPreview();
@@ -2868,6 +4399,7 @@
 
     frameInterpolationAmountInput.addEventListener('input', () => {
       frameInterpolationAmountValue.textContent = `${frameInterpolationAmountInput.value}%`;
+    updateRetroControlLabels();
       if (!rawFrameCanvases.length || selectingKeypoints) return;
       startPreview();
       if (Number(frameInterpolationAmountInput.value) > 0) {
@@ -2979,6 +4511,53 @@
       if (file) loadFile(file);
     });
 
+    if (toolbar3dModeBtn) toolbar3dModeBtn.addEventListener('click', () => selectLensMode('3d'));
+    if (toolbarRetroModeBtn) toolbarRetroModeBtn.addEventListener('click', () => selectLensMode('retro'));
+    if (select3dModeBtn) select3dModeBtn.addEventListener('click', () => selectLensMode('3d'));
+    if (selectRetroModeBtn) selectRetroModeBtn.addEventListener('click', () => selectLensMode('retro'));
+    if (changeLensBtn) changeLensBtn.addEventListener('click', openLensGate);
+
+
+    document.addEventListener('click', (event) => {
+      const retroPresetButton = event.target.closest('[data-retro-preset]');
+      if (!retroPresetButton) return;
+
+      event.preventDefault();
+      event.stopPropagation();
+
+      if (currentLensMode !== 'retro') {
+        currentLensMode = 'retro';
+        updateLensModeInterface();
+      }
+
+      applyRetroRecipe(retroPresetButton.dataset.retroPreset);
+    });
+
+
+
+    function handleRetroControlManualChange(target) {
+      if (!target || currentLensMode !== 'retro') return;
+
+      updateRetroControlLabels();
+      setRetroPresetButtonState(null);
+
+      const messages = {
+        retroWarmthAdjust: 'Temperatura atualizada no preview.',
+        retroFadeAdjust: `Pretos desbotados ajustados para ${retroFadeAdjustInput.value}%.`,
+        retroGrainAdjust: `Granulado extra ajustado para ${retroGrainAdjustInput.value}%.`,
+        retroVignetteAdjust: `Vinheta ajustada para ${retroVignetteAdjustInput.value}%.`
+      };
+
+      forceRetroLiveUpdate(messages[target.id] || 'Ajuste Retro atualizado no preview.');
+    }
+
+    [retroWarmthAdjustInput, retroFadeAdjustInput, retroGrainAdjustInput, retroVignetteAdjustInput].forEach((control) => {
+      if (!control) return;
+      control.addEventListener('input', () => handleRetroControlManualChange(control));
+      control.addEventListener('change', () => handleRetroControlManualChange(control));
+    });
+
+
     fileInput.addEventListener('change', (event) => {
       const file = event.target.files?.[0];
       if (file) loadFile(file);
@@ -3030,8 +4609,16 @@
     }
 
     function loadFile(file) {
-      if (!file.type.startsWith('image/')) {
-        setStatus('Envie um arquivo de imagem em PNG ou JPG.');
+      const extension = (file.name.split('.').pop() || '').toLowerCase();
+      const retroAcceptedExtensions = ['jpg', 'jpeg', 'png', 'webp', 'heic', 'heif', 'tif', 'tiff', 'dng', 'cr2', 'cr3', 'nef', 'arw', 'raf', 'orf', 'rw2'];
+      const isImageMime = file.type ? file.type.startsWith('image/') : false;
+      const isRetroExtension = currentLensMode === 'retro' && retroAcceptedExtensions.includes(extension);
+
+      if (!isImageMime && !isRetroExtension) {
+        setStatus(currentLensMode === 'retro'
+          ? 'Envie uma imagem da câmera. Formatos aceitos na seleção: JPG, PNG, WEBP, HEIC/HEIF, TIFF e RAWs quando o navegador conseguir ler.'
+          : 'Envie um arquivo de imagem em PNG ou JPG.'
+        );
         return;
       }
 
@@ -3044,11 +4631,18 @@
         clearKeypoints(false);
         processImage();
       };
-      img.onerror = () => setStatus('Não consegui ler essa imagem. Tente outro arquivo.');
+      img.onerror = () => setStatus(currentLensMode === 'retro'
+        ? 'Não consegui abrir esse arquivo no navegador. Alguns RAWs de câmera precisam ser convertidos para JPG, TIFF, PNG ou HEIC antes de usar no editor.'
+        : 'Não consegui ler essa imagem. Tente outro arquivo.'
+      );
       img.src = URL.createObjectURL(file);
     }
 
     function processImage() {
+      if (currentLensMode === 'retro') {
+        processRetroImage();
+        return;
+      }
       const count = Number(frameCountSelect.value);
       const inputLayout = inputLayoutSelect.value;
       const isVerticalInput = inputLayout === 'vertical';
@@ -3148,9 +4742,13 @@
 
         applyVintageEffect(output, vintageEffectSelect.value);
         applyExposureAdjustment(output);
+        applyRetroWarmthAdjustment(output);
         applyCustomLut(output);
+        applyRetroFadeAdjustment(output);
         applySharpnessAdjustment(output);
         applyGlowEffect(output);
+        applyRetroExtraGrain(output);
+        applyRetroVignette(output);
         applyRgbDisplacement(output);
         applyBorderWatermark(output);
         return output;
@@ -3485,6 +5083,102 @@
       exposureCtx.putImageData(image, 0, 0);
     }
 
+    function applyRetroWarmthAdjustment(canvasElement) {
+      const warmth = Number(retroWarmthAdjustInput.value || 0);
+      if (warmth === 0) return;
+
+      const warmthCtx = canvasElement.getContext('2d');
+      const image = warmthCtx.getImageData(0, 0, canvasElement.width, canvasElement.height);
+      const data = image.data;
+      const amount = warmth / 100;
+
+      for (let i = 0; i < data.length; i += 4) {
+        let r = data[i];
+        let g = data[i + 1];
+        let b = data[i + 2];
+
+        if (amount > 0) {
+          r = r + 36 * amount;
+          g = g + 12 * amount;
+          b = b - 32 * amount;
+        } else {
+          const cool = Math.abs(amount);
+          r = r - 24 * cool;
+          g = g + 4 * cool;
+          b = b + 34 * cool;
+        }
+
+        data[i] = clamp(Math.round(r), 0, 255);
+        data[i + 1] = clamp(Math.round(g), 0, 255);
+        data[i + 2] = clamp(Math.round(b), 0, 255);
+      }
+
+      warmthCtx.putImageData(image, 0, 0);
+    }
+
+    function applyRetroFadeAdjustment(canvasElement) {
+      const fade = Number(retroFadeAdjustInput.value || 0);
+      if (fade <= 0) return;
+
+      const fadeCtx = canvasElement.getContext('2d');
+      const image = fadeCtx.getImageData(0, 0, canvasElement.width, canvasElement.height);
+      const data = image.data;
+      const fadeStrength = fade / 100;
+      const lift = 42 * fadeStrength;
+
+      for (let i = 0; i < data.length; i += 4) {
+        for (let c = 0; c < 3; c++) {
+          const value = data[i + c];
+          const faded = value + (lift * (1 - value / 255));
+          data[i + c] = clamp(Math.round((value * (1 - fadeStrength * 0.12)) + faded * (fadeStrength * 0.88)), 0, 255);
+        }
+      }
+
+      fadeCtx.putImageData(image, 0, 0);
+    }
+
+    function applyRetroExtraGrain(canvasElement) {
+      const grain = Number(retroGrainAdjustInput.value || 0);
+      if (grain <= 0) return;
+
+      const grainCtx = canvasElement.getContext('2d');
+      const image = grainCtx.getImageData(0, 0, canvasElement.width, canvasElement.height);
+      const data = image.data;
+      const amount = (grain / 100) * 62;
+
+      for (let i = 0; i < data.length; i += 4) {
+        const noise = (Math.random() - 0.5) * amount;
+        data[i] = clamp(Math.round(data[i] + noise), 0, 255);
+        data[i + 1] = clamp(Math.round(data[i + 1] + noise), 0, 255);
+        data[i + 2] = clamp(Math.round(data[i + 2] + noise), 0, 255);
+      }
+
+      grainCtx.putImageData(image, 0, 0);
+    }
+
+    function applyRetroVignette(canvasElement) {
+      const vignette = Number(retroVignetteAdjustInput.value || 0);
+      if (vignette <= 0) return;
+
+      const vignetteCtx = canvasElement.getContext('2d');
+      const width = canvasElement.width;
+      const height = canvasElement.height;
+      const centerX = width / 2;
+      const centerY = height / 2;
+      const radius = Math.sqrt(centerX * centerX + centerY * centerY);
+      const gradient = vignetteCtx.createRadialGradient(centerX, centerY, radius * 0.28, centerX, centerY, radius);
+      const alpha = 0.12 + (vignette / 100) * 0.42;
+
+      gradient.addColorStop(0, 'rgba(0,0,0,0)');
+      gradient.addColorStop(0.62, 'rgba(0,0,0,0)');
+      gradient.addColorStop(1, `rgba(0,0,0,${alpha.toFixed(3)})`);
+
+      vignetteCtx.save();
+      vignetteCtx.fillStyle = gradient;
+      vignetteCtx.fillRect(0, 0, width, height);
+      vignetteCtx.restore();
+    }
+
     function applySharpnessAdjustment(canvasElement) {
       const sharpness = Number(sharpnessAdjustInput.value || 0);
       if (sharpness <= 0) return;
@@ -3700,7 +5394,7 @@
     }
 
     function canUseManualFraming() {
-      return hasCompleteKeypointAlignment() && !selectingKeypoints && finalFrameCanvases.length > 0;
+      return rawFrameCanvases.length > 0 && finalFrameCanvases.length > 0 && !selectingKeypoints;
     }
 
     function updateFramingCursorState() {
@@ -4657,7 +6351,7 @@
       canvas.style.display = 'block';
       emptyState.style.display = 'none';
 
-      if (previewMode === 'frame') {
+      if (previewMode === 'frame' || currentLensMode === 'retro' || finalFrameCanvases.length === 1) {
         const chosenFrame = finalFrameCanvases[selectedAdjustFrame] || finalFrameCanvases[0];
         drawPreviewFrame(chosenFrame);
         return;
@@ -4729,6 +6423,10 @@
     }
 
     function generateExport() {
+      if (currentLensMode === 'retro') {
+        exportHighJpg();
+        return;
+      }
       const format = exportFormatSelect.value;
       if (format === 'gif') {
         generateGif();
@@ -4738,6 +6436,21 @@
     }
 
     function updateExportControls() {
+      if (currentLensMode === 'retro') {
+        totalDurationSelect.closest('.field').style.display = 'none';
+        customDurationField.style.display = 'none';
+        videoDurationField.style.display = 'none';
+        const preset = getExportPreset();
+        generateBtn.textContent = 'Exportar JPG alto';
+        downloadLink.textContent = 'Baixar JPG';
+        downloadLink.download = `${getOutputFileBaseName()}-retro.jpg`;
+        if (exportBox) {
+          exportBox.innerHTML = `<strong>Exportação Retro:</strong> JPG em ${preset.aspectLabel} (${preset.width} × ${preset.height} px), qualidade alta. Ideal para postagem, catálogo e entrega final.`;
+        }
+        updateExportResultMeta();
+        updateWorkflowStatus();
+        return;
+      }
       const format = exportFormatSelect.value;
       const isGif = format === 'gif';
 
@@ -4760,11 +6473,21 @@
     }
 
     function setExportButtonsDisabled(disabled) {
-      generateBtn.disabled = disabled || !finalFrameCanvases.length;
+      if (currentLensMode === 'retro') {
+        generateBtn.disabled = disabled || !finalFrameCanvases.length;
+        exportJpgBtn.disabled = true;
+        keypointBtn.disabled = true;
+        applyKeypointsBtn.disabled = true;
+        clearKeypointsBtn.disabled = true;
+      } else {
+        generateBtn.disabled = disabled || !finalFrameCanvases.length;
+      }
       exportJpgBtn.disabled = disabled || !finalFrameCanvases.length;
-      keypointBtn.disabled = disabled || !rawFrameCanvases.length;
-      applyKeypointsBtn.disabled = disabled || !(selectingKeypoints && keypoints.length === rawFrameCanvases.length);
-      clearKeypointsBtn.disabled = disabled || keypoints.length === 0;
+      if (currentLensMode !== 'retro') {
+        keypointBtn.disabled = disabled || !rawFrameCanvases.length;
+        applyKeypointsBtn.disabled = disabled || !(selectingKeypoints && keypoints.length === rawFrameCanvases.length);
+        clearKeypointsBtn.disabled = disabled || keypoints.length === 0;
+      }
       exportFormatSelect.disabled = disabled;
       exportAspectSelect.disabled = disabled;
       exportQualitySelect.disabled = disabled;

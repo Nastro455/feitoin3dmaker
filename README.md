@@ -246,3 +246,108 @@ Os links foram convertidos para formato de download direto do Google Drive.
 - Adicionado pop-up antes do download do Mac.
 - O pop-up informa que o macOS pode acusar arquivo danificado/corrompido por falta de assinatura Apple.
 - O usuário precisa confirmar que leu o aviso antes de baixar o ZIP.
+
+
+## Atualização — Tela inicial Lente 3D / Lente Retro
+
+Foi adicionada uma tela inicial antes da ferramenta com duas opções:
+
+- **Lente 3D**: mantém toda a lógica atual de montagem com múltiplos quadros, alinhamento, movimento, GIF, MP4, MOV e JPG.
+- **Lente Retro**: transforma a página em um editor de foto focado em estética retrô/analógica.
+
+### Modo Lente Retro
+
+O modo Retro contém:
+- painel de upload;
+- painel de ajustes de imagem;
+- recursos criativos reaproveitados da página 3D, como LUT personalizado, exposição, nitidez, glow, efeitos vintage e marca d'água;
+- exportação focada em JPG alto;
+- remoção/ocultação de recursos de GIF, movimento, alinhamento de múltiplos frames e interpolação.
+
+### Suporte de arquivos
+
+O seletor de arquivos da Lente Retro aceita JPG, PNG, WEBP, HEIC/HEIF, TIFF e extensões RAW comuns de câmera. Alguns formatos RAW dependem do suporte do navegador; quando não for possível abrir diretamente, o usuário deve converter para JPG, TIFF, PNG ou HEIC antes de editar.
+
+
+## Correção — proporção dos painéis recolhíveis
+
+Corrigida a proporção visual dos painéis laterais recolhíveis após a adição da tela inicial Lente 3D / Lente Retro.
+
+- Painéis recolhidos voltam a ter altura compacta.
+- Conteúdo interno fica totalmente oculto quando o painel está fechado.
+- Títulos e descrições não ficam mais espremidos em faixas estranhas.
+- Coluna esquerda recebeu leve ajuste de largura no desktop.
+
+
+## Recursos novos para a Lente Retro
+
+Com base nas referências visuais enviadas, o modo **Lente Retro** agora conta com recursos para facilitar resultados parecidos com ensaios analógicos / flash vintage:
+
+### Receitas prontas
+- **01 — Low light verde**
+- **02 — Flash de festa**
+- **03 — Golden retrô**
+- **04 — Quarto nostálgico**
+
+### Novos controles criativos
+- **Temperatura / tom quente-frio**
+- **Pretos desbotados / matte**
+- **Granulado extra**
+- **Vinheta / escurecer bordas**
+
+### Fluxo sugerido
+1. Entrar em **Lente Retro**
+2. Carregar a foto
+3. Aplicar uma **receita pronta** como base
+4. Refinar exposição, LUT, nitidez, glow e novos controles retro
+5. Exportar em **JPG alto**
+
+
+## Correção — layout Retro/3D e enquadramento
+
+- As caixas informativas da Lente Retro agora seguem a mesma identidade azul da interface 3D.
+- Os painéis recolhíveis foram compactados para evitar proporção grande/desproporcional.
+- A estrutura visual foi aproximada novamente da versão anterior do site 3D.
+- O preview agora acompanha a rolagem no desktop.
+- No modo Retro, o usuário pode mover a imagem arrastando diretamente no preview.
+- No modo Retro, o usuário pode dar zoom ou tirar zoom usando o scroll do mouse no preview.
+- O reset de enquadramento permanece disponível também na Lente Retro.
+
+
+## Repaginação visual dos modos
+
+Foi aplicada uma repaginação geral para acomodar melhor os modos Lente 3D e Lente Retro:
+
+- Nova barra superior para alternar entre Lente 3D e Lente Retro.
+- Painel lateral redesenhado com cabeçalho e rolagem interna.
+- Painéis recolhíveis compactos e mais consistentes.
+- Preview fixo no desktop para acompanhar a rolagem.
+- Modo Retro com layout mais limpo, sem coluna de vídeo lateral.
+- Receitas da Lente Retro organizadas em cards menores.
+- Estrutura visual aproximada da versão 3D original, mas preparada para os dois modos.
+
+
+## Refinamento visual dos painéis laterais
+
+Os painéis recolhíveis da lateral foram refinados para ficar visualmente mais próximos da referência:
+- cards maiores e mais limpos;
+- badge numérico circular em destaque;
+- título e descrição visíveis mesmo recolhidos;
+- chevron discreto à direita;
+- visual mais elegante e coerente com o restante da interface.
+
+
+## Correção — receitas Retro clicáveis
+
+- Corrigida a ação dos botões de receitas prontas da Lente Retro.
+- Agora o clique é capturado por delegação global, evitando falhas quando o painel tem rolagem interna ou quando o layout muda.
+- As receitas aplicam os valores nos controles e forçam atualização do preview quando há imagem carregada.
+- Se não houver imagem carregada, a receita fica selecionada e será usada como base ao carregar a foto.
+
+
+## Correção definitiva — controles Retro
+
+- Corrigido o ajuste manual após selecionar uma receita.
+- Temperatura, matte, granulado e vinheta agora têm listeners próprios.
+- O preview é redesenhado diretamente no canvas sem depender do controle RGB.
+- As receitas continuam funcionando e podem ser refinadas manualmente.
