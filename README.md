@@ -351,3 +351,41 @@ Os painéis recolhíveis da lateral foram refinados para ficar visualmente mais 
 - Temperatura, matte, granulado e vinheta agora têm listeners próprios.
 - O preview é redesenhado diretamente no canvas sem depender do controle RGB.
 - As receitas continuam funcionando e podem ser refinadas manualmente.
+
+
+## Accordion exclusivo dos painéis
+
+- Agora, ao abrir um painel, os outros painéis recolhem automaticamente.
+- Isso evita que as opções desçam demais e fiquem inacessíveis.
+- A rolagem interna continua funcionando dentro do painel aberto.
+- Os balões azuis dos painéis foram trocados por símbolos legíveis:
+  - ↥ Importar / alinhar
+  - ✦ Estilo / acabamento
+  - ↧ Exportar
+
+
+## Ajustes desta versão
+
+- Corrigido o visual dos balões azuis dos painéis com ícones limpos e centralizados.
+- Ao alternar entre **Lente 3D** e **Lente Retro**, todos os **ajustes criativos** são zerados automaticamente:
+  - filtro vintage / LUT
+  - intensidade
+  - exposição
+  - nitidez
+  - glow
+  - temperatura / warmth
+  - fade
+  - granulado
+  - vinheta
+  - RGB displacement
+  - interpolação de quadros
+  - marca d'água
+
+
+## Ícones SVG definitivos dos painéis
+
+- Os balões dos painéis agora usam SVG inline, evitando falhas de renderização de símbolos Unicode.
+- Ícones:
+  - Upload / importar
+  - Brilho / ajustes criativos
+  - Download / exportar
