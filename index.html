@@ -3365,6 +3365,57 @@
       line-height: 1.35;
     }
 
+  
+    /* Botão extra de exportação abaixo do fluxo de produção */
+    .workflow-export-cta {
+      margin-top: 14px;
+      border: 1px solid rgba(30,155,255,.28);
+      border-radius: 22px;
+      padding: 16px;
+      background: linear-gradient(180deg, rgba(30,155,255,.11), rgba(255,255,255,.035));
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 14px 36px rgba(0,0,0,.16);
+    }
+
+    .workflow-export-cta strong {
+      display: block;
+      color: var(--text);
+      font-size: 15px;
+      margin-bottom: 5px;
+    }
+
+    .workflow-export-cta p {
+      margin: 0 0 12px;
+      color: var(--muted);
+      font-size: 12.5px;
+      line-height: 1.42;
+    }
+
+    .workflow-export-cta button {
+      width: 100%;
+      min-height: 46px;
+      border-radius: 16px;
+      font-size: 14px;
+      font-weight: 900;
+    }
+
+    .workflow-download-link {
+      display: block;
+      margin-top: 10px;
+      text-align: center;
+      color: var(--accent);
+      font-size: 13px;
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+    .workflow-download-link:hover {
+      text-decoration: underline;
+    }
+
+    body.lens-retro .workflow-export-cta p::after {
+      content: " No modo Retro, este botão exporta JPG alto.";
+    }
+
   </style>
 </head>
 <body class="lens-gate-active">
@@ -3850,6 +3901,14 @@
               <div class="workflow-item" id="workflowExport"><span>4</span><div><strong>Pronto para exportar</strong><small>Defina resolução, formato e gere o arquivo final.</small></div></div>
             </div>
           </div>
+
+          <div class="workflow-export-cta" id="workflowExportCta">
+            <strong>Pronto para finalizar?</strong>
+            <p>Depois de importar, alinhar e ajustar o estilo, exporte o arquivo final aqui também.</p>
+            <button id="workflowGenerateBtn" type="button" disabled>Exportar arquivo</button>
+            <a id="workflowDownloadLink" class="workflow-download-link" style="display: none;">Baixar arquivo pronto</a>
+          </div>
+
           <div class="card demo-side-panel">
             <div class="demo-video-frame">
               <video id="demoSideVideo" src="assets/feitoin3d-kenji-lente-3d.mp4" autoplay muted loop playsinline preload="metadata"></video>
@@ -4013,6 +4072,8 @@
     const watermarkTextField = document.querySelector('#watermarkTextField');
     const watermarkTextInput = document.querySelector('#watermarkText');
     const generateBtn = document.querySelector('#generateBtn');
+    const workflowGenerateBtn = document.querySelector('#workflowGenerateBtn');
+    const workflowDownloadLink = document.querySelector('#workflowDownloadLink');
     const exportJpgBtn = document.querySelector('#exportJpgBtn');
     const keypointBtn = document.querySelector('#keypointBtn');
     const applyKeypointsBtn = document.querySelector('#applyKeypointsBtn');
@@ -4280,6 +4341,7 @@
         exportFormatSelect.value = 'mp4';
         exportJpgBtn.style.display = 'none';
         generateBtn.textContent = 'Exportar JPG alto';
+        syncWorkflowExportButtonState();
         setRetroPresetButtonState(activeRetroPreset);
         updateRetroControlLabels();
       } else {
@@ -4850,6 +4912,17 @@
     applyKeypointsBtn.addEventListener('click', finishKeypointSelection);
     clearKeypointsBtn.addEventListener('click', () => clearKeypoints(true));
     generateBtn.addEventListener('click', generateExport);
+
+    if (workflowGenerateBtn) {
+      workflowGenerateBtn.addEventListener('click', () => {
+        if (generateBtn.disabled) {
+          setStatus('Carregue e prepare a imagem antes de exportar.');
+          return;
+        }
+        generateExport();
+      });
+    }
+
     exportJpgBtn.addEventListener('click', exportHighJpg);
     resetBtn.addEventListener('click', resetAll);
     canvas.addEventListener('click', handleCanvasClick);
@@ -6205,6 +6278,7 @@
       downloadLink.style.display = 'none';
         hidePreviewDownload();
       generateBtn.disabled = true;
+      syncWorkflowExportButtonState();
       exportJpgBtn.disabled = true;
       keypointBtn.disabled = true;
       stopApplyKeypointsPulse();
@@ -6755,6 +6829,14 @@
       updateWorkflowStatus();
     }
 
+
+    function syncWorkflowExportButtonState() {
+      if (!workflowGenerateBtn) return;
+      workflowGenerateBtn.disabled = generateBtn.disabled;
+      workflowGenerateBtn.textContent = generateBtn.textContent || 'Exportar arquivo';
+    }
+
+
     function setExportButtonsDisabled(disabled) {
       if (currentLensMode === 'retro') {
         generateBtn.disabled = disabled || !finalFrameCanvases.length;
@@ -7123,11 +7205,24 @@
       previewDownloadLink.download = filename;
       previewDownloadLink.textContent = label;
       previewDownloadLink.classList.add('show');
+
+      if (workflowDownloadLink) {
+        workflowDownloadLink.href = url;
+        workflowDownloadLink.download = filename;
+        workflowDownloadLink.textContent = label;
+        workflowDownloadLink.style.display = 'block';
+      }
     }
 
     function hidePreviewDownload() {
       previewDownloadLink.classList.remove('show');
       previewDownloadLink.removeAttribute('href');
+
+      if (workflowDownloadLink) {
+        workflowDownloadLink.style.display = 'none';
+        workflowDownloadLink.removeAttribute('href');
+        workflowDownloadLink.removeAttribute('download');
+      }
     }
 
     function hideExportOverlay() {

@@ -445,3 +445,13 @@ Se o vídeo exportado sair preto:
 - A validação do modo de segurança agora roda somente na exportação, não no preview.
 - O preview voltou a usar a renderização normal da ferramenta.
 - O modo compatível continua disponível apenas para evitar arquivo preto ao exportar vídeo.
+
+
+## Botão de exportação abaixo do fluxo
+
+- Adicionado um botão extra de exportação abaixo do card **Fluxo de produção**.
+- O botão chama a mesma função de exportação do painel principal.
+- O texto muda conforme o modo:
+  - Lente 3D: gerar GIF/MP4/MOV conforme formato escolhido.
+  - Lente Retro: exportar JPG alto.
+- Quando o arquivo fica pronto, o link de download também aparece abaixo do fluxo.
