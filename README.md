@@ -389,3 +389,27 @@ Os painéis recolhíveis da lateral foram refinados para ficar visualmente mais 
   - Upload / importar
   - Brilho / ajustes criativos
   - Download / exportar
+
+
+## Ícones externos em assets/icons
+
+Os ícones dos painéis agora são arquivos SVG externos, referenciados diretamente no HTML.
+
+Pasta criada:
+
+```text
+assets/icons/
+├── icon-upload.svg
+├── icon-sparkle.svg
+└── icon-download.svg
+```
+
+Referências usadas no sistema:
+
+```html
+<img class="tool-group-icon" src="assets/icons/icon-upload.svg" alt="Importar">
+<img class="tool-group-icon" src="assets/icons/icon-sparkle.svg" alt="Ajustes">
+<img class="tool-group-icon" src="assets/icons/icon-download.svg" alt="Exportar">
+```
+
+Isso evita falhas de renderização de símbolos Unicode ou pseudo-elementos CSS.
