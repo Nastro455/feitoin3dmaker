@@ -4915,7 +4915,7 @@
 
     if (workflowGenerateBtn) {
       workflowGenerateBtn.addEventListener('click', () => {
-        if (generateBtn.disabled) {
+        if (!finalFrameCanvases.length) {
           setStatus('Carregue e prepare a imagem antes de exportar.');
           return;
         }
@@ -6711,6 +6711,7 @@
       if (previewMode === 'frame' || currentLensMode === 'retro' || finalFrameCanvases.length === 1) {
         const chosenFrame = finalFrameCanvases[selectedAdjustFrame] || finalFrameCanvases[0];
         drawPreviewFrame(chosenFrame);
+        syncWorkflowExportButtonState(false);
         return;
       }
 
@@ -6730,6 +6731,7 @@
 
       draw();
       animationTimer = setInterval(draw, frameDelay);
+      syncWorkflowExportButtonState(false);
     }
 
     function exportHighJpg() {
@@ -6804,6 +6806,7 @@
         if (exportBox) {
           exportBox.innerHTML = `<strong>Exportação Retro:</strong> JPG em ${preset.aspectLabel} (${preset.width} × ${preset.height} px), qualidade alta. Ideal para postagem, catálogo e entrega final.`;
         }
+        syncWorkflowExportButtonState(false);
         updateExportResultMeta();
         updateWorkflowStatus();
         return;
@@ -6825,15 +6828,19 @@
         exportBox.innerHTML = `<strong>Exportação:</strong> arquivo ${label} em ${preset.aspectLabel} (${preset.width} × ${preset.height} px), qualidade ${preset.label}. O enquadramento usa crop automático para preencher a tela sem bordas pretas.${watermarkEnabledInput.checked ? " A marca d'água nas bordas será aplicada no arquivo final." : ''}`;
       }
 
+      syncWorkflowExportButtonState(false);
       updateExportResultMeta();
       updateWorkflowStatus();
     }
 
 
-    function syncWorkflowExportButtonState() {
+    function syncWorkflowExportButtonState(forceDisabled = false) {
       if (!workflowGenerateBtn) return;
-      workflowGenerateBtn.disabled = generateBtn.disabled;
-      workflowGenerateBtn.textContent = generateBtn.textContent || 'Exportar arquivo';
+
+      const hasFramesReady = finalFrameCanvases.length > 0;
+      const isInterfaceLocked = Boolean(forceDisabled) || Boolean(exportFormatSelect?.disabled);
+      workflowGenerateBtn.disabled = isInterfaceLocked || !hasFramesReady;
+      workflowGenerateBtn.textContent = generateBtn.textContent || (currentLensMode === 'retro' ? 'Exportar JPG alto' : 'Exportar arquivo');
     }
 
 
@@ -6872,6 +6879,7 @@
       watermarkTextInput.disabled = disabled || !watermarkEnabledInput.checked;
       frameJumpButtons.querySelectorAll('button').forEach((button) => button.disabled = disabled);
       nudgeButtons.forEach((button) => button.disabled = disabled);
+      syncWorkflowExportButtonState(disabled);
     }
 
     function generateGif() {
@@ -7265,6 +7273,7 @@
       clearInterval(exportTimer);
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       canvas.style.display = 'none';
+    syncWorkflowExportButtonState(true);
       canvas.classList.remove('keypoint-mode');
       emptyState.style.display = 'block';
       framesList.innerHTML = '';

@@ -455,3 +455,11 @@ Se o vídeo exportado sair preto:
   - Lente 3D: gerar GIF/MP4/MOV conforme formato escolhido.
   - Lente Retro: exportar JPG alto.
 - Quando o arquivo fica pronto, o link de download também aparece abaixo do fluxo.
+
+
+## Correção do botão de exportar abaixo do fluxo
+
+- Corrigido o botão extra de exportação que ficava apagado/desativado.
+- Agora ele ativa quando existem frames prontos para exportar.
+- O botão não depende mais apenas do estado visual do botão principal.
+- O texto continua sincronizado com o formato escolhido.
