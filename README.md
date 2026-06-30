@@ -437,3 +437,11 @@ Se o vídeo exportado sair preto:
 2. Exporte novamente.
 3. Se ainda falhar, tente GIF ou JPG alto.
 4. Em Safari/iPhone, testar também no Chrome ou em desktop.
+
+
+## Correção do preview após modo de segurança
+
+- Corrigido problema em que a imagem carregada ficava preta no preview.
+- A validação do modo de segurança agora roda somente na exportação, não no preview.
+- O preview voltou a usar a renderização normal da ferramenta.
+- O modo compatível continua disponível apenas para evitar arquivo preto ao exportar vídeo.
