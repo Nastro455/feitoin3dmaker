@@ -3337,6 +3337,34 @@
       height: 21px !important;
     }
 
+  
+    /* Modo de segurança de exportação */
+    .safe-export-warning {
+      margin-top: 12px;
+      border: 1px solid rgba(255,209,102,.28);
+      border-radius: 16px;
+      padding: 12px;
+      background: rgba(255,209,102,.08);
+      color: var(--muted);
+      font-size: 12.5px;
+      line-height: 1.45;
+    }
+
+    .safe-export-warning strong {
+      display: block;
+      color: var(--warning);
+      margin-bottom: 4px;
+      font-size: 13px;
+    }
+
+    .safe-export-warning p {
+      margin: 0;
+    }
+
+    .safe-export-field .switch-label-text {
+      line-height: 1.35;
+    }
+
   </style>
 </head>
 <body class="lens-gate-active">
@@ -3709,7 +3737,25 @@
                   <p>Quando estiver satisfeito com o preview, exporte no formato desejado e baixe o arquivo final.</p>
                 </div>
                 <div class="actions visualizer-actions">
-                  <button id="generateBtn" disabled>Exportar arquivo</button>
+                  
+              <div class="field safe-export-field">
+                <label>Modo de segurança na exportação</label>
+                <div class="switch-row">
+                  <label class="switch-control" for="safeExportMode">
+                    <input id="safeExportMode" type="checkbox" />
+                    <span class="switch-slider"></span>
+                  </label>
+                  <span class="switch-label-text">Ativar exportação compatível para evitar arquivo preto em alguns navegadores</span>
+                </div>
+                <p class="mini-note">Use quando o vídeo exportado sair preto, falhar no celular ou apresentar erro no navegador. O sistema também tenta ativar automaticamente se detectar risco.</p>
+              </div>
+
+              <div class="safe-export-warning" id="safeExportWarning" style="display: none;">
+                <strong>Modo compatível ativado</strong>
+                <p>Seu navegador pode ter dificuldade com MP4/MOV. Para evitar arquivo preto, vamos usar uma renderização mais segura. Se ainda falhar, exporte em GIF ou JPG alto.</p>
+              </div>
+
+              <button id="generateBtn" disabled>Exportar arquivo</button>
                   <button class="secondary" id="exportJpgBtn" type="button" disabled>Exportar JPG alto</button>
                   <button class="secondary" id="clearKeypointsBtn" type="button" disabled>Limpar alinhamento</button>
                   <button class="secondary" id="resetBtn" type="button">Limpar tudo</button>
@@ -3931,6 +3977,8 @@
     const totalDurationSelect = document.querySelector('#totalDuration');
     const customDurationField = document.querySelector('#customDurationField');
     const customDurationSeconds = document.querySelector('#customDurationSeconds');
+    const safeExportModeInput = document.querySelector('#safeExportMode');
+    const safeExportWarning = document.querySelector('#safeExportWarning');
     const exportFormatSelect = document.querySelector('#exportFormat');
     const exportAspectSelect = document.querySelector('#exportAspect');
     const exportQualitySelect = document.querySelector('#exportQuality');
@@ -4444,6 +4492,18 @@
       if (totalDurationSelect.value !== 'custom') return;
       if (!selectingKeypoints) startPreview();
     });
+
+
+    if (safeExportModeInput) {
+      safeExportModeInput.addEventListener('change', () => {
+        showSafeExportWarning(safeExportModeInput.checked);
+        setStatus(safeExportModeInput.checked
+          ? 'Modo de segurança ativado. A exportação usará renderização mais compatível.'
+          : 'Modo de segurança desativado.'
+        );
+      });
+    }
+
 
     exportFormatSelect.addEventListener('change', () => {
       updateExportControls();
@@ -6580,7 +6640,20 @@
         return;
       }
 
-      const playbackFrames = getPlaybackFrames();
+      let playbackFrames = getPlaybackFrames();
+      const useSafeExportMode = shouldUseSafeExportMode(format);
+      showSafeExportWarning(useSafeExportMode);
+
+      if (!validateFramesBeforeExport(playbackFrames)) {
+        setStatus('Não foi possível validar os frames antes da exportação. Tente modo compatível, GIF ou JPG alto.');
+        hideExportOverlay();
+        setExportButtonsDisabled(false);
+        return;
+      }
+
+      if (useSafeExportMode) {
+        playbackFrames = prepareSafeVideoFrames(playbackFrames);
+      }
       const frameDelay = getMovementFrameDelay();
       if (!playbackFrames.length) {
         if (finalFrameCanvases[0]) drawPreviewFrame(finalFrameCanvases[0]);
@@ -6793,6 +6866,86 @@
 
       gif.render();
     }
+
+
+    function isLikelyProblematicVideoExportEnvironment() {
+      const userAgent = navigator.userAgent || '';
+      const isSafari = /^((?!chrome|android).)*safari/i.test(userAgent);
+      const isIOS = /iPad|iPhone|iPod/.test(userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+      const isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(userAgent);
+      return isSafari || isIOS || isMobile;
+    }
+
+    function hasMeaningfulPixels(canvasElement) {
+      if (!canvasElement || !canvasElement.width || !canvasElement.height) return false;
+
+      const sampleCanvas = document.createElement('canvas');
+      const sampleSize = 24;
+      sampleCanvas.width = sampleSize;
+      sampleCanvas.height = sampleSize;
+      const sampleCtx = sampleCanvas.getContext('2d', { willReadFrequently: true });
+      sampleCtx.drawImage(canvasElement, 0, 0, sampleSize, sampleSize);
+
+      const image = sampleCtx.getImageData(0, 0, sampleSize, sampleSize);
+      const data = image.data;
+      let nonBlackPixels = 0;
+      let visiblePixels = 0;
+
+      for (let i = 0; i < data.length; i += 4) {
+        const r = data[i];
+        const g = data[i + 1];
+        const b = data[i + 2];
+        const a = data[i + 3];
+
+        if (a > 10) visiblePixels++;
+        if (a > 10 && (r > 12 || g > 12 || b > 12)) {
+          nonBlackPixels++;
+        }
+      }
+
+      return visiblePixels > 0 && nonBlackPixels > 8;
+    }
+
+    function shouldUseSafeExportMode(format = '') {
+      return Boolean(safeExportModeInput?.checked) || (format !== 'gif' && isLikelyProblematicVideoExportEnvironment());
+    }
+
+    function showSafeExportWarning(show = true) {
+      if (!safeExportWarning) return;
+      safeExportWarning.style.display = show ? 'block' : 'none';
+    }
+
+    function prepareSafeVideoFrames(frames) {
+      const preset = getExportPreset();
+      const safeWidth = Math.min(preset.width, 1280);
+      const safeHeight = Math.round(safeWidth / (preset.width / preset.height));
+      const targetWidth = safeWidth % 2 === 0 ? safeWidth : safeWidth - 1;
+      const targetHeight = safeHeight % 2 === 0 ? safeHeight : safeHeight - 1;
+
+      return frames.map((frame) => {
+        const safeCanvas = document.createElement('canvas');
+        safeCanvas.width = targetWidth;
+        safeCanvas.height = targetHeight;
+        const safeCtx = safeCanvas.getContext('2d', { alpha: false });
+        safeCtx.imageSmoothingEnabled = true;
+        safeCtx.imageSmoothingQuality = 'high';
+        safeCtx.fillStyle = '#061426';
+        safeCtx.fillRect(0, 0, targetWidth, targetHeight);
+        safeCtx.drawImage(frame, 0, 0, targetWidth, targetHeight);
+        return safeCanvas;
+      });
+    }
+
+    function validateFramesBeforeExport(frames) {
+      if (!frames || !frames.length) return false;
+      const first = frames[0];
+      if (hasMeaningfulPixels(first)) return true;
+
+      rebuildFinalFrames();
+      const redrawn = finalFrameCanvases[0];
+      return hasMeaningfulPixels(redrawn);
+    }
+
 
     function generateVideo(format) {
       if (!finalFrameCanvases.length) return;

@@ -413,3 +413,27 @@ Referências usadas no sistema:
 ```
 
 Isso evita falhas de renderização de símbolos Unicode ou pseudo-elementos CSS.
+
+
+## Modo de segurança na exportação
+
+Foi adicionada uma camada de compatibilidade para casos em que o usuário exporta vídeo e o arquivo sai preto.
+
+### O que mudou
+
+- Novo switch no painel **Exportar arquivo**: **Modo de segurança na exportação**.
+- Aviso amigável quando o modo compatível estiver ativo.
+- Detecção preventiva de ambientes com maior risco, como Safari, iOS e mobile.
+- Validação básica dos frames antes da exportação.
+- Redesenho dos frames antes de exportar, se o sistema detectar risco de frame preto.
+- Redução automática de resolução para até 1280px de largura no modo compatível.
+- Uso de canvas sem alpha e fundo sólido para reduzir risco de frames pretos.
+- Fallback de codec para WebM quando o navegador não lidar bem com MP4/MOV.
+
+### Orientação para usuário
+
+Se o vídeo exportado sair preto:
+1. Ative o modo de segurança.
+2. Exporte novamente.
+3. Se ainda falhar, tente GIF ou JPG alto.
+4. Em Safari/iPhone, testar também no Chrome ou em desktop.
