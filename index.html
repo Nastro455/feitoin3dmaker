@@ -3853,6 +3853,42 @@
       }
     }
 
+  
+    /* Correção — Lente 3D sem temperatura/matte e efeitos com preview ao vivo */
+    body.lens-3d #retroWarmthAdjust,
+    body.lens-3d #retroFadeAdjust {
+      display: none !important;
+    }
+
+    body.lens-3d #retroWarmthAdjust,
+    body.lens-3d #retroFadeAdjust,
+    body.lens-3d label[for="retroWarmthAdjust"],
+    body.lens-3d label[for="retroFadeAdjust"] {
+      display: none !important;
+    }
+
+    body.lens-3d #retroWarmthAdjustValue,
+    body.lens-3d #retroFadeAdjustValue {
+      display: none !important;
+    }
+
+    body.lens-3d #retroWarmthAdjust,
+    body.lens-3d #retroFadeAdjust {
+      visibility: hidden !important;
+      opacity: 0 !important;
+    }
+
+    body.lens-3d .retro-secondary-control:has(#retroWarmthAdjust),
+    body.lens-3d .retro-secondary-control:has(#retroFadeAdjust) {
+      display: none !important;
+    }
+
+    body.lens-3d .retro-secondary-control:has(#retroGrainAdjust),
+    body.lens-3d .retro-secondary-control:has(#retroVignetteAdjust),
+    body.lens-3d .film-dust-control {
+      display: block !important;
+    }
+
   </style>
 </head>
 <body class="lens-gate-active">
@@ -4758,6 +4794,7 @@
 
     function updateLensModeInterface() {
       const isRetro = currentLensMode === 'retro';
+      update3dEffectFieldVisibility();
       document.body.classList.toggle('lens-retro', isRetro);
       document.body.classList.toggle('lens-3d', currentLensMode === '3d');
       document.body.classList.toggle('lens-gate-active', !currentLensMode);
@@ -5165,18 +5202,6 @@
     });
 
 
-    if (filmDustScratchesInput) {
-      filmDustScratchesInput.addEventListener('input', () => {
-        const value = Number(filmDustScratchesInput.value || 0);
-        if (filmDustScratchesValue) filmDustScratchesValue.textContent = `${value}%`;
-        if (!rawFrameCanvases.length || selectingKeypoints) return;
-        rebuildFinalFrames();
-        startPreview();
-        setStatus(value > 0 ? `Dust and Scratches ajustado para ${value}%.` : 'Dust and Scratches desativado.');
-        updateWorkflowStatus();
-        updateExportResultMeta();
-      });
-    }
 
 
     rgbDisplacementInput.addEventListener('input', () => {
@@ -5353,6 +5378,43 @@
 
 
 
+
+    function handleCreativeTextureLiveUpdate(control, label) {
+      if (!control) return;
+
+      if (control === retroGrainAdjustInput && retroGrainAdjustValue) {
+        retroGrainAdjustValue.textContent = `${Number(control.value || 0)}%`;
+      }
+
+      if (control === retroVignetteAdjustInput && retroVignetteAdjustValue) {
+        retroVignetteAdjustValue.textContent = `${Number(control.value || 0)}%`;
+      }
+
+      if (control === filmDustScratchesInput && filmDustScratchesValue) {
+        filmDustScratchesValue.textContent = `${Number(control.value || 0)}%`;
+      }
+
+      if (currentLensMode === 'retro') {
+        setRetroPresetButtonState(null);
+      }
+
+      if (!rawFrameCanvases.length || selectingKeypoints) return;
+
+      clearInterval(animationTimer);
+      rebuildFinalFrames();
+
+      if (currentLensMode === 'retro') {
+        previewMode = 'frame';
+        selectedAdjustFrame = 0;
+      }
+
+      startPreview();
+      setStatus(`${label} ajustado para ${Number(control.value || 0)}%.`);
+      updateWorkflowStatus();
+      updateExportResultMeta();
+    }
+
+
     function handleRetroControlManualChange(target) {
       if (!target || currentLensMode !== 'retro') return;
 
@@ -5369,7 +5431,18 @@
       forceRetroLiveUpdate(messages[target.id] || 'Ajuste Retro atualizado no preview.');
     }
 
-    [retroWarmthAdjustInput, retroFadeAdjustInput, retroGrainAdjustInput, retroVignetteAdjustInput].forEach((control) => {
+
+    [retroGrainAdjustInput, retroVignetteAdjustInput, filmDustScratchesInput].forEach((control) => {
+      if (!control) return;
+      const label = control === retroGrainAdjustInput
+        ? 'Grão criativo'
+        : (control === retroVignetteAdjustInput ? 'Vinheta criativa' : 'Dust and Scratches');
+      control.addEventListener('input', () => handleCreativeTextureLiveUpdate(control, label));
+      control.addEventListener('change', () => handleCreativeTextureLiveUpdate(control, label));
+    });
+
+
+    [retroWarmthAdjustInput, retroFadeAdjustInput].forEach((control) => {
       if (!control) return;
       control.addEventListener('input', () => handleRetroControlManualChange(control));
       control.addEventListener('change', () => handleRetroControlManualChange(control));
@@ -7965,6 +8038,23 @@
     }
 
 
+
+    function update3dEffectFieldVisibility() {
+      const is3d = currentLensMode === '3d';
+      const warmthField = getFieldContainer(retroWarmthAdjustInput);
+      const fadeField = getFieldContainer(retroFadeAdjustInput);
+      const grainField = getFieldContainer(retroGrainAdjustInput);
+      const vignetteField = getFieldContainer(retroVignetteAdjustInput);
+      const dustField = getFieldContainer(filmDustScratchesInput);
+
+      if (warmthField) warmthField.style.display = is3d ? 'none' : '';
+      if (fadeField) fadeField.style.display = is3d ? 'none' : '';
+      if (grainField) grainField.style.display = '';
+      if (vignetteField) vignetteField.style.display = '';
+      if (dustField) dustField.style.display = '';
+    }
+
+
     function force3dCreativeEffectsVisible() {
       [
         getFieldContainer(retroGrainAdjustInput),
@@ -8063,6 +8153,7 @@
       if (mergedText) mergedText.textContent = isRetro
         ? 'Defina resolução e qualidade para baixar a foto final sem sair deste painel.'
         : 'Defina formato, velocidade, qualidade e gere o arquivo final dentro deste painel.';
+      update3dEffectFieldVisibility();
     }
 
     function refreshUnifiedPanelTexts() {

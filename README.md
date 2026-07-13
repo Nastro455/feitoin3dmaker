@@ -497,3 +497,15 @@ Se o vídeo exportado sair preto:
   - Vinheta criativa
   - Dust and Scratches
 - Os controles agora aparecem junto dos demais ajustes criativos, antes de RGB/interpolação/exportação.
+
+
+## Correção dos efeitos criativos da Lente 3D
+
+- Removidos da Lente 3D os controles que pertencem à Lente Retro:
+  - Temperatura / tom quente-frio
+  - Pretos desbotados / matte
+- Mantidos na Lente 3D:
+  - Grão criativo
+  - Vinheta criativa
+  - Dust and Scratches
+- Corrigido o preview ao vivo: grão, vinheta e Dust and Scratches atualizam imediatamente ao mexer na barra.
