@@ -471,3 +471,10 @@ Se o vídeo exportado sair preto:
 - O antigo balão agora virou um selo textual horizontal: **Painel recolhível**.
 - O selo fica pulsando de forma discreta.
 - A indicação de rolagem foi mantida como texto auxiliar: **opções abaixo**.
+
+
+## Remoção definitiva dos balões/ícones antigos
+
+- Os antigos círculos/balões das categorias foram ocultados completamente.
+- O aviso **PAINEL RECOLHÍVEL** agora aparece como selo textual no topo do card, fora da área do antigo ícone.
+- A indicação **opções abaixo** continua aparecendo como apoio visual para rolagem.
