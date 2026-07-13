@@ -3781,6 +3781,78 @@
       }
     }
 
+  
+    /* Lente 3D — novos efeitos criativos */
+    body.lens-3d .retro-presets-field {
+      display: none !important;
+    }
+
+    body.lens-3d .retro-secondary-control,
+    body.lens-3d .film-dust-control {
+      display: block;
+    }
+
+    body.lens-3d .retro-secondary-control label::after {
+      content: " — efeito criativo";
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    @media (max-width: 680px) {
+      body.lens-3d .retro-secondary-control,
+      body.lens-3d .film-dust-control {
+        display: block !important;
+      }
+
+      body.lens-3d .film-dust-control .mini-note {
+        display: none !important;
+      }
+    }
+
+  
+    /* Correção — exibir grão, vinheta e Dust and Scratches na Lente 3D */
+    body.lens-3d .show-in-3d-effects,
+    body.lens-3d .retro-secondary-control,
+    body.lens-3d .film-dust-control {
+      display: block !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+    }
+
+    body.lens-3d .retro-presets-field {
+      display: none !important;
+    }
+
+    body.lens-3d .retro-secondary-control label::after {
+      content: "";
+    }
+
+    body.lens-3d .retro-secondary-control label[for="retroGrainAdjust"]::before {
+      content: "Grão criativo — ";
+      font-weight: 900;
+      color: var(--text);
+    }
+
+    body.lens-3d .retro-secondary-control label[for="retroVignetteAdjust"]::before {
+      content: "Vinheta criativa — ";
+      font-weight: 900;
+      color: var(--text);
+    }
+
+    body.lens-3d .film-dust-control label::before {
+      content: "Textura de filme — ";
+      font-weight: 900;
+      color: var(--text);
+    }
+
+    @media (max-width: 680px) {
+      body.lens-3d .show-in-3d-effects,
+      body.lens-3d .retro-secondary-control,
+      body.lens-3d .film-dust-control {
+        display: block !important;
+      }
+    }
+
   </style>
 </head>
 <body class="lens-gate-active">
@@ -4040,6 +4112,17 @@
                   <output id="retroVignetteAdjustValue">0%</output>
                 </div>
               </div>
+
+
+              <div class="field film-dust-control">
+                <label for="filmDustScratchesAdjust">Dust and Scratches / poeira de filme</label>
+                <div class="range-row">
+                  <input id="filmDustScratchesAdjust" type="range" min="0" max="100" value="0" step="5" />
+                  <output id="filmDustScratchesValue">0%</output>
+                </div>
+                <p class="mini-note">Adiciona pequenas partículas e riscos de película. Use pouco para um efeito mais natural.</p>
+              </div>
+
 
 
               <div class="field">
@@ -4428,6 +4511,8 @@
     const retroGrainAdjustValue = document.querySelector('#retroGrainAdjustValue');
     const retroVignetteAdjustInput = document.querySelector('#retroVignetteAdjust');
     const retroVignetteAdjustValue = document.querySelector('#retroVignetteAdjustValue');
+    const filmDustScratchesInput = document.querySelector('#filmDustScratchesAdjust');
+    const filmDustScratchesValue = document.querySelector('#filmDustScratchesValue');
     const retroPresetButtons = Array.from(document.querySelectorAll('[data-retro-preset]'));
     const rgbDisplacementInput = document.querySelector('#rgbDisplacement');
     const rgbDisplacementValue = document.querySelector('#rgbDisplacementValue');
@@ -4550,6 +4635,8 @@
       if (retroFadeAdjustInput) retroFadeAdjustInput.value = '0';
       if (retroGrainAdjustInput) retroGrainAdjustInput.value = '0';
       if (retroVignetteAdjustInput) retroVignetteAdjustInput.value = '0';
+      if (filmDustScratchesInput) filmDustScratchesInput.value = '0';
+      if (filmDustScratchesValue) filmDustScratchesValue.textContent = '0%';
       updateRetroControlLabels();
 
       if (rgbDisplacementInput) rgbDisplacementInput.value = '0';
@@ -4713,7 +4800,7 @@
         if (importTitle) importTitle.textContent = 'Importar e alinhar imagem';
         if (importDescription) importDescription.textContent = 'Carregue a foto 3D, escolha o layout, alinhe o objeto principal e prepare a base da montagem.';
         if (creativeTitle) creativeTitle.textContent = 'Ajustes e Exportar';
-        if (creativeDescription) creativeDescription.textContent = "Ajuste o visual, controle a velocidade e exporte o arquivo final no mesmo painel.";
+        if (creativeDescription) creativeDescription.textContent = "Ajuste filtros, vinheta, grão, Dust and Scratches, velocidade e exporte no mesmo painel.";
         if (exportTitle) exportTitle.textContent = 'Exportar arquivo';
         if (exportDescription) exportDescription.textContent = 'Defina resolução, formato, duração e qualidade do arquivo final.';
         if (dropzoneStrong) dropzoneStrong.textContent = '1. Carregar foto 3D';
@@ -4824,6 +4911,9 @@
         Number(exposureAdjustInput.value) !== 0 ||
         Number(sharpnessAdjustInput.value) > 0 ||
         Number(glowAdjustInput.value) > 0 ||
+        Number(retroGrainAdjustInput.value) > 0 ||
+        Number(retroVignetteAdjustInput.value) > 0 ||
+        Number(filmDustScratchesInput?.value || 0) > 0 ||
         Number(rgbDisplacementInput.value) > 0 ||
         (currentLensMode !== 'retro' && Number(frameInterpolationAmountInput.value) > 0) ||
         watermarkEnabledInput.checked
@@ -5073,6 +5163,21 @@
         setStatus('Glow desativado.');
       }
     });
+
+
+    if (filmDustScratchesInput) {
+      filmDustScratchesInput.addEventListener('input', () => {
+        const value = Number(filmDustScratchesInput.value || 0);
+        if (filmDustScratchesValue) filmDustScratchesValue.textContent = `${value}%`;
+        if (!rawFrameCanvases.length || selectingKeypoints) return;
+        rebuildFinalFrames();
+        startPreview();
+        setStatus(value > 0 ? `Dust and Scratches ajustado para ${value}%.` : 'Dust and Scratches desativado.');
+        updateWorkflowStatus();
+        updateExportResultMeta();
+      });
+    }
+
 
     rgbDisplacementInput.addEventListener('input', () => {
       rgbDisplacementValue.textContent = `${rgbDisplacementInput.value}px`;
@@ -5473,6 +5578,7 @@
         applyGlowEffect(output);
         applyRetroExtraGrain(output);
         applyRetroVignette(output);
+        applyFilmDustAndScratches(output);
         applyRgbDisplacement(output);
         applyBorderWatermark(output);
         return output;
@@ -6013,6 +6119,54 @@
       targetCtx.drawImage(brightCanvas, 0, 0);
       targetCtx.restore();
     }
+
+
+    function applyFilmDustAndScratches(canvasElement) {
+      const amount = Number(filmDustScratchesInput?.value || 0);
+      if (amount <= 0) return;
+
+      const dustCtx = canvasElement.getContext('2d');
+      const width = canvasElement.width;
+      const height = canvasElement.height;
+      const intensity = amount / 100;
+
+      dustCtx.save();
+      dustCtx.globalCompositeOperation = 'screen';
+
+      const specks = Math.round((width * height / 90000) * (18 + intensity * 90));
+      for (let i = 0; i < specks; i++) {
+        const x = Math.random() * width;
+        const y = Math.random() * height;
+        const radius = 0.35 + Math.random() * (1.25 + intensity * 1.3);
+        const alpha = 0.08 + Math.random() * (0.22 * intensity + 0.08);
+
+        dustCtx.globalAlpha = alpha;
+        dustCtx.fillStyle = Math.random() > 0.28 ? '#ffffff' : '#d7e8ff';
+        dustCtx.beginPath();
+        dustCtx.arc(x, y, radius, 0, Math.PI * 2);
+        dustCtx.fill();
+      }
+
+      const scratches = Math.round(1 + intensity * 10);
+      for (let i = 0; i < scratches; i++) {
+        const x = Math.random() * width;
+        const y = Math.random() * height;
+        const length = height * (0.08 + Math.random() * (0.28 + intensity * 0.28));
+        const drift = (Math.random() - 0.5) * width * 0.025;
+        const alpha = 0.05 + Math.random() * (0.16 * intensity + 0.04);
+
+        dustCtx.globalAlpha = alpha;
+        dustCtx.strokeStyle = Math.random() > 0.5 ? '#ffffff' : '#b9d9ff';
+        dustCtx.lineWidth = 0.7 + Math.random() * (1.1 + intensity);
+        dustCtx.beginPath();
+        dustCtx.moveTo(x, y);
+        dustCtx.lineTo(x + drift, y + length);
+        dustCtx.stroke();
+      }
+
+      dustCtx.restore();
+    }
+
 
     function applyRgbDisplacement(canvasElement) {
       const amount = Number(rgbDisplacementInput.value || 0);
@@ -7810,11 +7964,25 @@
       nodes.filter(Boolean).forEach((node) => parent.appendChild(node));
     }
 
+
+    function force3dCreativeEffectsVisible() {
+      [
+        getFieldContainer(retroGrainAdjustInput),
+        getFieldContainer(retroVignetteAdjustInput),
+        getFieldContainer(filmDustScratchesInput)
+      ].filter(Boolean).forEach((field) => {
+        field.classList.remove('mobile-hide-3d');
+        field.classList.add('show-in-3d-effects');
+      });
+    }
+
+
     function applyUnifiedPanelLayout() {
       const mergedExportSection = ensureMergedExportSection();
       const importContent = stepImportGroup?.querySelector('.tool-group-content');
       const creativeContent = stepCreativeGroup?.querySelector('.tool-group-content');
       if (!importContent || !creativeContent) return;
+      force3dCreativeEffectsVisible();
 
       const isRetro = currentLensMode === 'retro';
 
@@ -7878,6 +8046,9 @@
           exposureField,
           sharpnessField,
           glowField,
+          grainField,
+          vignetteField,
+          getFieldContainer(filmDustScratchesInput),
           rgbField,
           interpolationField,
           watermarkField,
@@ -7923,7 +8094,7 @@
         if (importTitle) importTitle.textContent = 'Importar e alinhar imagem';
         if (importDescription) importDescription.textContent = 'Carregue a foto 3D, escolha o layout, alinhe o objeto principal e prepare a base da montagem.';
         if (creativeTitle) creativeTitle.textContent = 'Ajustes e Exportar';
-        if (creativeDescription) creativeDescription.textContent = 'Ajuste o visual, controle a velocidade e exporte o arquivo final no mesmo painel.';
+        if (creativeDescription) creativeDescription.textContent = 'Ajuste filtros, vinheta, grão, Dust and Scratches, velocidade e exporte no mesmo painel.';
         if (exportTitle) exportTitle.textContent = 'Exportar arquivo';
         if (exportDescription) exportDescription.textContent = 'Defina resolução, formato, duração e qualidade do arquivo final.';
         if (workflowGenerateLabel) workflowGenerateLabel.textContent = 'Pronto para finalizar?';

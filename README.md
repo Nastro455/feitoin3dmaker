@@ -478,3 +478,22 @@ Se o vídeo exportado sair preto:
 - Os antigos círculos/balões das categorias foram ocultados completamente.
 - O aviso **PAINEL RECOLHÍVEL** agora aparece como selo textual no topo do card, fora da área do antigo ícone.
 - A indicação **opções abaixo** continua aparecendo como apoio visual para rolagem.
+
+
+## Vinheta, grão e Dust and Scratches na Lente 3D
+
+- Adicionados controles criativos na guia **Ajustes e Exportar** da Lente 3D:
+  - Vinheta / escurecer bordas
+  - Granulado extra
+  - Dust and Scratches / poeira de filme
+- Os efeitos aparecem no preview e entram no arquivo exportado.
+- Os controles também são zerados ao alternar entre Lente 3D e Lente Retro.
+
+
+## Correção de visibilidade dos efeitos criativos na Lente 3D
+
+- Corrigido o painel **Ajustes e Exportar** para exibir os novos controles na Lente 3D:
+  - Grão criativo
+  - Vinheta criativa
+  - Dust and Scratches
+- Os controles agora aparecem junto dos demais ajustes criativos, antes de RGB/interpolação/exportação.
