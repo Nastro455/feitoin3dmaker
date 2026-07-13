@@ -3416,6 +3416,177 @@
       content: " No modo Retro, este botão exporta JPG alto.";
     }
 
+
+    /* ===== Atualização UX — unificação de painéis e mobile simplificado ===== */
+    .tool-group-badge {
+      min-width: 124px !important;
+      width: 124px !important;
+      height: 34px !important;
+      border-radius: 999px !important;
+      padding: 0 12px !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      background: linear-gradient(135deg, rgba(69,145,255,.96), rgba(95,188,255,.9)) !important;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.14), 0 10px 22px rgba(0,0,0,.18);
+      color: #fff !important;
+      border: 1px solid rgba(255,255,255,.16) !important;
+      overflow: hidden;
+    }
+
+    .tool-group-badge .badge-pulse-text {
+      font-size: 10px;
+      line-height: 1.05;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      text-align: center;
+      animation: badgePulse 1.45s ease-in-out infinite;
+      white-space: normal;
+    }
+
+    .tool-group-badge img,
+    .tool-group-badge svg {
+      display: none !important;
+    }
+
+    @keyframes badgePulse {
+      0%,100% { opacity: .68; transform: scale(.985); }
+      50% { opacity: 1; transform: scale(1); }
+    }
+
+    .tool-group-title {
+      grid-template-columns: 124px minmax(0,1fr) !important;
+      align-items: start !important;
+    }
+
+    .tool-group summary {
+      align-items: start !important;
+    }
+
+    .tool-group summary::after {
+      content: '↓ role o mouse';
+      position: absolute;
+      right: 42px;
+      bottom: 10px;
+      font-size: 10px;
+      font-weight: 800;
+      color: rgba(201,220,255,.7);
+      letter-spacing: .03em;
+      text-transform: uppercase;
+      pointer-events: none;
+    }
+
+    .tool-group { position: relative; }
+
+    .tool-group-content {
+      max-height: min(58vh, 640px);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255,255,255,.18) transparent;
+    }
+
+    .tool-group-content::-webkit-scrollbar { width: 8px; }
+    .tool-group-content::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,.16);
+      border-radius: 999px;
+    }
+
+    .merged-export-section {
+      margin-top: 20px;
+      padding-top: 18px;
+      border-top: 1px solid rgba(255,255,255,.08);
+      display: grid;
+      gap: 0;
+    }
+
+    .panel-subsection-title {
+      display: grid;
+      gap: 4px;
+      margin-bottom: 8px;
+      padding: 0 0 4px;
+    }
+
+    .panel-subsection-title span {
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: .02em;
+      text-transform: uppercase;
+    }
+
+    .panel-subsection-title small {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .retro-mode-note { display: none !important; }
+
+    body.lens-retro .preview-point-actions-card { display: none !important; }
+    body.lens-retro .frames-card { display: none !important; }
+    body.lens-retro .fine-adjust-overlay { display: none !important; }
+
+    .mobile-hide-3d { }
+
+    @media (max-width: 680px) {
+      .tool-group-badge {
+        display: none !important;
+      }
+
+      .tool-group-title {
+        grid-template-columns: minmax(0, 1fr) !important;
+      }
+
+      .tool-group summary::after {
+        content: '';
+      }
+
+      body.lens-3d .frames-card,
+      body.lens-3d .demo-side-column,
+      body.lens-3d .site-footer .download-note {
+        display: none !important;
+      }
+
+      body.lens-3d .preview-main-column {
+        display: flex;
+        flex-direction: column;
+      }
+
+      body.lens-3d #previewBox { order: 1; }
+      body.lens-3d .preview-point-actions-card { order: 2; }
+      body.lens-3d .frames-card { order: 3; }
+      body.lens-3d .grid > aside.card { order: 4; }
+
+      body.lens-3d .mobile-hide-3d,
+      body.lens-3d .retro-look-note,
+      body.lens-3d .mini-note-mobile-hide {
+        display: none !important;
+      }
+
+      body.lens-3d #stepCreativeGroup .tool-group-content {
+        max-height: none;
+      }
+
+      body.lens-3d .merged-export-section {
+        margin-top: 8px;
+        padding-top: 10px;
+        border-top-color: rgba(255,255,255,.06);
+      }
+
+      body.lens-3d .export-action-panel {
+        margin-top: 8px;
+        padding-top: 8px;
+      }
+
+      body.lens-retro .grid > aside.card { order: 3; }
+      body.lens-retro .preview-wrap { order: 1; }
+
+      body.lens-retro #previewBox { order: 1; }
+      body.lens-retro .grid { gap: 10px; }
+    }
+
   </style>
 </head>
 <body class="lens-gate-active">
@@ -3727,13 +3898,13 @@
               <div class="field">
                 <label for="totalDuration">6. Definir duração final do GIF</label>
                 <select id="totalDuration">
-                  <option value="auto" selected>Automático pela velocidade</option>
+                  <option value="auto">Automático pela velocidade</option>
                   <option value="1000">1 segundo</option>
                   <option value="1500">1,5 segundo</option>
                   <option value="2000">2 segundos</option>
                   <option value="3000">3 segundos</option>
                   <option value="5000">5 segundos</option>
-                  <option value="10000">10 segundos</option>
+                  <option value="10000" selected>10 segundos</option>
                   <option value="custom">Personalizado em segundos</option>
                 </select>
               </div>
@@ -3885,7 +4056,7 @@
           </div>
         </div>
 
-        <div class="card">
+        <div class="card frames-card" id="framesCard">
           <label>Frames originais com pontos registrados</label>
           <div class="frames" id="framesList"></div>
         </div>
@@ -4330,12 +4501,12 @@
 
       if (isRetro) {
         if (importTitle) importTitle.textContent = 'Upload e ajustes da Lente Retro';
-        if (importDescription) importDescription.textContent = 'Carregue a foto e escolha o formato final.';
-        if (creativeTitle) creativeTitle.textContent = 'Ajustes de imagem e recursos criativos';
-        if (creativeDescription) creativeDescription.textContent = 'Receitas, luz, cor, grão, matte e glow.';
+        if (importDescription) importDescription.textContent = 'Carregue a foto, escolha o formato final e prepare o enquadramento.';
+        if (creativeTitle) creativeTitle.textContent = 'Ajustes criativos e Exportar';
+        if (creativeDescription) creativeDescription.textContent = 'Receitas prontas, tratamento analógico e exportação da foto final.';
         if (exportTitle) exportTitle.textContent = 'Exportar foto final';
         if (exportDescription) exportDescription.textContent = 'Exporte a foto final em JPG alto.';
-        if (dropzoneStrong) dropzoneStrong.textContent = '1. Carregar foto da Lente';
+        if (dropzoneStrong) dropzoneStrong.textContent = '1. Carregar foto da Lente Retro';
         if (dropzoneSpan) dropzoneSpan.textContent = 'JPG, PNG, WEBP, HEIC/HEIF, TIFF e arquivos de câmera quando suportados pelo navegador';
         if (emptyText) emptyText.textContent = 'Carregue uma foto da Lente Retro para começar o tratamento.';
         exportFormatSelect.value = 'mp4';
@@ -4347,8 +4518,8 @@
       } else {
         if (importTitle) importTitle.textContent = 'Importar e alinhar imagem';
         if (importDescription) importDescription.textContent = 'Carregue a foto 3D, escolha o layout, alinhe o objeto principal e prepare a base da montagem.';
-        if (creativeTitle) creativeTitle.textContent = 'Estilo e acabamento';
-        if (creativeDescription) creativeDescription.textContent = "Aplique filtros, LUT, exposição, nitidez, glow, RGB 3D e marca d'água.";
+        if (creativeTitle) creativeTitle.textContent = 'Ajustes e Exportar';
+        if (creativeDescription) creativeDescription.textContent = "Ajuste o visual, controle a velocidade e exporte o arquivo final no mesmo painel.";
         if (exportTitle) exportTitle.textContent = 'Exportar arquivo';
         if (exportDescription) exportDescription.textContent = 'Defina resolução, formato, duração e qualidade do arquivo final.';
         if (dropzoneStrong) dropzoneStrong.textContent = '1. Carregar foto 3D';
@@ -4373,9 +4544,12 @@
       if (clearKeypointsBtn) clearKeypointsBtn.style.display = isRetro ? 'none' : '';
       if (fineAdjustOverlay) fineAdjustOverlay.style.display = isRetro ? 'none' : '';
 
+      applyUnifiedPanelLayout();
+      refreshUnifiedPanelTexts();
       setupExclusiveToolPanels();
-    updateExportControls();
+      updateExportControls();
       updateWorkflowStatus();
+      applyMobileMinimalExperience();
     }
 
     function selectLensMode(mode) {
@@ -4385,7 +4559,7 @@
       currentLensMode = mode;
       updateLensModeInterface();
       [stepImportGroup, stepCreativeGroup, stepExportGroup].forEach((group) => {
-        if (!group) return;
+        if (!group || group.hidden) return;
         group.open = group === stepImportGroup;
       });
 
@@ -4835,7 +5009,7 @@
 
 
     function setupExclusiveToolPanels() {
-      const toolPanels = Array.from(document.querySelectorAll('.tool-group'));
+      const toolPanels = Array.from(document.querySelectorAll('.tool-group')).filter((panel) => panel.offsetParent !== null && !panel.hidden);
 
       toolPanels.forEach((panel) => {
         panel.addEventListener('toggle', () => {
@@ -7368,6 +7542,217 @@
         closeMacInstallModal();
       }
     });
+
+
+    function getFieldContainer(control) {
+      if (!control) return null;
+      return control.closest('.field');
+    }
+
+    function getFieldBySelector(selector) {
+      const el = document.querySelector(selector);
+      return el ? el.closest('.field') : null;
+    }
+
+    function markMobileSimplifiedFields() {
+      [
+        getFieldContainer(vintageEffectSelect),
+        getFieldContainer(vintageIntensityInput),
+        getFieldContainer(customLutInput),
+        getFieldContainer(exposureAdjustInput),
+        getFieldContainer(sharpnessAdjustInput),
+        getFieldContainer(glowAdjustInput),
+        getFieldContainer(rgbDisplacementInput),
+        getFieldContainer(frameInterpolationAmountInput),
+        getFieldContainer(watermarkEnabledInput),
+        getFieldContainer(watermarkTextInput),
+        getFieldBySelector('#safeExportMode')
+      ].filter(Boolean).forEach((node) => node.classList.add('mobile-hide-3d'));
+
+      const exportMiniNotes = document.querySelectorAll('.export-action-panel .mini-note');
+      exportMiniNotes.forEach((note) => note.classList.add('mini-note-mobile-hide'));
+    }
+
+    function setCollapsibleBadgeLabels() {
+      document.querySelectorAll('.tool-group-badge').forEach((badge) => {
+        if (badge.dataset.badgeApplied === 'true') return;
+        badge.dataset.badgeApplied = 'true';
+        badge.innerHTML = '<span class="badge-pulse-text">Painel recolhível</span>';
+      });
+    }
+
+    function ensureMergedExportSection() {
+      if (!stepCreativeGroup || !stepExportGroup) return null;
+      const creativeContent = stepCreativeGroup.querySelector('.tool-group-content');
+      const exportContent = stepExportGroup.querySelector('.tool-group-content');
+      if (!creativeContent || !exportContent) return null;
+
+      let mergedSection = creativeContent.querySelector('.merged-export-section');
+      if (!mergedSection) {
+        mergedSection = document.createElement('div');
+        mergedSection.className = 'merged-export-section';
+        mergedSection.innerHTML = `
+          <div class="panel-subsection-title">
+            <span>Exportar arquivo</span>
+            <small>Defina formato, velocidade, qualidade e gere o resultado final dentro deste painel.</small>
+          </div>
+        `;
+        creativeContent.appendChild(mergedSection);
+      }
+
+      if (exportContent.childElementCount > 0) {
+        while (exportContent.firstChild) {
+          mergedSection.appendChild(exportContent.firstChild);
+        }
+      }
+
+      stepExportGroup.setAttribute('hidden', 'hidden');
+      stepExportGroup.style.display = 'none';
+      return mergedSection;
+    }
+
+    function appendNodes(parent, nodes) {
+      if (!parent) return;
+      nodes.filter(Boolean).forEach((node) => parent.appendChild(node));
+    }
+
+    function applyUnifiedPanelLayout() {
+      const mergedExportSection = ensureMergedExportSection();
+      const importContent = stepImportGroup?.querySelector('.tool-group-content');
+      const creativeContent = stepCreativeGroup?.querySelector('.tool-group-content');
+      if (!importContent || !creativeContent) return;
+
+      const isRetro = currentLensMode === 'retro';
+
+      const dropzoneNode = dropzone;
+      const retroLookNote = importContent.querySelector('.retro-look-note');
+      const keypointPanelNode = document.querySelector('#keypointPanel');
+      const inputLayoutField = getFieldContainer(inputLayoutSelect);
+      const frameCountField = getFieldContainer(frameCountSelect);
+      const exportAspectField = getFieldContainer(exportAspectSelect);
+      const candidateAssistField = getFieldContainer(candidateAssistToggle);
+      const alignToolsField = document.querySelector('.align-tools-field');
+
+      appendNodes(importContent, [dropzoneNode]);
+      if (isRetro) {
+        appendNodes(importContent, [exportAspectField, alignToolsField]);
+        if (retroLookNote) retroLookNote.style.display = 'none';
+      } else {
+        appendNodes(importContent, [inputLayoutField, frameCountField, exportAspectField, candidateAssistField, keypointPanelNode, alignToolsField]);
+        if (retroLookNote) retroLookNote.style.display = 'none';
+      }
+
+      const presetsField = creativeContent.querySelector('.retro-presets-field');
+      const vintageField = getFieldContainer(vintageEffectSelect);
+      const vintageIntensityField = getFieldContainer(vintageIntensityInput);
+      const lutField = getFieldContainer(customLutInput);
+      const exposureField = getFieldContainer(exposureAdjustInput);
+      const sharpnessField = getFieldContainer(sharpnessAdjustInput);
+      const glowField = getFieldContainer(glowAdjustInput);
+      const warmthField = getFieldContainer(retroWarmthAdjustInput);
+      const fadeField = getFieldContainer(retroFadeAdjustInput);
+      const grainField = getFieldContainer(retroGrainAdjustInput);
+      const vignetteField = getFieldContainer(retroVignetteAdjustInput);
+      const rgbField = getFieldContainer(rgbDisplacementInput);
+      const interpolationField = getFieldContainer(frameInterpolationAmountInput);
+      const watermarkField = getFieldContainer(watermarkEnabledInput);
+      const watermarkTextFieldNode = document.querySelector('#watermarkTextField');
+
+      if (isRetro) {
+        appendNodes(creativeContent, [
+          presetsField,
+          vintageField,
+          vintageIntensityField,
+          lutField,
+          exposureField,
+          sharpnessField,
+          glowField,
+          warmthField,
+          fadeField,
+          grainField,
+          vignetteField,
+          rgbField,
+          watermarkField,
+          watermarkTextFieldNode,
+          mergedExportSection
+        ]);
+      } else {
+        appendNodes(creativeContent, [
+          vintageField,
+          vintageIntensityField,
+          lutField,
+          exposureField,
+          sharpnessField,
+          glowField,
+          rgbField,
+          interpolationField,
+          watermarkField,
+          watermarkTextFieldNode,
+          mergedExportSection
+        ]);
+      }
+
+      const mergedTitle = mergedExportSection?.querySelector('.panel-subsection-title span');
+      const mergedText = mergedExportSection?.querySelector('.panel-subsection-title small');
+      if (mergedTitle) mergedTitle.textContent = isRetro ? 'Exportar foto final' : 'Exportar arquivo';
+      if (mergedText) mergedText.textContent = isRetro
+        ? 'Defina resolução e qualidade para baixar a foto final sem sair deste painel.'
+        : 'Defina formato, velocidade, qualidade e gere o arquivo final dentro deste painel.';
+    }
+
+    function refreshUnifiedPanelTexts() {
+      const isRetro = currentLensMode === 'retro';
+      const importTitle = document.querySelector('#stepImportGroup .tool-group-title strong');
+      const importDescription = document.querySelector('#stepImportGroup .tool-group-title span');
+      const creativeTitle = document.querySelector('#stepCreativeGroup .tool-group-title strong');
+      const creativeDescription = document.querySelector('#stepCreativeGroup .tool-group-title span');
+      const exportTitle = document.querySelector('#stepExportGroup .tool-group-title strong');
+      const exportDescription = document.querySelector('#stepExportGroup .tool-group-title span');
+      const workflowGenerateLabel = document.querySelector('#workflowExportCta strong');
+      const workflowGenerateText = document.querySelector('#workflowExportCta p');
+      const workflowGenerateBtnLocal = document.querySelector('#workflowGenerateBtn');
+      const framesLabel = document.querySelector('#framesCard > label');
+      const previewActionsLabel = document.querySelector('.preview-point-actions-card > label');
+
+      if (isRetro) {
+        if (importTitle) importTitle.textContent = 'Upload e ajustes da Lente Retro';
+        if (importDescription) importDescription.textContent = 'Carregue a foto, escolha o formato final e prepare o enquadramento.';
+        if (creativeTitle) creativeTitle.textContent = 'Ajustes criativos e Exportar';
+        if (creativeDescription) creativeDescription.textContent = 'Receitas prontas, tratamento analógico e exportação da foto final.';
+        if (exportTitle) exportTitle.textContent = 'Exportar foto final';
+        if (exportDescription) exportDescription.textContent = 'Defina resolução e qualidade da foto final.';
+        if (workflowGenerateLabel) workflowGenerateLabel.textContent = 'Pronto para finalizar a foto?';
+        if (workflowGenerateText) workflowGenerateText.textContent = 'Depois de ajustar a estética retrô, exporte a foto final aqui também.';
+        if (workflowGenerateBtnLocal) workflowGenerateBtnLocal.textContent = 'Exportar foto';
+        if (framesLabel) framesLabel.textContent = 'Visualização da foto carregada';
+      } else {
+        if (importTitle) importTitle.textContent = 'Importar e alinhar imagem';
+        if (importDescription) importDescription.textContent = 'Carregue a foto 3D, escolha o layout, alinhe o objeto principal e prepare a base da montagem.';
+        if (creativeTitle) creativeTitle.textContent = 'Ajustes e Exportar';
+        if (creativeDescription) creativeDescription.textContent = 'Ajuste o visual, controle a velocidade e exporte o arquivo final no mesmo painel.';
+        if (exportTitle) exportTitle.textContent = 'Exportar arquivo';
+        if (exportDescription) exportDescription.textContent = 'Defina resolução, formato, duração e qualidade do arquivo final.';
+        if (workflowGenerateLabel) workflowGenerateLabel.textContent = 'Pronto para finalizar?';
+        if (workflowGenerateText) workflowGenerateText.textContent = 'Depois de importar, alinhar e ajustar o estilo, exporte o arquivo final aqui também.';
+        if (workflowGenerateBtnLocal) workflowGenerateBtnLocal.textContent = 'Exportar arquivo';
+        if (framesLabel) framesLabel.textContent = 'Frames originais com pontos registrados';
+      }
+
+      if (previewActionsLabel) previewActionsLabel.textContent = 'Alinhamento do GIF 3D';
+    }
+
+    function applyMobileMinimalExperience() {
+      const isMobile = window.matchMedia('(max-width: 680px)').matches;
+      document.body.classList.toggle('mobile-compact-active', isMobile);
+    }
+
+    setCollapsibleBadgeLabels();
+    markMobileSimplifiedFields();
+    applyUnifiedPanelLayout();
+    refreshUnifiedPanelTexts();
+    applyMobileMinimalExperience();
+
+    window.addEventListener('resize', applyMobileMinimalExperience);
 
 
     updateExportControls();
