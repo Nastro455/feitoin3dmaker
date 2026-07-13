@@ -3587,6 +3587,100 @@
       body.lens-retro .grid { gap: 10px; }
     }
 
+  
+    /* Correção final — remove visual de ícone/bolinha e transforma em selo de painel recolhível */
+    .tool-group-title {
+      grid-template-columns: minmax(0, 1fr) !important;
+      gap: 8px !important;
+      align-items: start !important;
+    }
+
+    .tool-group-badge {
+      position: static !important;
+      width: fit-content !important;
+      min-width: 0 !important;
+      max-width: 100% !important;
+      height: auto !important;
+      min-height: 0 !important;
+      padding: 5px 9px !important;
+      border-radius: 999px !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      background: rgba(30,155,255,.16) !important;
+      border: 1px solid rgba(142,203,255,.28) !important;
+      box-shadow: none !important;
+      color: #8ECBFF !important;
+      text-indent: 0 !important;
+      overflow: visible !important;
+      line-height: 1 !important;
+      margin: 0 0 7px 0 !important;
+      flex: 0 0 auto !important;
+    }
+
+    .tool-group-badge::before,
+    .tool-group-badge::after {
+      content: none !important;
+      display: none !important;
+    }
+
+    .tool-group-badge img,
+    .tool-group-badge svg {
+      display: none !important;
+    }
+
+    .badge-pulse-text {
+      display: inline-block !important;
+      font-size: 9px !important;
+      line-height: 1 !important;
+      font-weight: 900 !important;
+      text-transform: uppercase !important;
+      letter-spacing: .06em !important;
+      color: #8ECBFF !important;
+      opacity: 1 !important;
+      white-space: nowrap !important;
+      animation: badgePulseText 1.35s ease-in-out infinite !important;
+    }
+
+    @keyframes badgePulseText {
+      0%, 100% { opacity: .62; }
+      50% { opacity: 1; }
+    }
+
+    .tool-group-title > div {
+      min-width: 0 !important;
+    }
+
+    .tool-group summary {
+      grid-template-columns: 1fr 22px !important;
+      align-items: start !important;
+    }
+
+    .tool-group summary::after {
+      content: "↓ opções abaixo" !important;
+      right: 38px !important;
+      bottom: 9px !important;
+      font-size: 9px !important;
+      opacity: .78 !important;
+    }
+
+    @media (max-width: 680px) {
+      .tool-group-badge {
+        display: inline-flex !important;
+        padding: 5px 8px !important;
+        margin-bottom: 6px !important;
+      }
+
+      .badge-pulse-text {
+        font-size: 8.5px !important;
+      }
+
+      .tool-group summary::after {
+        content: "↓ opções" !important;
+        right: 36px !important;
+      }
+    }
+
   </style>
 </head>
 <body class="lens-gate-active">
@@ -3643,7 +3737,7 @@
 <details class="tool-group" id="stepImportGroup" open>
             <summary>
               <div class="tool-group-title">
-                <span class="tool-group-badge"><img class="tool-group-icon" src="assets/icons/icon-upload.svg" alt="Importar" loading="eager" decoding="sync"></span>
+                <span class="tool-group-badge"><span class="badge-pulse-text">Painel recolhível</span></span>
                 <div>
                   <strong>Importar e alinhar imagem</strong>
                   <span>Carregue a foto 3D, escolha o layout, alinhe o objeto principal e prepare a base da montagem.</span>
@@ -3728,7 +3822,7 @@
           <details class="tool-group" id="stepCreativeGroup">
             <summary>
               <div class="tool-group-title">
-                <span class="tool-group-badge"><img class="tool-group-icon" src="assets/icons/icon-sparkle.svg" alt="Ajustes" loading="eager" decoding="sync"></span>
+                <span class="tool-group-badge"><span class="badge-pulse-text">Painel recolhível</span></span>
                 <div>
                   <strong>Estilo e acabamento</strong>
                   <span>Aplique filtros, LUT, exposição, nitidez, glow, RGB 3D e marca d'água.</span>
@@ -3886,7 +3980,7 @@
 <details class="tool-group" id="stepExportGroup">
             <summary>
               <div class="tool-group-title">
-                <span class="tool-group-badge"><img class="tool-group-icon" src="assets/icons/icon-download.svg" alt="Exportar" loading="eager" decoding="sync"></span>
+                <span class="tool-group-badge"><span class="badge-pulse-text">Painel recolhível</span></span>
                 <div>
                   <strong>Exportar arquivo</strong>
                   <span>Defina resolução, formato, duração e qualidade do arquivo final.</span>
@@ -7747,6 +7841,15 @@
     }
 
     setCollapsibleBadgeLabels();
+
+    function forceTextBadgesFinal() {
+      document.querySelectorAll('.tool-group-badge').forEach((badge) => {
+        badge.innerHTML = '<span class="badge-pulse-text">Painel recolhível</span>';
+      });
+    }
+
+    forceTextBadgesFinal();
+
     markMobileSimplifiedFields();
     applyUnifiedPanelLayout();
     refreshUnifiedPanelTexts();

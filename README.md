@@ -463,3 +463,11 @@ Se o vídeo exportado sair preto:
 - Agora ele ativa quando existem frames prontos para exportar.
 - O botão não depende mais apenas do estado visual do botão principal.
 - O texto continua sincronizado com o formato escolhido.
+
+
+## Correção visual final dos selos de painel recolhível
+
+- Removido definitivamente o visual de ícone/bolinha dos painéis.
+- O antigo balão agora virou um selo textual horizontal: **Painel recolhível**.
+- O selo fica pulsando de forma discreta.
+- A indicação de rolagem foi mantida como texto auxiliar: **opções abaixo**.
