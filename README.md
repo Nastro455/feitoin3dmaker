@@ -509,3 +509,87 @@ Se o vídeo exportado sair preto:
   - Vinheta criativa
   - Dust and Scratches
 - Corrigido o preview ao vivo: grão, vinheta e Dust and Scratches atualizam imediatamente ao mexer na barra.
+
+
+## Interpolação inteligente controlada pela barra
+
+- A interpolação foi melhorada sem adicionar novos controles.
+- Continua sendo controlada pela barra existente de interpolação.
+- Não foi aplicado crop automático.
+- Não foi aplicada equalização automática.
+- Não foi aplicada microvariação analógica.
+- O sistema agora usa uma curva mais suave entre os frames e evita interpolar a volta brusca quando o loop não está em ida-e-volta.
+- A quantidade de frames intermediários é definida automaticamente pela porcentagem da barra.
+
+
+## Botão de compra da Lente Retro
+
+- Removido o texto **Feito In 3D • ferramenta experimental** do site.
+- Atualizado o texto do botão da Lente 3D para **Comprar Lente 3D**.
+- Adicionado botão **Comprar Lente Retro** ao lado do botão da Lente 3D.
+- Link da Lente Retro: https://www.mercadolivre.com.br/lente-retro-30mm-feitoin3d-canon-sony-nikon-fuji/up/MLBU3825743208#polycard_client=search-desktop&be_origin=backend&search_layout=grid&position=1&type=product&tracking_id=6a1e9caa-25cc-47cc-ade7-fb764a2a25c4&wid=MLB4502712035&sid=search
+
+
+## Botão Retro branco e ajuste fino mais responsivo
+
+- O botão **Comprar Lente Retro** agora usa visual branco, igual ao botão da Lente 3D.
+- O ajuste fino por frame ficou mais responsivo:
+  - clique normal nas setas move 4px;
+  - Shift + clique move 1px para ajuste super fino.
+- A atualização do ajuste fino ficou mais leve, evitando redesenhar miniaturas a cada clique.
+
+
+## Ajuste fino com navegação de frames e play/pause
+
+- Restaurada a navegação entre frames dentro do painel de ajuste fino.
+- Adicionado botão para pausar/reproduzir o preview do GIF.
+- Ao entrar no ajuste fino, o preview pausa para edição, mas o usuário pode retomar a reprodução.
+- O ajuste rápido por setas permanece:
+  - clique normal move 4px;
+  - Shift + clique move 1px.
+
+
+## Ajuste fino com design limpo restaurado
+
+- Esta versão volta a partir da versão anterior ao experimento Preview Editor.
+- O painel de ajuste fino volta ao design limpo:
+  - título;
+  - botão Minimizar;
+  - botão compacto Reproduzir/Pausar no cabeçalho;
+  - navegação Preview / Frame 1 / Frame 2 / Frame 3;
+  - setas de ajuste.
+- Os botões grandes de pausa/reprodução foram removidos.
+- As funções recentes foram mantidas:
+  - clique normal move 4px;
+  - Shift + clique move 1px;
+  - é possível pausar e retomar a reprodução do GIF.
+
+
+## Ajuste fino minimizado por padrão
+
+- O painel de ajuste fino agora abre minimizado.
+- Enquanto minimizado, aparece apenas o cabeçalho e o botão **Mostrar**.
+- As ferramentas internas só aparecem quando o usuário clicar em **Mostrar**.
+- As funções anteriores foram mantidas:
+  - navegação Preview / Frame 1 / Frame 2 / Frame 3;
+  - botão Reproduzir/Pausar;
+  - clique normal move 4px;
+  - Shift + clique move 1px.
+
+
+## Correção final do painel de ajuste fino limpo
+
+- Removido o botão extra **Reproduzir** do cabeçalho.
+- O botão **Minimizar** voltou a aparecer no cabeçalho do painel expandido.
+- O botão **Preview** da navegação agora se chama **Reproduzir**.
+- O visual das setas foi corrigido para voltar ao formato quadrado/limpo.
+- O painel continua minimizado por padrão e só mostra as ferramentas ao clicar em **Mostrar**.
+
+
+## Correção de overflow do painel de ajuste fino
+
+- O painel de ajuste fino foi limitado à largura do preview.
+- O painel não deve mais vazar para fora da tela.
+- O botão **Minimizar** permanece visível quando o painel está aberto.
+- Quando minimizado, aparece apenas o cabeçalho com **Mostrar**.
+- A navegação Reproduzir / Frame 1 / Frame 2 / Frame 3 e as setas foram mantidas.

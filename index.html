@@ -3889,15 +3889,492 @@
       display: block !important;
     }
 
+  
+    /* Botões de compra das lentes */
+    .buy-lenses-row,
+    .app-actions,
+    .hero-actions {
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .retro-buy-link {
+      background: linear-gradient(180deg, rgba(255,209,102,.22), rgba(255,255,255,.06)) !important;
+      border-color: rgba(255,209,102,.34) !important;
+    }
+
+    .retro-buy-link:hover {
+      border-color: rgba(255,209,102,.64) !important;
+    }
+
+    @media (max-width: 680px) {
+      .buy-lenses-row {
+        display: grid;
+        grid-template-columns: 1fr;
+      }
+    }
+
+  
+    /* Compra Retro — mesma estética branca do botão da Lente 3D */
+    .social-link.retro-buy-link,
+    a.retro-buy-link {
+      background: rgba(255,255,255,.08) !important;
+      color: var(--text) !important;
+      border-color: rgba(255,255,255,.18) !important;
+      box-shadow: none !important;
+    }
+
+    .social-link.retro-buy-link:hover,
+    a.retro-buy-link:hover {
+      background: rgba(255,255,255,.12) !important;
+      color: var(--text) !important;
+      border-color: rgba(255,255,255,.32) !important;
+    }
+
+  
+    /* Ajuste fino — navegação de frames e play/pause do preview */
+    .preview-playback-controls {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      margin: 10px 0 10px;
+    }
+
+    .preview-playback-btn {
+      min-height: 38px;
+      padding: 9px 10px;
+      font-size: 12px;
+      border-radius: 13px;
+    }
+
+    .frame-jump-buttons {
+      display: flex !important;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 10px 0 12px;
+    }
+
+    .frame-jump-buttons button {
+      min-height: 36px;
+      padding: 8px 10px;
+      border-radius: 12px;
+      font-size: 12px;
+    }
+
+    .frame-jump-buttons button.active {
+      background: rgba(30,155,255,.92);
+      color: #fff;
+      border-color: rgba(142,203,255,.55);
+    }
+
+    .fine-adjust-panel.editor-mode {
+      max-width: min(460px, calc(100vw - 24px));
+    }
+
+    @media (max-width: 680px) {
+      .preview-playback-controls {
+        grid-template-columns: 1fr;
+      }
+
+      .frame-jump-buttons button {
+        flex: 1 1 84px;
+      }
+    }
+
+  
+    /* Ajuste fino — design limpo com funções de frame e play/pause */
+    .fine-adjust-head {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      gap: 10px !important;
+    }
+
+    .fine-adjust-head-actions {
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 8px !important;
+      flex: 0 0 auto !important;
+    }
+
+    .preview-playback-inline {
+      min-height: 34px !important;
+      padding: 8px 12px !important;
+      border-radius: 999px !important;
+      font-size: 12px !important;
+      font-weight: 900 !important;
+      white-space: nowrap !important;
+      width: auto !important;
+    }
+
+    .preview-playback-controls,
+    .preview-playback-btn {
+      display: none !important;
+    }
+
+    .fine-adjust-panel {
+      width: min(420px, calc(100vw - 24px)) !important;
+      max-width: min(420px, calc(100vw - 24px)) !important;
+    }
+
+    .fine-adjust-panel:not(.minimized) {
+      padding: 14px !important;
+      border-radius: 22px !important;
+    }
+
+    .fine-adjust-mini {
+      margin: 10px 0 12px !important;
+      line-height: 1.38 !important;
+    }
+
+    .frame-jump-buttons {
+      display: flex !important;
+      flex-wrap: wrap !important;
+      gap: 8px !important;
+      margin: 10px 0 14px !important;
+    }
+
+    .frame-jump-buttons button {
+      min-height: 36px !important;
+      padding: 8px 12px !important;
+      border-radius: 999px !important;
+      font-size: 12px !important;
+      width: auto !important;
+      flex: 0 0 auto !important;
+    }
+
+    .frame-jump-buttons button.active {
+      background: var(--accent) !important;
+      color: #fff !important;
+      border-color: rgba(142,203,255,.55) !important;
+    }
+
+    .nudge-grid {
+      width: 154px !important;
+      margin: 10px auto 0 !important;
+      display: grid !important;
+      grid-template-columns: repeat(3, 46px) !important;
+      gap: 8px !important;
+      align-items: center !important;
+      justify-content: center !important;
+    }
+
+    .nudge-grid .placeholder {
+      display: block !important;
+      width: 46px !important;
+      height: 46px !important;
+      visibility: hidden !important;
+    }
+
+    .nudge-btn {
+      width: 46px !important;
+      height: 46px !important;
+      min-height: 46px !important;
+      padding: 0 !important;
+      border-radius: 14px !important;
+      display: grid !important;
+      place-items: center !important;
+      font-size: 18px !important;
+    }
+
+    .nudge-btn.reset-offset {
+      font-size: 12px !important;
+      font-weight: 900 !important;
+    }
+
+    @media (max-width: 680px) {
+      .fine-adjust-panel {
+        width: calc(100vw - 24px) !important;
+      }
+
+      .fine-adjust-head {
+        align-items: flex-start !important;
+      }
+
+      .fine-adjust-head-actions {
+        gap: 6px !important;
+      }
+
+      .preview-playback-inline,
+      .fine-adjust-toggle {
+        padding: 8px 10px !important;
+        font-size: 11px !important;
+      }
+    }
+
+  
+    /* Ajuste fino minimizado por padrão */
+    .fine-adjust-panel.minimized {
+      width: auto !important;
+      max-width: min(320px, calc(100vw - 24px)) !important;
+      padding: 12px 14px !important;
+      border-radius: 18px !important;
+    }
+
+    .fine-adjust-panel.minimized .fine-adjust-mini,
+    .fine-adjust-panel.minimized .preview-playback-inline,
+    .fine-adjust-panel.minimized .frame-jump-buttons,
+    .fine-adjust-panel.minimized .nudge-grid {
+      display: none !important;
+    }
+
+    .fine-adjust-panel.minimized .fine-adjust-head {
+      margin: 0 !important;
+    }
+
+    .fine-adjust-panel.minimized .fine-adjust-head strong {
+      white-space: nowrap !important;
+    }
+
+    .fine-adjust-panel.minimized .fine-adjust-head-actions {
+      display: inline-flex !important;
+    }
+
+    .fine-adjust-panel.minimized .fine-adjust-toggle {
+      display: inline-flex !important;
+    }
+
+    .fine-adjust-panel:not(.minimized) .fine-adjust-mini,
+    .fine-adjust-panel:not(.minimized) .frame-jump-buttons,
+    .fine-adjust-panel:not(.minimized) .nudge-grid {
+      display: flex !important;
+    }
+
+    .fine-adjust-panel:not(.minimized) .fine-adjust-mini {
+      display: block !important;
+    }
+
+    .fine-adjust-panel:not(.minimized) .preview-playback-inline {
+      display: inline-flex !important;
+    }
+
+  
+    /* Correção final — ajuste fino limpo, com Minimizar e Reproduzir na navegação */
+    .fine-adjust-head {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      gap: 12px !important;
+    }
+
+    .fine-adjust-head .fine-adjust-toggle {
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      min-width: 86px !important;
+      width: auto !important;
+      min-height: 38px !important;
+      padding: 9px 14px !important;
+      border-radius: 999px !important;
+      font-size: 12px !important;
+      font-weight: 900 !important;
+      white-space: nowrap !important;
+      flex: 0 0 auto !important;
+    }
+
+    .preview-playback-inline,
+    .preview-playback-controls,
+    .preview-playback-btn {
+      display: none !important;
+    }
+
+    .fine-adjust-panel.minimized .fine-adjust-toggle {
+      display: inline-flex !important;
+    }
+
+    .fine-adjust-panel:not(.minimized) {
+      width: min(420px, calc(100vw - 24px)) !important;
+      max-width: min(420px, calc(100vw - 24px)) !important;
+      padding: 14px !important;
+      border-radius: 22px !important;
+    }
+
+    .fine-adjust-panel:not(.minimized) .fine-adjust-mini {
+      display: block !important;
+      margin: 10px 0 12px !important;
+      line-height: 1.38 !important;
+    }
+
+    .fine-adjust-panel:not(.minimized) .frame-jump-buttons {
+      display: flex !important;
+      flex-wrap: wrap !important;
+      gap: 8px !important;
+      margin: 10px 0 14px !important;
+    }
+
+    .frame-jump-buttons button {
+      min-width: 74px !important;
+      width: auto !important;
+      min-height: 36px !important;
+      padding: 8px 12px !important;
+      border-radius: 999px !important;
+      font-size: 12px !important;
+      flex: 0 0 auto !important;
+      white-space: nowrap !important;
+    }
+
+    .frame-jump-buttons button.active {
+      background: var(--accent) !important;
+      color: #fff !important;
+      border-color: rgba(142,203,255,.55) !important;
+    }
+
+    .fine-adjust-panel:not(.minimized) .nudge-grid {
+      width: 154px !important;
+      margin: 10px auto 0 !important;
+      display: grid !important;
+      grid-template-columns: repeat(3, 46px) !important;
+      gap: 8px !important;
+      align-items: center !important;
+      justify-content: center !important;
+    }
+
+    .nudge-grid .placeholder {
+      display: block !important;
+      width: 46px !important;
+      height: 46px !important;
+      visibility: hidden !important;
+    }
+
+    .nudge-grid .nudge-btn {
+      box-sizing: border-box !important;
+      width: 46px !important;
+      min-width: 46px !important;
+      max-width: 46px !important;
+      height: 46px !important;
+      min-height: 46px !important;
+      max-height: 46px !important;
+      padding: 0 !important;
+      border-radius: 14px !important;
+      display: grid !important;
+      place-items: center !important;
+      font-size: 18px !important;
+      line-height: 1 !important;
+      flex: 0 0 46px !important;
+    }
+
+    .nudge-grid .nudge-btn.reset-offset {
+      font-size: 12px !important;
+      font-weight: 900 !important;
+    }
+
+    @media (max-width: 680px) {
+      .fine-adjust-panel:not(.minimized) {
+        width: calc(100vw - 24px) !important;
+      }
+
+      .frame-jump-buttons button {
+        min-width: 78px !important;
+      }
+    }
+
+  
+    /* Correção — painel de ajuste fino sem vazar da tela e com Minimizar sempre visível */
+    .fine-adjust-overlay {
+      left: auto !important;
+      right: 14px !important;
+      top: 14px !important;
+      width: min(390px, calc(100% - 28px)) !important;
+      max-width: calc(100% - 28px) !important;
+      z-index: 20 !important;
+    }
+
+    .fine-adjust-panel {
+      box-sizing: border-box !important;
+      width: 100% !important;
+      max-width: 100% !important;
+      overflow: hidden !important;
+    }
+
+    .fine-adjust-panel:not(.minimized) {
+      width: 100% !important;
+      max-width: 100% !important;
+      padding: 14px !important;
+    }
+
+    .fine-adjust-head {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      gap: 10px !important;
+      width: 100% !important;
+      min-width: 0 !important;
+    }
+
+    .fine-adjust-head strong {
+      min-width: 0 !important;
+      overflow: hidden !important;
+      text-overflow: ellipsis !important;
+      white-space: nowrap !important;
+    }
+
+    .fine-adjust-toggle {
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      flex: 0 0 auto !important;
+      min-width: 88px !important;
+      max-width: 112px !important;
+      white-space: nowrap !important;
+      position: relative !important;
+      z-index: 3 !important;
+    }
+
+    .fine-adjust-mini {
+      max-width: 100% !important;
+      overflow-wrap: anywhere !important;
+    }
+
+    .frame-jump-buttons {
+      max-width: 100% !important;
+      overflow: visible !important;
+      display: flex !important;
+      flex-wrap: wrap !important;
+      gap: 8px !important;
+    }
+
+    .frame-jump-buttons button {
+      min-width: 0 !important;
+      flex: 1 1 82px !important;
+      max-width: 118px !important;
+    }
+
+    .nudge-grid {
+      flex: 0 0 auto !important;
+      overflow: visible !important;
+    }
+
+    @media (max-width: 680px) {
+      .fine-adjust-overlay {
+        left: 10px !important;
+        right: 10px !important;
+        top: 10px !important;
+        width: auto !important;
+        max-width: calc(100% - 20px) !important;
+      }
+
+      .fine-adjust-toggle {
+        min-width: 78px !important;
+        max-width: 96px !important;
+        padding-inline: 10px !important;
+      }
+
+      .frame-jump-buttons button {
+        flex: 1 1 74px !important;
+        max-width: none !important;
+      }
+    }
+
   </style>
 </head>
 <body class="lens-gate-active">
   <main class="app">
     <header>
       <div class="badge-row">
-        <div class="badge">Feito In 3D • ferramenta experimental</div>
+        <div class="badge" style="display:none;"></div>
         <a class="social-link" href="https://www.instagram.com/feitoin3d/" target="_blank" rel="noopener noreferrer">Instagram Feito In 3D</a>
-        <a class="social-link buy-link" href="https://www.mercadolivre.com.br/lente-3d-para-producao-de-gifs-canon-sony-nikon-fuji/up/MLBU3825732714" target="_blank" rel="noopener noreferrer">Compre sua lente</a>
+        <a class="social-link buy-link" href="https://www.mercadolivre.com.br/lente-3d-para-producao-de-gifs-canon-sony-nikon-fuji/up/MLBU3825732714" target="_blank" rel="noopener noreferrer">Comprar Lente 3D</a>
+<a class="social-link buy-link retro-buy-link" href="https://www.mercadolivre.com.br/lente-retro-30mm-feitoin3d-canon-sony-nikon-fuji/up/MLBU3825743208#polycard_client=search-desktop&be_origin=backend&search_layout=grid&position=1&type=product&tracking_id=6a1e9caa-25cc-47cc-ade7-fb764a2a25c4&wid=MLB4502712035&sid=search" target="_blank" rel="noopener noreferrer">Comprar Lente Retro</a>
         <button class="social-link lens-change-btn" id="changeLensBtn" type="button">Trocar lente</button>
       </div>
       <h1>Feitoin3d <span>Maker <i class="br-flag" aria-label="Brasil" title="Brasil"></i></span></h1>
@@ -3945,7 +4422,7 @@
 <details class="tool-group" id="stepImportGroup" open>
             <summary>
               <div class="tool-group-title">
-                <span class="tool-group-badge"></span></span>
+                <span class="tool-group-badge" style="display:none;"></span></span>
                 <div>
                   <strong>Importar e alinhar imagem</strong>
                   <span>Carregue a foto 3D, escolha o layout, alinhe o objeto principal e prepare a base da montagem.</span>
@@ -4005,7 +4482,7 @@
                 <div class="switch-row">
                   <label class="switch-control" for="candidateAssistToggle">
                     <input id="candidateAssistToggle" type="checkbox" checked />
-                    <span class="switch-slider"></span>
+                    <span class="switch-slider" style="display:none;"></span>
                   </label>
                   <span class="switch-label-text">Mapear possíveis pontos iguais no 1º frame e permitir clique assistido</span>
                 </div>
@@ -4030,7 +4507,7 @@
           <details class="tool-group" id="stepCreativeGroup">
             <summary>
               <div class="tool-group-title">
-                <span class="tool-group-badge"></span></span>
+                <span class="tool-group-badge" style="display:none;"></span></span>
                 <div>
                   <strong>Estilo e acabamento</strong>
                   <span>Aplique filtros, LUT, exposição, nitidez, glow, RGB 3D e marca d'água.</span>
@@ -4170,12 +4647,12 @@
               </div>
 
               <div class="field">
-                <label for="frameInterpolationAmount">Interpolação de tempo / quadros</label>
+                <label for="frameInterpolationAmount">Interpolação inteligente entre frames</label>
                 <div class="range-row">
                   <input id="frameInterpolationAmount" type="range" min="0" max="100" value="0" step="5" />
                   <output id="frameInterpolationAmountValue">0%</output>
                 </div>
-                <p class="mini-note">Cria quadros intermediários entre as imagens para deixar o GIF ou vídeo mais fluido. Em 0%, a animação mantém o comportamento original.</p>
+                <p class="mini-note">Cria quadros intermediários mais suaves usando a mesma barra. Em 0%, mantém os frames originais; quanto maior, mais fluida fica a transição.</p>
               </div>
 
               <div class="field">
@@ -4183,7 +4660,7 @@
                 <div class="switch-row">
                   <label class="switch-control" for="watermarkEnabled">
                     <input id="watermarkEnabled" type="checkbox" />
-                    <span class="switch-slider"></span>
+                    <span class="switch-slider" style="display:none;"></span>
                   </label>
                   <span class="switch-label-text">Adicionar marca d'água repetida nas bordas do arquivo</span>
                 </div>
@@ -4199,7 +4676,7 @@
 <details class="tool-group" id="stepExportGroup">
             <summary>
               <div class="tool-group-title">
-                <span class="tool-group-badge"></span></span>
+                <span class="tool-group-badge" style="display:none;"></span></span>
                 <div>
                   <strong>Exportar arquivo</strong>
                   <span>Defina resolução, formato, duração e qualidade do arquivo final.</span>
@@ -4278,7 +4755,7 @@
                 <div class="switch-row">
                   <label class="switch-control" for="safeExportMode">
                     <input id="safeExportMode" type="checkbox" />
-                    <span class="switch-slider"></span>
+                    <span class="switch-slider" style="display:none;"></span>
                   </label>
                   <span class="switch-label-text">Ativar exportação compatível para evitar arquivo preto em alguns navegadores</span>
                 </div>
@@ -4328,30 +4805,30 @@
 
           <div class="keypoint-hint-overlay" id="keypointHintOverlay" aria-hidden="true">
             <div class="keypoint-hint-card">
-              <div class="keypoint-target"></div>
+              <div class="keypoint-target" style="display:none;"></div>
               <strong>Clique no ponto principal da imagem</strong>
               <p>Escolha um detalhe de alto contraste, como olho, logo, botão, parafuso ou canto da lente.</p>
             </div>
           </div>
 
           <div class="fine-adjust-overlay" id="fineAdjustOverlay" hidden>
-            <div class="fine-adjust-panel">
+            <div class="fine-adjust-panel minimized">
               <div class="fine-adjust-head">
                 <strong>Ajuste fino por frame</strong>
                 <button class="fine-adjust-toggle" id="fineAdjustToggleBtn" type="button">Mostrar</button>
               </div>
-              <p class="fine-adjust-mini">Escolha um frame para ajuste rápido e use as setas para corrigir tremidos finos sobre o preview.</p>
+              <p class="fine-adjust-mini">Escolha um frame para ajuste rápido e use as setas para corrigir tremidos finos sobre o preview. Clique normal move 4px; Shift + clique move 1px.</p>
               <div class="frame-jump-buttons" id="frameJumpButtons"></div>
               <div class="nudge-grid">
-                <span class="placeholder"></span>
+                <span class="placeholder" style="display:none;"></span>
                 <button class="secondary nudge-btn" type="button" data-nudge="up">↑</button>
-                <span class="placeholder"></span>
+                <span class="placeholder" style="display:none;"></span>
                 <button class="secondary nudge-btn" type="button" data-nudge="left">←</button>
                 <button class="secondary nudge-btn reset-offset" type="button" data-nudge="reset">Reset</button>
                 <button class="secondary nudge-btn" type="button" data-nudge="right">→</button>
-                <span class="placeholder"></span>
+                <span class="placeholder" style="display:none;"></span>
                 <button class="secondary nudge-btn" type="button" data-nudge="down">↓</button>
-                <span class="placeholder"></span>
+                <span class="placeholder" style="display:none;"></span>
               </div>
             </div>
           </div>
@@ -4362,7 +4839,7 @@
               <strong id="exportOverlayTitle">Exportando arquivo Full HD</strong>
               <p id="exportOverlayText">Preparando os frames...</p>
               <div class="progress-track">
-                <div class="progress-bar" id="exportProgressBar"></div>
+                <div class="progress-bar" id="exportProgressBar" style="display:none;"></div>
               </div>
               <span id="exportElapsed">Tempo decorrido: 00:00</span>
             </div>
@@ -4371,7 +4848,7 @@
 
         <div class="card frames-card" id="framesCard">
           <label>Frames originais com pontos registrados</label>
-          <div class="frames" id="framesList"></div>
+          <div class="frames" id="framesList" style="display:none;"></div>
         </div>
         </div>
 
@@ -4927,7 +5404,8 @@
       clearKeypointsBtn.disabled = true;
 
       renderFramesList();
-      updateFineAdjustControls();
+      fineAdjustMinimized = true;
+    updateFineAdjustControls();
       startPreview();
 
       setStatus('Foto da Lente Retro carregada. Ajuste luz, cor, nitidez, LUT, glow e exporte em JPG alto.');
@@ -4983,15 +5461,46 @@
       exportResultMeta.textContent = `${format} • ${preset.aspectLabel} • ${preset.label}`;
     }
 
+
+    function updatePreviewPlaybackButtons() {
+      return;
+    }
+
+    function pausePreviewOnCurrentFrame() {
+      if (!finalFrameCanvases.length) return;
+      clearInterval(animationTimer);
+      animationTimer = null;
+      previewMode = 'frame';
+      selectedAdjustFrame = clamp(selectedAdjustFrame || 0, 0, finalFrameCanvases.length - 1);
+      const frame = finalFrameCanvases[selectedAdjustFrame] || finalFrameCanvases[0];
+      if (frame) drawPreviewFrame(frame);
+      updateFineAdjustButtons();
+      updatePreviewPlaybackButtons();
+      setStatus('Preview pausado. Escolha um frame para ajustar ou clique em Reproduzir GIF.');
+    }
+
+    function resumeAnimatedPreview() {
+      if (!finalFrameCanvases.length || selectingKeypoints) return;
+      previewMode = 'animated';
+      selectedAdjustFrame = 0;
+      updateFineAdjustButtons();
+      startPreview();
+      updatePreviewPlaybackButtons();
+      setStatus('Reprodução do GIF retomada no preview.');
+    }
+
+
     function openFineAdjustPanel() {
       if (!rawFrameCanvases.length) return;
       fineAdjustVisible = true;
-      fineAdjustMinimized = false;
+      fineAdjustMinimized = true;
       updateFineAdjustControls();
       previewMode = 'frame';
+      selectedAdjustFrame = 0;
       updateFineAdjustButtons();
       startPreview();
-      setStatus('Ajuste fino aberto. Escolha um frame e corrija pequenos tremidos, se necessário.');
+      updatePreviewPlaybackButtons();
+      setStatus('Ajuste fino aberto minimizado. Clique em “Mostrar” para exibir as ferramentas.');
     }
 
     function closeFineAdjustPanel() {
@@ -5223,9 +5732,9 @@
       if (!rawFrameCanvases.length || selectingKeypoints) return;
       startPreview();
       if (Number(frameInterpolationAmountInput.value) > 0) {
-        setStatus(`Interpolação de tempo ajustada para ${frameInterpolationAmountInput.value}%.`);
+        setStatus(`Interpolação inteligente ajustada para ${frameInterpolationAmountInput.value}%.`);
       } else {
-        setStatus('Interpolação de tempo desativada.');
+        setStatus('Interpolação inteligente desativada.');
       }
     });
 
@@ -5269,6 +5778,7 @@
       updateFineAdjustMinimizedState();
     });
 
+
     if (fineAdjustCloseBtn) {
       fineAdjustCloseBtn.addEventListener('click', closeFineAdjustPanel);
     }
@@ -5299,16 +5809,21 @@
       }
       updateFineAdjustButtons();
       startPreview();
+      updatePreviewPlaybackButtons();
     });
 
     nudgeButtons.forEach((button) => {
-      button.addEventListener('click', () => {
+      button.addEventListener('click', (event) => {
         if (!rawFrameCanvases.length) return;
         const action = button.dataset.nudge;
         if (previewMode !== 'frame') {
           previewMode = 'frame';
         }
-        const step = 1;
+
+        // Resposta mais rápida: clique normal move 4px.
+        // Para ajuste super fino, segure Shift e clique para mover 1px.
+        const step = event.shiftKey ? 1 : 4;
+
         if (action === 'up') nudgeSelectedFrame(0, -step);
         if (action === 'down') nudgeSelectedFrame(0, step);
         if (action === 'left') nudgeSelectedFrame(-step, 0);
@@ -6657,7 +7172,7 @@
     }
 
     function renderFrameJumpButtons() {
-      const buttons = [`<button type="button" data-frame-mode="preview" class="${previewMode === 'animated' ? 'active' : ''}">Preview</button>`];
+      const buttons = [`<button type="button" data-frame-mode="preview" class="${previewMode === 'animated' ? 'active' : ''}">Reproduzir</button>`];
       rawFrameCanvases.forEach((_, index) => {
         const isActive = previewMode === 'frame' && selectedAdjustFrame === index;
         buttons.push(`<button type="button" data-frame-mode="frame" data-frame-index="${index}" class="${isActive ? 'active' : ''}">Frame ${index + 1}</button>`);
@@ -6681,9 +7196,9 @@
       current.dy += dy;
       manualFrameOffsets[selectedAdjustFrame] = current;
       rebuildFinalFrames();
-      renderFramesList();
       updateFineAdjustButtons();
       startPreview();
+      updatePreviewPlaybackButtons();
       setStatus(`Ajuste fino aplicado no Frame ${selectedAdjustFrame + 1}: X ${current.dx}px • Y ${current.dy}px.`);
     }
 
@@ -6693,6 +7208,7 @@
       renderFramesList();
       updateFineAdjustButtons();
       startPreview();
+      updatePreviewPlaybackButtons();
       setStatus(`Ajuste fino do Frame ${selectedAdjustFrame + 1} foi resetado.`);
     }
 
@@ -7147,27 +7663,65 @@
       return [...finalFrameCanvases, ...backwards];
     }
 
+    function getInterpolationAmount() {
+      return clamp(Number(frameInterpolationAmountInput.value || 0), 0, 100);
+    }
+
     function getInterpolationStepCount() {
-      const value = Number(frameInterpolationAmountInput.value);
-      return Math.max(0, Math.round(value / 20));
+      const value = getInterpolationAmount();
+      if (value <= 0) return 0;
+      if (value <= 25) return 1;
+      if (value <= 50) return 2;
+      if (value <= 75) return 3;
+      return 4;
     }
 
     function easeInterpolation(t) {
       return t * t * (3 - 2 * t);
     }
 
+    function getSmartInterpolationAlpha(rawAlpha) {
+      const amount = getInterpolationAmount() / 100;
+      const eased = easeInterpolation(rawAlpha);
+      const sine = 0.5 - Math.cos(rawAlpha * Math.PI) / 2;
+      return clamp((eased * (1 - amount)) + (sine * amount), 0, 1);
+    }
+
     function createBlendedFrame(frameA, frameB, alpha) {
       const output = document.createElement('canvas');
       output.width = frameA.width;
       output.height = frameA.height;
-      const outputCtx = output.getContext('2d');
+      const outputCtx = output.getContext('2d', { alpha: false });
+      outputCtx.imageSmoothingEnabled = true;
+      outputCtx.imageSmoothingQuality = 'high';
+
       outputCtx.clearRect(0, 0, output.width, output.height);
       outputCtx.globalAlpha = 1;
       outputCtx.drawImage(frameA, 0, 0);
-      outputCtx.globalAlpha = alpha;
+
+      const softAlpha = clamp(alpha, 0, 1);
+      outputCtx.globalAlpha = softAlpha;
       outputCtx.drawImage(frameB, 0, 0);
       outputCtx.globalAlpha = 1;
+
       return output;
+    }
+
+    function createSmartInterpolatedFrame(frameA, frameB, alpha) {
+      // Interpolação inteligente, sem crop, sem equalização e sem textura extra.
+      // Ela apenas melhora a transição entre frames usando a barra já existente.
+      return createBlendedFrame(frameA, frameB, getSmartInterpolationAlpha(alpha));
+    }
+
+    function shouldInterpolateBetweenFrames(currentIndex, baseFrames) {
+      if (!baseFrames || baseFrames.length <= 1) return false;
+
+      // Se o loop não estiver em ida-e-volta, evita interpolar a volta brusca do último
+      // frame para o primeiro. Isso reduz "salto digital" sem aplicar crop/equalização.
+      const isLastPair = currentIndex === baseFrames.length - 1;
+      if (isLastPair && !boomerangInput.checked) return false;
+
+      return true;
     }
 
     function getPlaybackFrames() {
@@ -7184,12 +7738,11 @@
 
         playbackFrames.push(currentFrame);
 
-        if (!nextFrame || nextFrame === currentFrame) continue;
+        if (!nextFrame || nextFrame === currentFrame || !shouldInterpolateBetweenFrames(index, baseFrames)) continue;
 
         for (let step = 1; step <= interpolationSteps; step++) {
           const rawAlpha = step / (interpolationSteps + 1);
-          const alpha = easeInterpolation(rawAlpha);
-          playbackFrames.push(createBlendedFrame(currentFrame, nextFrame, alpha));
+          playbackFrames.push(createSmartInterpolatedFrame(currentFrame, nextFrame, rawAlpha));
         }
       }
 
@@ -7200,7 +7753,7 @@
       const baseDelay = Number(delayInput.value);
       const interpolationSteps = getInterpolationStepCount();
       const effectiveDelay = baseDelay / (interpolationSteps + 1);
-      return Math.max(20, Math.round(effectiveDelay));
+      return Math.max(18, Math.round(effectiveDelay));
     }
 
     function getSelectedGifDurationMs() {
@@ -7307,6 +7860,7 @@
         const chosenFrame = finalFrameCanvases[selectedAdjustFrame] || finalFrameCanvases[0];
         drawPreviewFrame(chosenFrame);
         syncWorkflowExportButtonState(false);
+        updatePreviewPlaybackButtons();
         return;
       }
 
@@ -7327,6 +7881,7 @@
       draw();
       animationTimer = setInterval(draw, frameDelay);
       syncWorkflowExportButtonState(false);
+      updatePreviewPlaybackButtons();
     }
 
     function exportHighJpg() {
