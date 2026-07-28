@@ -603,3 +603,12 @@ Se o vídeo exportado sair preto:
 - Adicionado texto de boas-vindas e orientação de uso da plataforma.
 - Incluída recomendação: a ferramenta funciona melhor no **Google Chrome atualizado**.
 - O tutorial tem botões para começar com a Lente 3D ou voltar para a escolha de lente.
+
+
+## Tutorial com vídeo maior e flutuante
+
+- O vídeo do tutorial ficou maior dentro da tela inicial.
+- Ao sair da página de tutorial, o vídeo passa a ficar flutuante no canto inferior direito.
+- O player flutuante acompanha o usuário enquanto ele navega pela ferramenta.
+- O usuário pode fechar o vídeo flutuante pelo botão **×**.
+- Ao abrir novamente a aba Tutorial, o player flutuante é ocultado para evitar duplicidade.
