@@ -4668,7 +4668,7 @@
         <section class="tutorial-panel" id="tutorialPanel" hidden>
           <div class="tutorial-video-wrap">
             <iframe
-              src="https://www.youtube.com/embed/yM96AJaszUU"
+              id="tutorialMainIframe" src="https://www.youtube.com/embed/yM96AJaszUU"
               title="Tutorial Feito in 3D Maker"
               loading="lazy"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -5317,6 +5317,7 @@
     const selectRetroModeBtn = document.querySelector('#selectRetroMode');
     const selectTutorialModeBtn = document.querySelector('#selectTutorialMode');
     const tutorialPanel = document.querySelector('#tutorialPanel');
+    const tutorialMainIframe = document.querySelector('#tutorialMainIframe');
     const tutorialStart3dBtn = document.querySelector('#tutorialStart3dBtn');
     const tutorialBackBtn = document.querySelector('#tutorialBackBtn');
     const tutorialFloatingPlayer = document.querySelector('#tutorialFloatingPlayer');
@@ -5705,6 +5706,20 @@
 
 
 
+
+    function stopTutorialMainVideo() {
+      if (!tutorialMainIframe) return;
+      tutorialMainIframe.src = '';
+    }
+
+    function restoreTutorialMainVideo() {
+      if (!tutorialMainIframe) return;
+      if (!tutorialMainIframe.src) {
+        tutorialMainIframe.src = 'https://www.youtube.com/embed/yM96AJaszUU';
+      }
+    }
+
+
     function showTutorialFloatingPlayer() {
       if (!tutorialFloatingPlayer || !tutorialFloatingIframe) return;
       tutorialFloatingIframe.src = 'https://www.youtube.com/embed/yM96AJaszUU?autoplay=1';
@@ -5720,6 +5735,7 @@
     function openTutorialPanel() {
       if (!tutorialPanel) return;
       hideTutorialFloatingPlayer();
+      restoreTutorialMainVideo();
       tutorialPanel.hidden = false;
       tutorialPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       setStatus('Tutorial aberto. Assista ao vídeo e depois escolha a lente para começar.');
@@ -5729,6 +5745,7 @@
       if (!tutorialPanel) return;
       const wasOpen = !tutorialPanel.hidden;
       tutorialPanel.hidden = true;
+      stopTutorialMainVideo();
       if (keepFloating && wasOpen) {
         showTutorialFloatingPlayer();
       }

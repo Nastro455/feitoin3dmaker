@@ -612,3 +612,10 @@ Se o vídeo exportado sair preto:
 - O player flutuante acompanha o usuário enquanto ele navega pela ferramenta.
 - O usuário pode fechar o vídeo flutuante pelo botão **×**.
 - Ao abrir novamente a aba Tutorial, o player flutuante é ocultado para evitar duplicidade.
+
+
+## Correção de áudio duplicado do tutorial
+
+- Corrigido o problema em que o áudio do vídeo principal continuava tocando ao abrir o player flutuante.
+- Ao sair da página Tutorial, o iframe principal é descarregado antes do player flutuante iniciar.
+- Ao voltar para o Tutorial, o iframe principal é restaurado e o player flutuante é fechado.
