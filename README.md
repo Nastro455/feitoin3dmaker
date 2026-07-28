@@ -593,3 +593,13 @@ Se o vídeo exportado sair preto:
 - O botão **Minimizar** permanece visível quando o painel está aberto.
 - Quando minimizado, aparece apenas o cabeçalho com **Mostrar**.
 - A navegação Reproduzir / Frame 1 / Frame 2 / Frame 3 e as setas foram mantidas.
+
+
+## Tela inicial com Tutorial
+
+- Adicionada uma terceira opção na tela inicial: **Tutorial**.
+- O tutorial incorpora o vídeo do YouTube:
+  - https://youtu.be/yM96AJaszUU
+- Adicionado texto de boas-vindas e orientação de uso da plataforma.
+- Incluída recomendação: a ferramenta funciona melhor no **Google Chrome atualizado**.
+- O tutorial tem botões para começar com a Lente 3D ou voltar para a escolha de lente.
